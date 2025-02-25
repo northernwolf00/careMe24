@@ -8,8 +8,8 @@ class UserRepository {
     return response;
   }
 
-   static Future<CodeSendResetResult> changeBalanceRepository(Map<String,dynamic> data)async{
-    final CodeSendResetResult response = await Api.changeBalance(data);
-    return response;
-  }
+  static Future<dynamic> changeBalanceRepository(Map<String, dynamic> data) async {
+  return await Api.changeBalance(data);
+}
+
 }

@@ -16,7 +16,7 @@ class AppBloc {
   static final searchCubit = SearchCubit();
   static final dangerousCubit = DangerousCubit();
   static final drawerCubit = DrawerCubit();
-    static final balanceCubit = ChageBalanceCubit();
+  static final balanceCubit = ChangeBalanceCubit();
   static final requestCubit = RequestCubit();
   static final institutionCubit = InstitutionCubit();
   static final serviceCubit = ServiceCubit();
@@ -46,7 +46,7 @@ class AppBloc {
     BlocProvider<DrawerCubit>(
       create: (context) => drawerCubit
     ),
-    BlocProvider<ChageBalanceCubit>(
+    BlocProvider<ChangeBalanceCubit>(
       create: (context) => balanceCubit
     ),
     BlocProvider<RequestCubit>(

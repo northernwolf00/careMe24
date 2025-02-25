@@ -8,36 +8,29 @@ import 'package:careme24/repositories/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+class ChangeBalanceCubit extends Cubit<ChangeBalanceState> {
+  ChangeBalanceCubit() : super(ChangeBalanceInitial());
 
-class ChageBalanceCubit extends Cubit<ChangeBalanceState> {
-  ChageBalanceCubit() : super(ChangeBalanceInitial());
+  Future<void> changeBalanceWallet(String data) async {
+    try {
+      int value = int.parse(data);
 
-  Future<CodeSendResetResult> changeBalanceWallet(String data,) async {
-  
-  final requestData = {
+      final requestData = {
+        "balance": value,
+      };
 
-      "balance": data,
-  };
+      final response = await UserRepository.changeBalanceRepository(requestData);
 
-  try {
-    CodeSendResetResult response;
-     response = await UserRepository.changeBalanceRepository(requestData);
-
-    if (response.isSuccess) {
-      log(' successful');
-   
-      emit(ChangeBalanceSuccess(response.status));
-      return response;
-    } else {
-      log(' failed');
-      
+      if (response.isSuccess) {
+        log('Successful');
+        emit(ChangeBalanceSuccess(response.status));
+      } else {
+        log('Failed');
+        emit(ChangeBalanceError("Balance change failed"));
+      }
+    } catch (e) {
+      log('Error: $e');
+      emit(ChangeBalanceError(e.toString()));
     }
-  } catch (e) {
-    log(' error: $e');
-    emit(ChangeBalanceError(e.toString()));
   }
-  return CodeSendResetResult(status: '', isSuccess: false);
 }
-
-}
-

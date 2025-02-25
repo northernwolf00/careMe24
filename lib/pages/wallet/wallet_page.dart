@@ -139,7 +139,7 @@ class AddBalanceDialog extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChageBalanceCubit, ChangeBalanceState>(
+    return BlocBuilder<ChangeBalanceCubit, ChangeBalanceState>(
         builder: (context, state) {
       return AlertDialog(
         backgroundColor: Colors.white,
@@ -193,11 +193,11 @@ class AddBalanceDialog extends StatelessWidget {
                   onPressed: () async {
                     final response = await AppBloc.balanceCubit
                         .changeBalanceWallet(controller.text.trim());
-                    if (!response.isSuccess) {
-                      ElegantNotification.error(
-                              description: Text('Неверные данные'))
-                          .show(context);
-                    }
+                    // if (!response != null) {
+                    //   ElegantNotification.error(
+                    //           description: Text('Неверные данные'))
+                    //       .show(context);
+                    // }
                   },
                 ),
               )
