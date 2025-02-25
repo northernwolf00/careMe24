@@ -1,0 +1,278 @@
+import 'package:careme24/constants.dart';
+import 'package:careme24/models/service_model.dart';
+import 'package:careme24/pages/police/appointment_to_police_page.dart';
+import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
+import 'package:careme24/pages/services_call/create_statement_screen.dart';
+import 'package:careme24/pages/services_call/police_call_screen.dart';
+import 'package:careme24/theme/color_constant.dart';
+import 'package:careme24/utils/image_constant.dart';
+import 'package:careme24/utils/size_utils.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:flutter/material.dart';
+import '../theme/app_decoration.dart';
+import '../theme/app_style.dart';
+import '../widgets/custom_image_view.dart';
+
+class PoliceCard extends StatelessWidget {
+  late String doctor_image;
+  late String doctor_name;
+  late String doctor_qualification;
+  late String cost;
+  late String meters;
+  late String minute;
+  late String estimation;
+  late String where_call;
+  final ServiceModel serviceModel;
+  final String reason;
+  final bool work;
+  final bool statement;
+  final String medCardId;
+
+  bool bottomInfo = false;
+  bool leftColumnMeters = false;
+  bool leftColumnEstimation = false;
+  bool freeDates = false;
+  bool ququalificationvisible = false;
+
+  PoliceCard({super.key, 
+    required this.doctor_image,
+    required this.doctor_name,
+    required this.doctor_qualification,
+    required this.cost,
+    required this.meters,
+    required this.minute,
+    required this.estimation,
+    required this.where_call,
+    required this.serviceModel,
+    required this.reason,
+    this.work = true,
+    this.statement = false,
+    required this.medCardId
+  });
+
+  void form_card() {
+    if (where_call == "Сообщить") {
+      AfterPay.changeAfterMinute();
+      bottomInfo = true;
+    } else if (where_call == "Заявление") {
+      TipyHelp.changeHelp("С вами свяжутся по телефону или напишут в сообщениях");
+      AfterPay.changeAfterSmile();
+      bottomInfo = true;
+      ququalificationvisible = true;
+    } else if (where_call == "Юрист онлайн") {
+      TipyHelp.changeHelp("Передите в чат с юристом");
+      AfterPay.changeAfterSmile();
+      leftColumnEstimation = true;
+      freeDates = true;
+      ququalificationvisible = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    form_card();
+    return GestureDetector(
+      onTap:(){
+        if (work) {
+          if (where_call == "Юрист онлайн") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentToPoliceScreen()));
+        } else{
+          if (reason == '') {
+            ElegantNotification.error(description: Text('Выберете причину вызова')).show(context);
+          }else{
+            if (statement) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStatementScreen(reason: reason, serviceId: serviceModel.id, cardId: medCardId,)));
+            }else{
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PoliceCallScreen(reason: reason,serviceModel: serviceModel, medCardId: medCardId,)));
+            }
+          }
+        }
+        }else{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => RecordFinalScreen()));
+        }
+      },
+      child: Card(
+        margin: getMargin(bottom: 12),
+        elevation: 8,
+        clipBehavior: Clip.hardEdge,
+        child: Container(
+            width: MediaQuery.of(context).size.width-40,
+            decoration: BoxDecoration(borderRadius: BorderRadiusStyle.roundedBorder10),
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Container(
+                width: 71,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: ColorConstant.indigoA100,
+                  borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(30)),
+                ),
+                child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CustomImageView(
+                        svgPath: ImageConstant.policehat,
+                      ),
+                    ])),
+                  Padding(
+                    padding: getPadding(top: 8, left: 8),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 70,
+                            width: MediaQuery.of(context).size.width/1.6,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(doctor_name,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtMontserratSemiBold15Blue600),
+                                        Visibility(
+                                          visible: ququalificationvisible,
+                                          child: Padding(
+                                              padding: getPadding(top: 4),
+                                              child: Text(doctor_qualification,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style:
+                                                  AppStyle.txtMontserratMedium12)),
+                                        ),
+
+                                      ]),
+                                  Padding(
+                                      padding: getPadding(top: 1),
+                                      child: Column(
+                                        children: [
+                                          RichText(
+                                              text: TextSpan(
+                                                text: cost,
+                                                style: TextStyle(
+                                                    color:
+                                                    ColorConstant.blueGray800,
+                                                    fontSize: getFontSize(17),
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w700),
+                                              ),
+                                              textAlign: TextAlign.left),
+                                          Visibility(
+                                            visible: leftColumnMeters,
+                                            child: Text(meters,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: AppStyle
+                                                    .txtMontserratMedium15Bluegray800),
+                                          ),
+                                          Visibility(
+                                            visible: leftColumnEstimation,
+                                            child: Row(
+                                              children: [
+                                                Text(estimation,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.left,
+                                                    style: AppStyle
+                                                        .txtMontserratMedium15Bluegray800),
+                                                CustomImageView(
+                                                    svgPath: ImageConstant
+                                                        .imgStarGold,
+                                                    height: getSize(12),
+                                                    width: getSize(12),
+                                                    margin: getMargin(
+                                                        left: 3,
+                                                        top: 3,
+                                                        bottom: 3)),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                ]),
+                          ),
+                          Visibility(
+                            visible: bottomInfo,
+                            child: Padding(
+                                padding: getPadding(top: 12),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(meters,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle
+                                              .txtMontserratMedium15Bluegray800),
+                                      Padding(
+                                          padding: getPadding(left: 26),
+                                          child: Text(minute,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.left,
+                                              style: AppStyle
+                                                  .txtMontserratMedium15Bluegray800)),
+                                      Padding(
+                                          padding: getPadding(left: 25),
+                                          child: Text(estimation,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.left,
+                                              style: AppStyle
+                                                  .txtMontserratMedium15Bluegray800)),
+                                      CustomImageView(
+                                          svgPath: ImageConstant.imgStarGold,
+                                          height: getSize(12),
+                                          width: getSize(12),
+                                          margin: getMargin(
+                                              left: 3, top: 3, bottom: 3)),
+                                      CustomImageView(
+                                          svgPath: ImageConstant.imgArrowright,
+                                          height: getVerticalSize(11),
+                                          width: getHorizontalSize(6),
+                                          margin: getMargin(
+                                              left: 30, top: 5, bottom: 2))
+                                    ])),
+                          ),
+                          Visibility(
+                            visible: freeDates,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width - 150,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Свободные даты",
+                                        style: AppStyle.txtMontserratMedium12Black900,),
+                                      Padding(
+                                        padding: getPadding(top: 2),
+                                        child: SizedBox(
+                                          width: 128,
+                                          child: Text("1 3 7 12 14 15 16 17 18",
+                                            style: AppStyle.txtMontserratSemiBold15Blue600,
+                                            overflow: TextOverflow.ellipsis,),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  CustomImageView(
+                                      svgPath: ImageConstant.imgArrowright,
+                                      height: getVerticalSize(11),
+                                      width: getHorizontalSize(6),
+                                      margin: getMargin(top: 5, bottom: 2))
+                                ],
+                              ),
+                            ),
+                          )
+                        ]),
+                  )
+                ])),
+      ),
+    );
+  }
+}

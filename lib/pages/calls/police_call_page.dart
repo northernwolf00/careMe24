@@ -1,0 +1,177 @@
+import 'dart:async';
+
+import 'package:careme24/pages/calls/police_call_button.dart';
+import 'package:careme24/theme/app_style.dart';
+import 'package:careme24/theme/color_constant.dart';
+import 'package:careme24/utils/image_constant.dart';
+import 'package:careme24/utils/size_utils.dart';
+import 'package:careme24/widgets/app_bar/appbar_image.dart';
+import 'package:careme24/widgets/app_bar/appbar_title.dart';
+import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
+import 'package:careme24/widgets/custom_image_view.dart';
+import 'package:careme24/widgets/for_whom.dart';
+import 'package:careme24/widgets/paid_service_swither.dart';
+import 'package:careme24/widgets/reason_police.dart';
+import 'package:flutter/material.dart';
+
+class PoliceCallPage extends StatefulWidget {
+  const PoliceCallPage({super.key});
+
+  @override
+  State<PoliceCallPage> createState() => _PoliceCallPageState();
+}
+
+class _PoliceCallPageState extends State<PoliceCallPage> {
+
+  bool _show = false;
+  bool isSelectedSwitch = false;
+  
+  final List<String> reasonText = <String>[
+    "3.13. Мелкое хулиганство",
+    "3.11. Проведения демонстрации, митинга,пикетирования, шествия или собрания",
+    "3.11. Пропаганда либо публич. демонстрирование нацистской атрибутики",
+    "3.29. Возбуждение ненависти либо вражды",
+    "3.11. Кража",
+    "M1.5. Мешают спать по ночам или вызывают беспорядки в общественном месте",
+    "3.12. Повреждения имущества",
+    "3.28. Тепловой удар",
+    "3.12. Приступ астмы, проблемы с дыханием",
+    "C7",
+    "C8"
+  ];
+
+  final List<bool> reasonDisable = <bool>[
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+];
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  _startTimer(){
+    Timer(
+      const Duration(seconds: 3),
+      (){
+        setState(() {
+          _show = !_show;
+        });
+      }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor:  _show ? ColorConstant.gray100 : ColorConstant.bluePolice,
+      resizeToAvoidBottomInset: false,
+      appBar: _show 
+      ? CustomAppBar(
+          height: getVerticalSize(48),
+          leadingWidth: 43,
+          leading: AppbarImage(
+              height: getVerticalSize(16),
+              width: getHorizontalSize(11),
+              svgPath: ImageConstant.imgArrowleft,
+              margin: getMargin(left: 32, top: 12, bottom: 20),
+              onTap: () {
+                Navigator.pop(context);
+              }),
+          centerTitle: true,
+          title: AppbarTitle(text: "Вызов полиции"),
+          styleType: Style.bgFillBlue60001)
+      : null,
+      body: _show 
+      ? Container(
+          width: double.maxFinite,
+          padding: getPadding(left: 20, right: 20),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: getPadding(left: 1, top: 17),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ForWhom(name: 'Мне',),
+                      const PaySwitcher(),
+                    ]
+                  )
+                ),
+                Expanded(
+                  child: Container(
+                  padding: getPadding(top: 14),
+                  width: MediaQuery.of(context).size.width - 40,
+                  height: MediaQuery.of(context).size.height - 180,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(10)),
+                            color: Color.fromRGBO(178, 218, 255, 100),
+                          ),
+                          width: MediaQuery.of(context).size.width - 40,
+                          height: 80,
+                          child: Padding(
+                            padding: getPadding(left: 20, right: 20),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Причина вызова",
+                                  style: AppStyle.txtMontserratSemiBold19,
+                                ),
+                                CustomImageView(
+                                  svgPath: ImageConstant
+                                      .imgSettingsLightBlue900,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: ListView.separated(
+                              itemCount: reasonText.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ReasonPolice(
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => PoliceCallButton(text: reasonText[index],)));
+                                  },
+                                  text: reasonText[index],
+                                  disable: reasonDisable[index],
+                                  backgroundColor: Colors.white,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                              const Divider(indent: 0, height: 1),
+                            ))
+                      ]),
+                ),
+              )
+              ]))
+            : SizedBox(
+              child: CustomImageView(
+                svgPath: ImageConstant.imgPoliceScreen,
+                alignment:Alignment.center,
+              )
+            ),
+          );
+  }
+}
+
+ 

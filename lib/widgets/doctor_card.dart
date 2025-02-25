@@ -1,0 +1,314 @@
+import 'package:careme24/models/service_model.dart';
+import 'package:careme24/pages/med/appointment_to_doctor_screen.dart';
+import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
+import 'package:careme24/pages/services_call/doctor_call_page.dart';
+import 'package:careme24/router/app_router.dart';
+import 'package:careme24/utils/utils.dart';
+import 'package:careme24/widgets/review_dialog.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:flutter/material.dart';
+import '../theme/app_decoration.dart';
+import '../theme/app_style.dart';
+import '../widgets/custom_image_view.dart';
+
+class DoctorCard extends StatelessWidget {
+  final String cardId;
+  final String reason;
+  final ServiceModel serviceModel;
+  late String doctor_image;
+  late String doctor_name;
+  late String doctor_qualification;
+  late String cost;
+  late String meters;
+  late String minute;
+  late String estimation;
+  late String where_call;
+  final bool work;
+
+  bool bottomInfo = false;
+  bool leftColumnMeters = false;
+  bool leftColumnEstimation = false;
+  bool freeDates = false;
+
+  DoctorCard(
+      {super.key,
+      required this.cardId,
+      required this.reason,
+      required this.serviceModel,
+      required this.doctor_image,
+      required this.doctor_name,
+      required this.doctor_qualification,
+      required this.cost,
+      required this.meters,
+      required this.minute,
+      required this.estimation,
+      required this.where_call,
+      this.work = true});
+
+  void form_card() {
+    if (where_call == "Вызов врача") {
+      bottomInfo = true;
+    } else if (where_call == "Запись к врачу") {
+      leftColumnMeters = true;
+      leftColumnEstimation = true;
+      freeDates = true;
+    } else if (where_call == "Помощь онлайн") {
+      leftColumnEstimation = true;
+      freeDates = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    form_card();
+    return GestureDetector(
+      onTap: () {
+        if (work) {
+          if (where_call == "Запись к врачу" || where_call == "Помощь онлайн") {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AppointmentToDoctorScreen()));
+          } else {
+            if (reason == '') {
+              ElegantNotification.error(
+                      description: Text('Выберете причину вызова'))
+                  .show(context);
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DoctorCallScreen(
+                            reason: reason,
+                            serviceModel: serviceModel,
+                            cardId: cardId,
+                          )));
+            }
+          }
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => RecordFinalScreen()));
+        }
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: getMargin(bottom: 12),
+        elevation: 4,
+        clipBehavior: Clip.hardEdge,
+        child: Container(
+            width: MediaQuery.of(context).size.width - 40,
+            decoration:
+                BoxDecoration(borderRadius: BorderRadiusStyle.roundedBorder10),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CustomImageView(
+                  imagePath: doctor_image,
+                  //height: getVerticalSize(109),
+                  width: getHorizontalSize(77)),
+              Padding(
+                padding: getPadding(top: 8, left: 8, bottom: 8, right: 8),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 60,
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      child: Text(doctor_name,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle
+                                              .txtMontserratSemiBold15Blue600),
+                                    ),
+                                    Padding(
+                                        padding: getPadding(top: 4),
+                                        child: Text(doctor_qualification,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtMontserratMedium12)),
+                                  ]),
+                              Padding(
+                                  padding: getPadding(top: 1),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                        child: RichText(
+                                            text: TextSpan(
+                                              text: cost,
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color:
+                                                      ColorConstant.blueGray800,
+                                                  fontSize: getFontSize(16),
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            textAlign: TextAlign.left),
+                                      ),
+                                      Visibility(
+                                        visible: leftColumnMeters,
+                                        child: Text(meters,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtMontserratMedium15Bluegray800),
+                                      ),
+                                    ],
+                                  ))
+                            ]),
+                      ),
+                      Visibility(
+                        visible: bottomInfo,
+                        child: Padding(
+                            padding: getPadding(top: 12),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(meters,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: AppStyle
+                                          .txtMontserratMedium15Bluegray800),
+                                  Padding(
+                                      padding: getPadding(left: 26),
+                                      child: Text(minute,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle
+                                              .txtMontserratMedium15Bluegray800)),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, AppRouter.reviewList);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                              padding: getPadding(left: 25),
+                                              child: Text(estimation,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle
+                                                      .txtMontserratMedium15Bluegray800)),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 5),
+                                            child: CustomImageView(
+                                                svgPath:
+                                                    ImageConstant.imgStarGold,
+                                                height: getSize(12),
+                                                width: getSize(12),
+                                                margin: getMargin(
+                                                    left: 3,
+                                                    top: 3,
+                                                    bottom: 3)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  CustomImageView(
+                                      svgPath: ImageConstant.imgArrowright,
+                                      height: getVerticalSize(11),
+                                      width: getHorizontalSize(6),
+                                      margin: getMargin(
+                                          left: 30, top: 5, bottom: 2))
+                                ])),
+                      ),
+                      Visibility(
+                        visible: freeDates,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 150,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Свободные даты",
+                                    style:
+                                        AppStyle.txtMontserratMedium12Black900,
+                                  ),
+                                  Padding(
+                                    padding: getPadding(top: 2),
+                                    child: SizedBox(
+                                      width: 128,
+                                      child: Text(
+                                        "1 3 7 12 14 15 16 17 18",
+                                        style: AppStyle
+                                            .txtMontserratSemiBold15Blue600,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: leftColumnEstimation,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, AppRouter.reviewList);
+
+                                    // showDialog(
+                                    //   context: context,
+                                    //   builder: (context) =>
+                                    //       ReviewDialog(),
+                                    // );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Row(
+                                      children: [
+                                        Text(estimation,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtMontserratMedium15Bluegray800),
+                                        CustomImageView(
+                                            svgPath: ImageConstant.imgStarGold,
+                                            height: getSize(12),
+                                            width: getSize(12),
+                                            margin: getMargin(
+                                                left: 3, top: 3, bottom: 3)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              CustomImageView(
+                                  svgPath: ImageConstant.imgArrowright,
+                                  height: getVerticalSize(11),
+                                  width: getHorizontalSize(6),
+                                  margin: getMargin(top: 5, bottom: 2))
+                            ],
+                          ),
+                        ),
+                      )
+                    ]),
+              )
+            ])),
+      ),
+    );
+  }
+}
