@@ -4,6 +4,26 @@ abstract class ServiceState{}
 
 class ServiceLoading extends ServiceState{}
 
+
+class ServiceFavoriteLoadedPost extends ServiceState {
+  final Set<String> favoriteProductIds;
+
+   ServiceFavoriteLoadedPost(this.favoriteProductIds);
+
+  @override
+  List<Object> get props => [favoriteProductIds];
+}
+
+
+class ServiceFavoriteLoadedDelet extends ServiceState {
+  final Set<String> favoriteProductIds;
+
+   ServiceFavoriteLoadedDelet(this.favoriteProductIds);
+
+  @override
+  List<Object> get props => [favoriteProductIds];
+}
+
 class ServiceLoaded extends ServiceState{
   final List<ServiceModel> serviceList;
   final String medCardId;

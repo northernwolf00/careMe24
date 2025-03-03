@@ -18,8 +18,7 @@ import '../../widgets/paid_service_swither.dart';
 class SelectDoctorScreen extends StatefulWidget {
   final String appbartitle;
 
-  const SelectDoctorScreen(
-    this.appbartitle, {super.key});
+  const SelectDoctorScreen(this.appbartitle, {super.key});
 
   @override
   State<SelectDoctorScreen> createState() => _SelectDoctorScreenState();
@@ -284,257 +283,285 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                 ],
                 styleType: Style.bgFillBlue60001),
             body: BlocBuilder<ServiceCubit, ServiceState>(
-              builder: (context, state){
+              builder: (context, state) {
                 if (state is ServiceLoaded) {
                   return SizedBox(
-                    width: size.width,
-                    child: SingleChildScrollView(
-                        padding: getPadding(top: 20),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                  padding: getPadding(left: 2),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        ForWhom(
-                                          name: 'Мне',
-                                        ),
-                                        const PaySwitcher(),
-                                      ])),
-                              GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SelectReasonScreen(
-                                                  type: 'med'))).then((reason) {
-                                    setState(() {
-                                      selectedReason = reason;
-                                    });
-                                  });
-                                },
-                                child: Padding(
-                                  padding: getPadding(top: 14),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: const Color.fromRGBO(
-                                          178, 218, 255, 100),
-                                    ),
-                                    width:
-                                        MediaQuery.of(context).size.width - 40,
-                                    height: 80,
-                                    child: Padding(
-                                      padding: getPadding(left: 20, right: 20),
-                                      child: Row(
+                      width: size.width,
+                      child: SingleChildScrollView(
+                          padding: getPadding(top: 20),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                    padding: getPadding(left: 2),
+                                    child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2,
-                                            child: Text(
-                                                selectedReason ?? 'Проблема',
-                                                style: AppStyle
-                                                    .txtMontserratSemiBold19,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
+                                          ForWhom(
+                                            name: 'Мне',
                                           ),
-                                          CustomImageView(
-                                            svgPath: ImageConstant
-                                                .imgArrowdownLightBlue900,
-                                          )
-                                        ],
+                                          const PaySwitcher(),
+                                        ])),
+                                GestureDetector(
+                                  onTap: () async {
+                                    Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SelectReasonScreen(
+                                                        type: 'med')))
+                                        .then((reason) {
+                                      setState(() {
+                                        selectedReason = reason;
+                                      });
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: getPadding(top: 14),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color.fromRGBO(
+                                            178, 218, 255, 100),
+                                      ),
+                                      width: MediaQuery.of(context).size.width -
+                                          40,
+                                      height: 80,
+                                      child: Padding(
+                                        padding:
+                                            getPadding(left: 20, right: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2,
+                                              child: Text(
+                                                  selectedReason ?? 'Проблема',
+                                                  style: AppStyle
+                                                      .txtMontserratSemiBold19,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                            ),
+                                            CustomImageView(
+                                              svgPath: ImageConstant
+                                                  .imgArrowdownLightBlue900,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: getPadding(top: 18),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            _finish = false;
-                                            _undo = false;
-                                            _wait = true;
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                              width: getHorizontalSize(109),
-                                              padding: getPadding(
-                                                  left: 9,
-                                                  top: 10,
-                                                  right: 9,
-                                                  bottom: 10),
-                                              decoration: _wait
-                                                  ? AppDecoration
-                                                      .txtFillBlue30001
-                                                      .copyWith(
-                                                          borderRadius:
-                                                              BorderRadiusStyle
-                                                                  .txtCustomBorderTL10)
-                                                  : BoxDecoration(
-                                                      border: Border(
-                                                        bottom: BorderSide(
-                                                            color: ColorConstant
-                                                                .gray50002,
-                                                            width: 1),
-                                                      ),
-                                                    ),
-                                              child: Text("Путь",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.center,
-                                                  style: _wait
-                                                      ? AppStyle
-                                                          .txtMontserratSemiBold15
-                                                      : TextStyle(
-                                                          color: ColorConstant
-                                                              .black900,
-                                                          fontSize: getFontSize(
-                                                            15,
-                                                          ),
-                                                          fontFamily:
-                                                              'Montserrat',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        )))),
-                                      GestureDetector(
-                                          onTap: () {
-                                            _finish = true;
-                                            _undo = false;
-                                            _wait = false;
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                              width: getHorizontalSize(109),
-                                              padding: getPadding(
-                                                  left: 9,
-                                                  top: 10,
-                                                  right: 9,
-                                                  bottom: 10),
-                                              // decoration:  AppDecoration.outlineGray50001,
-                                              decoration: _finish
-                                                  ? AppDecoration
-                                                      .txtFillBlue30001
-                                                      .copyWith(
-                                                          borderRadius:
-                                                              BorderRadiusStyle
-                                                                  .txtCustomBorderTL10)
-                                                  : BoxDecoration(
-                                                      border: Border(
-                                                        bottom: BorderSide(
-                                                            color: ColorConstant
-                                                                .gray50002,
-                                                            width: 1),
-                                                      ),
-                                                    ),
-                                              child: Text("Оценка",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.center,
-                                                  style: _finish
-                                                      ? AppStyle
-                                                          .txtMontserratSemiBold15
-                                                      : TextStyle(
-                                                          color: ColorConstant
-                                                              .black900,
-                                                          fontSize: getFontSize(
-                                                            15,
-                                                          ),
-                                                          fontFamily:
-                                                              'Montserrat',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        )))),
-                                      GestureDetector(
-                                          onTap: () {
-                                            _finish = false;
-                                            _undo = true;
-                                            _wait = false;
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                              decoration: _undo
-                                                  ? AppDecoration
-                                                      .txtFillBlue30001
-                                                      .copyWith(
-                                                          borderRadius:
-                                                              BorderRadiusStyle
-                                                                  .txtCustomBorderTL10)
-                                                  : BoxDecoration(
-                                                      border: Border(
-                                                        bottom: BorderSide(
-                                                            color: ColorConstant
-                                                                .gray50002,
-                                                            width: 1),
-                                                      ),
-                                                    ),
-                                              width: getHorizontalSize(109),
-                                              padding: getPadding(
-                                                  left: 9,
-                                                  top: 10,
-                                                  right: 9,
-                                                  bottom: 10),
-                                              child: Text("Стоимость",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.center,
-                                                  style: _undo
-                                                      ? AppStyle
-                                                          .txtMontserratSemiBold15
-                                                      : TextStyle(
-                                                          color: ColorConstant
-                                                              .black900,
-                                                          fontSize: getFontSize(
-                                                            15,
-                                                          ),
-                                                          fontFamily:
-                                                              'Montserrat',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        )))),
-                                    ]),
-                              ),
-                              Padding(
-                                  padding: getPadding(left: 2, top: 18),
-                                  child: Column(
+                                Padding(
+                                  padding: getPadding(top: 18),
+                                  child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.center,
                                       children: [
-                                        ...List.generate(state.serviceList.length, (index){
-                                          final item = state.serviceList[index];
-                                          return DoctorCard(
-                                            cardId: state.medCardId,
-                                            reason: selectedReason ?? '',
-                                            serviceModel: item,
-                                            doctor_image: ImageConstant.doctorImage,
-                                            doctor_name: item.name,
-                                            doctor_qualification: item.type,
-                                            cost: "${item.price} ₽",
-                                            meters: "1200 м",
-                                            minute: "9 мин",
-                                            estimation: "4.8",
-                                            where_call: widget.appbartitle,
-                                          );
-                                        }),
-                                      ]))
-                            ])));
+                                        GestureDetector(
+                                            onTap: () {
+                                              _finish = false;
+                                              _undo = false;
+                                              _wait = true;
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                                width: getHorizontalSize(109),
+                                                padding: getPadding(
+                                                    left: 9,
+                                                    top: 10,
+                                                    right: 9,
+                                                    bottom: 10),
+                                                decoration: _wait
+                                                    ? AppDecoration
+                                                        .txtFillBlue30001
+                                                        .copyWith(
+                                                            borderRadius:
+                                                                BorderRadiusStyle
+                                                                    .txtCustomBorderTL10)
+                                                    : BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                              color:
+                                                                  ColorConstant
+                                                                      .gray50002,
+                                                              width: 1),
+                                                        ),
+                                                      ),
+                                                child: Text("Путь",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: _wait
+                                                        ? AppStyle
+                                                            .txtMontserratSemiBold15
+                                                        : TextStyle(
+                                                            color: ColorConstant
+                                                                .black900,
+                                                            fontSize:
+                                                                getFontSize(
+                                                              15,
+                                                            ),
+                                                            fontFamily:
+                                                                'Montserrat',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          )))),
+                                        GestureDetector(
+                                            onTap: () {
+                                              _finish = true;
+                                              _undo = false;
+                                              _wait = false;
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                                width: getHorizontalSize(109),
+                                                padding: getPadding(
+                                                    left: 9,
+                                                    top: 10,
+                                                    right: 9,
+                                                    bottom: 10),
+                                                // decoration:  AppDecoration.outlineGray50001,
+                                                decoration: _finish
+                                                    ? AppDecoration
+                                                        .txtFillBlue30001
+                                                        .copyWith(
+                                                            borderRadius:
+                                                                BorderRadiusStyle
+                                                                    .txtCustomBorderTL10)
+                                                    : BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                              color:
+                                                                  ColorConstant
+                                                                      .gray50002,
+                                                              width: 1),
+                                                        ),
+                                                      ),
+                                                child: Text("Оценка",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: _finish
+                                                        ? AppStyle
+                                                            .txtMontserratSemiBold15
+                                                        : TextStyle(
+                                                            color: ColorConstant
+                                                                .black900,
+                                                            fontSize:
+                                                                getFontSize(
+                                                              15,
+                                                            ),
+                                                            fontFamily:
+                                                                'Montserrat',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          )))),
+                                        GestureDetector(
+                                            onTap: () {
+                                              _finish = false;
+                                              _undo = true;
+                                              _wait = false;
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                                decoration: _undo
+                                                    ? AppDecoration
+                                                        .txtFillBlue30001
+                                                        .copyWith(
+                                                            borderRadius:
+                                                                BorderRadiusStyle
+                                                                    .txtCustomBorderTL10)
+                                                    : BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                              color:
+                                                                  ColorConstant
+                                                                      .gray50002,
+                                                              width: 1),
+                                                        ),
+                                                      ),
+                                                width: getHorizontalSize(109),
+                                                padding: getPadding(
+                                                    left: 9,
+                                                    top: 10,
+                                                    right: 9,
+                                                    bottom: 10),
+                                                child: Text("Стоимость",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: _undo
+                                                        ? AppStyle
+                                                            .txtMontserratSemiBold15
+                                                        : TextStyle(
+                                                            color: ColorConstant
+                                                                .black900,
+                                                            fontSize:
+                                                                getFontSize(
+                                                              15,
+                                                            ),
+                                                            fontFamily:
+                                                                'Montserrat',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          )))),
+                                      ]),
+                                ),
+                                Padding(
+                                    padding: getPadding(left: 2, top: 18),
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          ...List.generate(
+                                              state.serviceList.length,
+                                              (index) {
+                                            final item =
+                                                state.serviceList[index];
+                                            return DoctorCard(
+                                              id: item.id,
+                                              cardId: state.medCardId,
+                                              verified: state
+                                                  .serviceList[index].verified,
+                                              reason: selectedReason ?? '',
+                                              serviceModel: item,
+                                              doctor_image: state
+                                                  .serviceList[index].photo,
+                                              doctor_name: item.name,
+                                              doctor_qualification: item.type,
+                                              cost: "${item.price} ₽",
+                                              meters: "1200 м",
+                                              minute: "9 мин",
+                                              estimation: "4.8",
+                                              where_call: widget.appbartitle,
+                                              isFavorite: item.isFavourite,
+                                              averageRating: item.averageRating,
+                                              onFavoritePressed: () {
+                                                if (item.isFavourite == false) {
+                                                 context
+                                                      .read<ServiceCubit>()
+                                                      .postFavorites(item.id);
+                                                } else {
+                                                   context
+                                                      .read<ServiceCubit>()
+                                                      .deletFavorites(item.id);
+                                                  
+                                                }
+                                              },
+                                            );
+                                          }),
+                                        ]))
+                              ])));
                 } else {
                   return Center(child: CircularProgressIndicator.adaptive());
                 }
               },
-            )
-          )
-        );
+            )));
   }
 }

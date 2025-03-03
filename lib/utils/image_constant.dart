@@ -11,6 +11,7 @@ class ImageConstant {
   static String imgCheckMark = 'assets/images/check_mark.svg';
   static String phone = 'assets/images/phone.svg';
   static String whatsapp = 'assets/images/whatsapp.svg';
+  static String heart_fav = 'assets/icons/heart_fav.svg';
 
   static String imgGroup7371 = 'assets/images/img_group7371.svg';
 

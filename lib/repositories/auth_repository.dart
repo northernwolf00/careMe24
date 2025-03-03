@@ -20,13 +20,13 @@ class AuthRepository {
 
 
 
- static Future<CodeSendResetResult> resetPhone()async{
-    final CodeSendResetResult response = await Api.resetPhoneResponse();
+ static Future<dynamic> resetPhone()async{
+    final  response = await Api.resetPhoneResponse();
     return response;
   }
 
-   static Future<CodeSendResetResult> resetEmail()async{
-    final CodeSendResetResult response = await Api.resetEmailResponse();
+   static Future<dynamic> resetEmail()async{
+    final  response = await Api.resetEmailResponse();
     return response;
   }
 

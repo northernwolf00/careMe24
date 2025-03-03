@@ -5,6 +5,7 @@ import 'package:careme24/blocs/institution/institution_cubit.dart';
 import 'package:careme24/blocs/request/request_cubit.dart';
 import 'package:careme24/blocs/search/cubit/search_cubit.dart';
 import 'package:careme24/blocs/service/service_cubit.dart';
+import 'package:careme24/pages/doctors/favorites_cubit.dart';
 import 'package:careme24/pages/wallet/wallet_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,47 +21,25 @@ class AppBloc {
   static final requestCubit = RequestCubit();
   static final institutionCubit = InstitutionCubit();
   static final serviceCubit = ServiceCubit();
+  static final favoritesCubit = FavoriteCubit();
 
   static final List<BlocProvider> providers = [
-    BlocProvider<ApplicationCubit>(
-      create: (context) => applicationCubit
-    ),
-    BlocProvider<AuthCubit>(
-      create: (context) => authCubit
-    ),
-    BlocProvider<MedCardCubit>(
-      create: (context) => medCardCubit
-    ),
-    BlocProvider<ContactsCubit>(
-      create: (context) => contactsCubit
-    ),
-    BlocProvider<SearchCubit>(
-      create: (context) => searchCubit
-    ),
-    BlocProvider<SearchCubit>(
-      create: (context) => searchCubit
-    ),
-    BlocProvider<DangerousCubit>(
-      create: (context) => dangerousCubit
-    ),
-    BlocProvider<DrawerCubit>(
-      create: (context) => drawerCubit
-    ),
-    BlocProvider<ChangeBalanceCubit>(
-      create: (context) => balanceCubit
-    ),
-    BlocProvider<RequestCubit>(
-      create: (context) => requestCubit
-    ),
-    BlocProvider<InstitutionCubit>(
-      create: (context) => institutionCubit
-    ),
-    BlocProvider<ServiceCubit>(
-      create: (context) => serviceCubit
-    ),
+    BlocProvider<ApplicationCubit>(create: (context) => applicationCubit),
+    BlocProvider<AuthCubit>(create: (context) => authCubit),
+    BlocProvider<MedCardCubit>(create: (context) => medCardCubit),
+    BlocProvider<ContactsCubit>(create: (context) => contactsCubit),
+    BlocProvider<SearchCubit>(create: (context) => searchCubit),
+    BlocProvider<SearchCubit>(create: (context) => searchCubit),
+    BlocProvider<DangerousCubit>(create: (context) => dangerousCubit),
+    BlocProvider<DrawerCubit>(create: (context) => drawerCubit),
+    BlocProvider<ChangeBalanceCubit>(create: (context) => balanceCubit),
+    BlocProvider<RequestCubit>(create: (context) => requestCubit),
+    BlocProvider<InstitutionCubit>(create: (context) => institutionCubit),
+    BlocProvider<ServiceCubit>(create: (context) => serviceCubit),
+    BlocProvider<FavoriteCubit>(create: (context) => favoritesCubit),
   ];
 
-  static void dispose(){
+  static void dispose() {
     applicationCubit.close();
     authCubit.close();
     medCardCubit.close();
@@ -79,7 +58,7 @@ class AppBloc {
 
   static final AppBloc _instance = AppBloc._internal();
 
-  factory AppBloc(){
+  factory AppBloc() {
     return _instance;
   }
 }

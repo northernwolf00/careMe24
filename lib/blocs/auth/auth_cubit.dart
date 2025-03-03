@@ -126,41 +126,35 @@ Future<CodeSendResetResult> resetPassoword(String data,) async {
 }
 
 
-Future<CodeSendResetResult> resetEmailOrPhone(String data,) async {
+Future<void> resetEmailOrPhone(String data) async {
   isEmail = data.contains('@');
   
-  final requestData = {
-    if (isEmail)
-      "email": data
-    else
-      "phone": data,
-  };
+  emit(AuthResetLoadingState());
 
   try {
-    CodeSendResetResult response;
+    Map<String, dynamic> response =
+        isEmail ? await AuthRepository.resetEmail() : await AuthRepository.resetPhone();
 
-    if (isEmail){
-     response = await AuthRepository.resetEmail();
-    }else{
-     response = await AuthRepository.resetPhone();
-    }
-    if (response.isSuccess) {
-      log('Login successful');
+    if (response["status"] == 'success') {
+      log('Reset successful');
+      
       if (!isEmail) {
         phone = int.parse(data.replaceAll("+", ""));
-      }else{
+      } else {
         email = data;
       }
-      emit(AuthCodeResetState(data: response));
-      return response;
+
+      emit(AuthResetSuccessState(data: response["status"]));
     } else {
-      log('resetEmailOrPhone failed');
+      emit(AuthResetFailureState(error: response["message"] ?? "Reset failed"));
     }
   } catch (e) {
-    log('Login error: $e');
+    log('Reset error: $e');
+    emit(AuthResetFailureState(error: e.toString()));
   }
-  return CodeSendResetResult(status: '', isSuccess: false);
 }
+
+
 
 Future<VerifiedResetPasswordModel> verifyResetPassword(String code, String passwordNew)async{
     log('$phone');

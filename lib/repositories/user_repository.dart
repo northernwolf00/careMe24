@@ -7,9 +7,15 @@ class UserRepository {
     final response = Api.loadMyInfo();
     return response;
   }
-
-  static Future<dynamic> changeBalanceRepository(Map<String, dynamic> data) async {
+static Future<dynamic> changeBalanceRepository(Map<String, dynamic> data) async {
   return await Api.changeBalance(data);
 }
+
+static Future<dynamic> deletAccountRepository() async {
+  return await Api.deletAccount();
+}
+
+
+
 
 }

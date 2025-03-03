@@ -5,6 +5,7 @@ import 'package:careme24/models/dangerous_models/air_pollution_model.dart';
 import 'package:careme24/models/dangerous_models/pressure_wind_model.dart';
 import 'package:careme24/models/dangerous_models/weather_forecast_model.dart';
 import 'package:careme24/pages/contact_help_info.dart';
+import 'package:careme24/pages/notifications/notifications_screen.dart';
 import 'package:careme24/router/app_router.dart';
 import 'package:careme24/theme/app_decoration.dart';
 import 'package:careme24/theme/app_style.dart';
@@ -72,7 +73,7 @@ class _HomeScreenState extends State<MainPage> {
           const SizedBox(width: 20),
           GestureDetector(
             onTap: (){
-              
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NotificationsScreen()));
             },
             child: Image.asset('assets/images/notification.png')),
         ]),

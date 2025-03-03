@@ -103,7 +103,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => ReviewDialog(),
+                        builder: (context) => ReviewDialog(id: '',),
                       );
                     },
                   ),

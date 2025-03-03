@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:careme24/blocs/drawer/drawer_cubit.dart';
+import 'package:careme24/blocs/drawer/drawer_state.dart';
 import 'package:careme24/pages/medical_bag/medical_bag_page.dart';
 import 'package:careme24/pages/medical_bag/widgets/custom_gradient_button.dart';
 import 'package:careme24/router/app_router.dart';
@@ -7,10 +11,37 @@ import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+
+  String lat = '';
+  String long = '';
+
+
+  @override
+  void initState() {
+    super.initState();
+    _determinePosition();
+  }
+
+   Future<void> _determinePosition() async { 
+  Position location = await Geolocator.getCurrentPosition();
+  setState(() {
+    lat = location.latitude.toString();
+    long = location.longitude.toString();
+  });
+}
+
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,122 +64,129 @@ class SettingsPage extends StatelessWidget {
         actions: const [],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SectionTitle(title: ' МОЙ АККАУНТ'),
-              GestureDetector(
-                onTap: () {},
-                child: const Card(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          radius: 26,
-                          backgroundImage:
-                              AssetImage('assets/images/profil.png'),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Пономаренко Ольга',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '+7-952-943-43-88',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.grey,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              const SectionTitle(title: 'МОЯ ГЕОЛОКАЦИЯ'),
-              const SizedBox(height: 8),
-              AddButtonSettings(
-                title: '[55.8993207485928,37.460044660156264]',
-                onTap: () {
-                  //       Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "")),
-                  // );
-                  // Handle "Добавить запрос" button
-                },
-              ),
-              const SizedBox(height: 15),
-              AddButtonSettings(
-                title: 'Удалить аккаунт',
-                onTap: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AddMedicineDialogSettings();
-                    },
-                  );
-                  //       Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "title")),
-                  // );
-                  // Handle "Добавить" button
-                },
-              ),
-              Spacer(),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: BlocBuilder<DrawerCubit, DrawerState>(builder: (context, state) {
+          if (state is DrawerStateLoaded) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRouter.resetEmailPhone);
-                      },
-                      child: Text(
-                        'Изменить email или номер телефона',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium!.merge(
-                              TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(context).primaryColor,
+                  const SectionTitle(title: ' МОЙ АККАУНТ'),
+                  GestureDetector(
+                    onTap: () {},
+                    child:  Card(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              radius: 26,
+                              backgroundImage: state.userInfo.personalInfo.avatar.isNotEmpty
+                                  ? NetworkImage(state.userInfo.personalInfo.avatar,scale: 1):
+                                  const AssetImage('assets/images/profil.png',),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state.userInfo.personalInfo.full_name,
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    state.userInfo.phone.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 24),
+                  const SectionTitle(title: 'МОЯ ГЕОЛОКАЦИЯ'),
+                  const SizedBox(height: 8),
+                  AddButtonSettings(
+                    title: '[$lat, $long]',
+                    onTap: () {
+                      //       Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "")),
+                      // );
+                      // Handle "Добавить запрос" button
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  AddButtonSettings(
+                    title: 'Удалить аккаунт',
+                    onTap: () {
+                      showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddMedicineDialogSettings();
+                        },
+                      );
+                      //       Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "title")),
+                      // );
+                      // Handle "Добавить" button
+                    },
+                  ),
+                  Spacer(),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRouter.resetEmailPhone);
+                          },
+                          child: Text(
+                            'Изменить email или номер телефона',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium!.merge(
+                                  TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ),
+              ),
+            );
+          } 
+            return Container();
+          }
+        )
       ),
     );
   }

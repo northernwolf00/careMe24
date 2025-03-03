@@ -34,15 +34,15 @@ class _ResetEmailPhonePageState extends State<ResetEmailPhonePage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is AuthCodeResetState) {
+          if (state is AuthResetSuccessState) {
             log('do');
-            state.data.isSuccess
-                ? Navigator.of(context).push(MaterialPageRoute(
+             
+                Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => VerifyCodeResetMailPage(
                           phone: _controller_phone.text,
                           email: _controller.text,
-                        )))
-                : null;
+                        )));
+              
           }
         },
         child: Scaffold(
@@ -192,42 +192,57 @@ class _ResetEmailPhonePageState extends State<ResetEmailPhonePage> {
                         ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.only(top: 62.0),
-                          child: GestureDetector(
-                            onTap: () async {
+  padding: const EdgeInsets.only(top: 62.0),
+  child: GestureDetector(
+    onTap: () async {
+      // Construct the phone number with the country code
+      String phoneNumber = '$countryCode ${_controller_phone.text}'.replaceAll(" ", "");
+      
+      // Check if both fields are empty and show an error
+      if (_controller.text.isEmpty && _controller_phone.text.isEmpty) {
+        ElegantNotification.error(
+          description: Text('Введите Email или номер телефона')).show(context);
+        return;
+      }
 
-                               String phoneNumber = '$countryCode ${_controller_phone.text}'.replaceAll(" ", "");
-                               if(_controller.text.isNotEmpty && _controller_phone.text.isNotEmpty){
-                                  ElegantNotification.error(description: Text('Неверные данные')).show(context);
-                               }
+      // Proceed to reset email or phone
+      dynamic response;
 
-                               if(_controller.text.isNotEmpty){
-                                 final response  = await AppBloc.authCubit.resetEmailOrPhone(_controller.text.trim(),);
-                               }else{
-                                 final response  = await AppBloc.authCubit.resetEmailOrPhone(phoneNumber,);
-                               }
-                               
-                              final response  = await AppBloc.authCubit.resetEmailOrPhone(_controller.text.trim(),);
-                              if (!response.isSuccess) {
-                                ElegantNotification.error(description: Text('Неверные данные')).show(context);
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  gradient: const LinearGradient(colors: [
-                                    Color.fromRGBO(65, 73, 255, 1),
-                                    Color.fromRGBO(41, 142, 235, 1),
-                                  ])),
-                              child: Center(
-                                child: Text(
-                                  'Продолжить',
-                                  style: AppStyle.txtMontserratf18w600,
-                                ),
-                              ),
-                            ),
-                          )),
+      if (_controller.text.isNotEmpty) {
+        // If email is entered
+        context.read<AuthCubit>().resetEmailOrPhone(_controller.text.trim());
+      } else {
+        // If phone number is entered
+         context.read<AuthCubit>().resetEmailOrPhone(phoneNumber);
+      }
+
+      // Handle the response (you can replace the code below based on your requirements)
+      if (response != null && response['status'] == 'success') {
+        // Handle successful response here
+      } else {
+        ElegantNotification.error(
+          description: Text('Неверные данные')).show(context);
+      }
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(colors: [
+          Color.fromRGBO(65, 73, 255, 1),
+          Color.fromRGBO(41, 142, 235, 1),
+        ]),
+      ),
+      child: Center(
+        child: Text(
+          'Продолжить',
+          style: AppStyle.txtMontserratf18w600,
+        ),
+      ),
+    ),
+  ),
+),
+
                       SizedBox(height: MediaQuery.of(context).size.height /10),
                       TextButton(
                         onPressed: () {

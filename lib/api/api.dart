@@ -6,6 +6,7 @@ import 'package:careme24/models/contacts/contacts_model.dart';
 import 'package:careme24/models/danger_model.dart';
 import 'package:careme24/models/dangerous_models/air_pollution_model.dart';
 import 'package:careme24/models/dangerous_models/pressure_wind_model.dart';
+import 'package:careme24/models/favorite_model.dart';
 import 'package:careme24/models/institution_model.dart';
 import 'package:careme24/models/medcard/medcard_id_model.dart';
 import 'package:careme24/models/medcard/medcard_model.dart';
@@ -41,6 +42,7 @@ class Api {
   static const String getMyInfo = '/api/users/me';
   static const String getIcons = '/api/users/get_danger_icons';
   static const String getAllIcons = '/api/users/get_all_danger_icons';
+  static const String delet_account = '/api/users/delete_account';
 
   // contacts
   static const String contactDelete = '/api/contacts';
@@ -73,10 +75,22 @@ class Api {
   static const String getPressure = '/forecast';
 
   //Requests
-  static const String requests = '/api/requests';
+  static const String requests = '/api/services';
 
   //Wallet
   static const String change_balance = '/api/users/change_balance';
+
+  //favorites
+  static const String favorites_services = '/api/favorites/service';
+  static const String favorites = '/api/favorites/';
+
+  //reviews
+  static const String add_review = '/api/reviews/create_review';
+  static const String add_review_service = '/api/reviews/create_service_review';
+  static const String reviewes_service = '/api/reviews/service/';
+  static const String reviews = '/api/reviews/';
+  static const String average_rating =
+      'api/reviews/service/';
 
 //http://v2290783.hosted-by-vdsina.ru/api/users/change_balance?balance=100
 
@@ -105,39 +119,37 @@ class Api {
     }
   }
 
-  static Future<CodeSendResetResult> resetPhoneResponse() async {
+  static Future<Map<String, dynamic>> resetPhoneResponse() async {
     // log('$data');
     try {
       // log('$data');
-      var result = await httpManager.post(
-        resetPhone,
-      );
+      var result = await httpManager.post(resetPhone);
       log('$result');
-      return CodeSendResetResult.fromJson(result);
+      return result;
     } catch (e) {
       log('Register error: $e');
-      return CodeSendResetResult(
-        status: 'error',
-        isSuccess: false,
-      );
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
     }
   }
 
-  static Future<CodeSendResetResult> resetEmailResponse() async {
+  static Future<Map<String, dynamic>> resetEmailResponse() async {
     // log('$data');
     try {
       // log('$data');
-      var result = await httpManager.post(
-        resetEmail,
-      );
+      var result = await httpManager.post(resetEmail);
       log('$result');
-      return CodeSendResetResult.fromJson(result);
+      return result;
     } catch (e) {
       log('Register error: $e');
-      return CodeSendResetResult(
-        status: 'error',
-        isSuccess: false,
-      );
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
     }
   }
 
@@ -407,34 +419,49 @@ class Api {
           medCardID: '',
           phone: 0,
           personalInfo: PersonalInfo(
-              avatar: '',
-              full_name: '',
-              phone: 0,
-              dob: '',
-              address: '',
-              temporaryAddress: '',
-              passport: Passport(
-                  serial: 0, number: 0, place: '', date: '', photos: []),
-              ),balance: 0);
+            avatar: '',
+            full_name: '',
+            phone: 0,
+            dob: '',
+            address: '',
+            temporaryAddress: '',
+            passport:
+                Passport(serial: 0, number: 0, place: '', date: '', photos: []),
+          ),
+          balance: 0);
     }
   }
 
-
-
-  static Future<CodeSendResetResult> changeBalance(
+  static Future<Map<String, dynamic>> changeBalance(
       Map<String, dynamic> data) async {
     log('$data');
     try {
       log('$data');
-      var result = await httpManager.post(change_balance, data: data);
+      var result = await httpManager.post(change_balance, params: data);
       log('$result');
-      return CodeSendResetResult.fromJson(result);
+      return result;
     } catch (e) {
-      log('Register error: $e');
-      return CodeSendResetResult(
-        status: 'error',
-        isSuccess: false,
-      );
+      log('Change balance error: $e');
+      return {
+        "status": "error",
+        "isSuccess": false,
+        "message": "Request failed"
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> deletAccount() async {
+    try {
+      var result = await httpManager.post(delet_account);
+      log('$result');
+      return result;
+    } catch (e) {
+      log(' error: $e');
+      return {
+        "status": "error",
+        "isSuccess": false,
+        "message": "Request failed"
+      };
     }
   }
 
@@ -709,7 +736,7 @@ class Api {
       log('$result');
       return PressureAndWindData.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error WindData: $e');
       return PressureAndWindData(
           haveData: false,
           currentPressure: 0,
@@ -732,7 +759,7 @@ class Api {
       log('$result');
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error RequestStatusModel: $e');
       return RequestStatusModel(
           status: 'error', detail: 'error', isSuccess: false, requestId: '');
     }
@@ -745,7 +772,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error deleteRequest: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -760,7 +787,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error updateRequest: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -775,7 +802,7 @@ class Api {
       }
       return requestsList;
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error getContactsRequests: $e');
       return [];
     }
   }
@@ -786,7 +813,7 @@ class Api {
           params: params);
       log('get req $result');
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error seenContactRequest: $e');
     }
   }
 
@@ -796,7 +823,7 @@ class Api {
           params: params);
       log('get req $result');
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error seenContactRequest112: $e');
     }
   }
 
@@ -810,7 +837,7 @@ class Api {
       log('$result');
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error createRequest112: $e');
       return RequestStatusModel(
           status: 'error', detail: 'error', isSuccess: false, requestId: '');
     }
@@ -825,7 +852,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error deleteRequest112: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -840,7 +867,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error updateRequest112: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -854,7 +881,7 @@ class Api {
       }
       return requestsList;
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error getContactsRequests112: $e');
       return [];
     }
   }
@@ -871,7 +898,7 @@ class Api {
       }
       return serviceList;
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error getServices: $e');
       return [];
     }
   }
@@ -924,7 +951,7 @@ class Api {
       }
       return institutionList;
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error getInstitutions: $e');
       return [];
     }
   }
@@ -938,7 +965,7 @@ class Api {
       log('log $result');
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error createCall: $e');
       return RequestStatusModel(
           status: '', detail: '', isSuccess: false, requestId: '');
     }
@@ -952,7 +979,7 @@ class Api {
           data: FormData.fromMap(data));
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error createStatement: $e');
       return RequestStatusModel(
           status: '', detail: '', isSuccess: false, requestId: '');
     }
@@ -965,9 +992,122 @@ class Api {
           data: FormData.fromMap(data));
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error: $e');
+      log('Pressure load error createAppointment: $e');
       return RequestStatusModel(
           status: '', detail: '', isSuccess: false, requestId: '');
+    }
+  }
+
+  static Future<List<ServiceModel2>> getFavorites() async {
+    List<ServiceModel2> serviceList = [];
+    try {
+      var result = await httpManager.get(favorites);
+      log('log favg $result');
+      for (var service in result) {
+        serviceList.add(ServiceModel2.fromJson(service));
+      }
+      return serviceList;
+    } catch (e) {
+      log('Pressure load error getFavorites: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postFavorites(String id) async {
+    try {
+      var result = await httpManager.post('$favorites/$id');
+      log('result favp $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postFavorites: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      ;
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteFavorite(String id) async {
+    try {
+      final result = await httpManager.delete('/api/favorites/$id',);
+      log('Result from deleteFavorite API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteFavorite API: $e');
+      throw Exception("Failed to delete favorite"+e.toString());
+    }
+  }
+
+
+
+static Future<List<ServiceModel2>> getAverageRating(String id) async {
+    List<ServiceModel2> serviceList = [];
+    try {
+      var result = await httpManager.get('$average_rating/$id/average_rating');
+      log('log favg $result');
+      for (var service in result) {
+        serviceList.add(ServiceModel2.fromJson(service));
+      }
+      return serviceList;
+    } catch (e) {
+      log('Pressure load error getFavorites: $e');
+      return [];
+    }
+  }
+
+  static Future<List<ServiceModel2>> getReviews(String id) async {
+    List<ServiceModel2> serviceList = [];
+    try {
+      var result = await httpManager.get('$reviews/$id');
+      log('log favg $result');
+      for (var service in result) {
+        serviceList.add(ServiceModel2.fromJson(service));
+      }
+      return serviceList;
+    } catch (e) {
+      log('Pressure load error getFavorites: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postReviews(Map<String, dynamic> data) async {
+    try {
+      var result = await httpManager.post(reviews, data: data);
+      log('result favp $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postFavorites: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      ;
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteReviews(String id) async {
+    try {
+      final result = await httpManager.delete('$reviews/$id',);
+      log('Result from deleteFavorite API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteFavorite API: $e');
+      throw Exception("Failed to delete favorite"+e.toString());
     }
   }
 }

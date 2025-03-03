@@ -12,6 +12,15 @@ class DrawerCubit extends Cubit<DrawerState> {
     emit(DrawerStateLoaded(
       userInfo: userInfo
     ));
+
+   Future<void> deletAccount()async{
+
+    final delete = await UserRepository.deletAccountRepository();
+
+   } 
+
+
+
   }
 
   

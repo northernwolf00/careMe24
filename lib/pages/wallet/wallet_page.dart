@@ -137,74 +137,90 @@ class _WalletPageState extends State<WalletPage> {
 
 class AddBalanceDialog extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChangeBalanceCubit, ChangeBalanceState>(
-        builder: (context, state) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        content: SizedBox(
-          height: 300,
-          width: MediaQuery.of(context).size.width - 20,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
+    return BlocConsumer<ChangeBalanceCubit, ChangeBalanceState>(
+      listener: (context, state) {
+        if (state is ChangeBalanceSuccess) {
+          Navigator.pop(context); // Close the dialog on success
+          ElegantNotification.success(
+            description: Text('Баланс успешно пополнен'),
+          ).show(context);
+        } else if (state is ChangeBalanceError) {
+          ElegantNotification.error(
+            description: Text(state.error),
+          ).show(context);
+        }
+      },
+      builder: (context, state) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          content: SizedBox(
+            height: 250,
+            width: MediaQuery.of(context).size.width - 20,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(
-                          Icons.close,
-                          size: 34,
-                        )),
-                  ],
+                        child: const Icon(Icons.close, size: 34),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Введите лекарства',
-                      style: TextStyle(
+                const Padding(
+                  padding: EdgeInsets.only(top: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Введите сумму пополнения',
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
                           fontFamily: "Montserrat",
-                          color: Colors.black),
-                    ),
-                  ],
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: CustomTextFieldDialog(
-                  hintText: 'Наименование',
-                  controller: controller,
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: CustomTextFieldDialog(
+                    hintText: 'Сумма',
+                    controller: controller,
+                    keyboardType: TextInputType.number, // Allow only numbers
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: CustomGradientButton(
-                  text: 'Добавить',
-                  onPressed: () async {
-                    final response = await AppBloc.balanceCubit
-                        .changeBalanceWallet(controller.text.trim());
-                    // if (!response != null) {
-                    //   ElegantNotification.error(
-                    //           description: Text('Неверные данные'))
-                    //       .show(context);
-                    // }
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: CustomGradientButton(
+                    text: state is ChangeBalanceLoading ? 'Загрузка...' : 'Пополнить',
+                    onPressed: () {
+                            final amount = controller.text.trim();
+                            if (amount.isEmpty || int.tryParse(amount) == null) {
+                              ElegantNotification.error(
+                                description: Text('Введите корректную сумму'),
+                              ).show(context);
+                              return;
+                            }
+                            context.read<ChangeBalanceCubit>().changeBalanceWallet(amount);
+                          },
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
+

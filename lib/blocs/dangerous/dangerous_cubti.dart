@@ -28,7 +28,10 @@ class DangerousCubit extends Cubit<DangerousState> {
   String city = '';
   List<RequestModel> requests = [];
   List<ContactModel>  contactsUnverified = [];
-  MedcardModel myCard = MedcardModel(id: '', personalInfo: PersonalInfo(avatar: '', full_name: '', phone: 0, dob: '', address: '', temporaryAddress: '', passport: Passport(serial: 0, number: 0, place: '', date: '', photos: [])), medInfo: MedInfo(bloodType: '', policy: 0, medicalInsurance: Insurance(number: '', validity: '', name: '', photo: ''), drugIntolerance: '', allergy: '', diagnoses: '', vaccinations: '', medicationsTaken: []), doctorReports: [], testsResults: [], cerificates: [], status: '', detail: '', haveCard: false);
+  MedcardModel myCard = MedcardModel(id: '', personalInfo: PersonalInfo(avatar: '', full_name: '', phone: 0, dob: '', address: '', temporaryAddress: '', passport: Passport(serial: 0, number: 0, place: '', date: '', photos: [])), medInfo: MedInfo(bloodType: '', policy: 0, 
+  medicalInsurance: Insurance(number: '', validity: '', name: '', photo: ''), 
+  drugIntolerance: '', allergy: '', diagnoses: '', vaccinations: '', medicationsTaken: []), 
+  doctorReports: [], testsResults: [], cerificates: [], status: '', detail: '', haveCard: false,);
 
   getLocation() async {
     emit(DangerousLoading());

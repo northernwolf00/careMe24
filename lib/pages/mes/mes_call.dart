@@ -512,7 +512,9 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                                 photo: '', 
                                                 calls: [], 
                                                 appointments: [], 
-                                                statements: []
+                                                statements: [],
+                                                averageRating: 0,
+                                                isFavourite: false,
                                               ),
                                               work: false,
                                             );
@@ -521,8 +523,10 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                         else if (widget.type == 'med')
                                           ...List.generate(9, (index) {
                                             return DoctorCard(
+                                              id: '',
                                             cardId: '',
                                             reason: '',
+                                            verified: false,
                                             doctor_image: ImageConstant.doctorImage,
                                             doctor_name: '',
                                             doctor_qualification: '',
@@ -532,8 +536,13 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                             estimation: "4.8",
                                             where_call: widget.appbartitle,
                                             work: false,
+                                            isFavorite: false,
+                                            averageRating: 0,
+                                            onFavoritePressed: () {
+                                              
+                                            },
                                             serviceModel: ServiceModel(
-                                                id: '', 
+                                                 id: '', 
                                                 type: '', 
                                                 verified: false, 
                                                 price: 0, 
@@ -552,7 +561,9 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                                 photo: '', 
                                                 calls: [], 
                                                 appointments: [], 
-                                                statements: []
+                                                statements: [],
+                                                averageRating: 0,
+                                                isFavourite: false,
                                               ),
                                           );
                                           })
@@ -591,7 +602,9 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                                 photo: '', 
                                                 calls: [], 
                                                 appointments: [], 
-                                                statements: []
+                                                statements: [],
+                                                averageRating: 0,
+                                                isFavourite: false,
                                               ),
                                           );
                                           })

@@ -40,3 +40,20 @@ class AuthVerifyResetPasswordState extends AuthState {
     required this.data
   });
 }
+
+
+
+
+class AuthResetInitialState extends AuthState {}
+
+class AuthResetLoadingState extends AuthState {}
+
+class AuthResetSuccessState extends AuthState {
+  final dynamic data;
+  AuthResetSuccessState({required this.data});
+}
+
+class AuthResetFailureState extends AuthState {
+  final String error;
+  AuthResetFailureState({required this.error});
+}
