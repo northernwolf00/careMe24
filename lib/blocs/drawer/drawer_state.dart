@@ -10,6 +10,15 @@ class DrawerStateLoaded extends DrawerState {
   DrawerStateLoaded({
     required this.userInfo
   });
+
 }
 
+// New States for Delete Account Process
+class DrawerStateDeletingAccount extends DrawerState {} // Shows loading while deleting
+class DrawerStateDeleteSuccess extends DrawerState {} // Indicates successful deletion
+class DrawerStateDeleteFailure extends DrawerState {
+  final String errorMessage;
+  
+  DrawerStateDeleteFailure({required this.errorMessage});
+}
 

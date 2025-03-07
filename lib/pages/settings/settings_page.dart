@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:careme24/blocs/drawer/drawer_cubit.dart';
 import 'package:careme24/blocs/drawer/drawer_state.dart';
 import 'package:careme24/pages/medical_bag/medical_bag_page.dart';
@@ -82,11 +83,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CircleAvatar(
-                              radius: 26,
-                              backgroundImage: state.userInfo.personalInfo.avatar.isNotEmpty
-                                  ? NetworkImage(state.userInfo.personalInfo.avatar,scale: 1):
-                                  const AssetImage('assets/images/profil.png',),
-                            ),
+                          radius: 26,
+                          backgroundImage: 
+                               CachedNetworkImageProvider(state.userInfo.personalInfo.avatar,scale: 1),
+                              
+                          child: state.userInfo.personalInfo.avatar == '' || state.userInfo.personalInfo.avatar.isEmpty
+                              ? Icon(Icons.person,
+                                  size:
+                                      26) 
+                              : null,
+                        ),
+                           
                             Padding(
                               padding: EdgeInsets.only(left: 15),
                               child: Column(
@@ -230,78 +237,90 @@ class AddButtonSettings extends StatelessWidget {
 class AddMedicineDialogSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      content: SizedBox(
-        height: 230,
-        width: MediaQuery.of(context).size.width - 20,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.close,
-                        size: 34,
-                      )),
-                ],
-              ),
+    return BlocBuilder<DrawerCubit, DrawerState>(
+  builder: (context, state) {
+    if (state is DrawerStateDeletingAccount) {
+      return Center(child: CircularProgressIndicator());
+    }
+    
+    if (state is DrawerStateDeleteFailure) {
+      return Text("Error: ${state.errorMessage}", style: TextStyle(color: Colors.red));
+    }
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          content: SizedBox(
+            height: 230,
+            width: MediaQuery.of(context).size.width - 20,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(
+                            Icons.close,
+                            size: 34,
+                          )),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: const Text(
+                          'Вы уверены, что хотите удалить учетную запись CareMe24?',
+                          maxLines: 3,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                              fontFamily: "Montserrat",
+                              color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: CustomGradientButton(
+                          text: 'Да',
+                          onPressed: () {
+        
+                            context.read<DrawerCubit>().deletAccount(context);
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: CustomGradientRedButton(
+                          text: 'Нет',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    child: const Text(
-                      'Вы уверены, что хотите удалить учетную запись CareMe24?',
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          fontFamily: "Montserrat",
-                          color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: CustomGradientButton(
-                      text: 'Да',
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: CustomGradientRedButton(
-                      text: 'Нет',
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }

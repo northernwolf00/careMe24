@@ -1,3 +1,8 @@
+import 'package:careme24/utils/image_constant.dart';
+import 'package:careme24/utils/size_utils.dart';
+import 'package:careme24/widgets/app_bar/appbar_image.dart';
+import 'package:careme24/widgets/app_bar/appbar_title.dart';
+import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -36,10 +41,21 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Уведомления'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: CustomAppBar(
+          height: getVerticalSize(48),
+          leadingWidth: 43,
+          leading: AppbarImage(
+              height: getVerticalSize(16),
+              width: getHorizontalSize(11),
+              svgPath: ImageConstant.imgArrowleft,
+              margin: getMargin(left: 15, right: 15, top: 15, bottom: 15),
+              onTap: () {
+                Navigator.pop(context);
+              }),
+          centerTitle: true,
+          title: AppbarTitle(text: "Уведомления"),
+          styleType: Style.bgFillBlue60001),
+      
       body: ListView(
         padding: EdgeInsets.all(10),
         children: notifications.map((notification) {

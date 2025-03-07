@@ -12,12 +12,13 @@ import 'package:careme24/models/medcard/medcard_id_model.dart';
 import 'package:careme24/models/medcard/medcard_model.dart';
 import 'package:careme24/models/request_model.dart';
 import 'package:careme24/models/request_status_model.dart';
+import 'package:careme24/models/reviews_model.dart';
 import 'package:careme24/models/service_model.dart';
 import 'package:careme24/models/status_model.dart';
 import 'package:careme24/models/user_model.dart';
 import 'package:careme24/models/dangerous_models/weather_forecast_model.dart';
+import 'package:careme24/pages/medical_bag/models/aid_kit_model.dart';
 import 'package:careme24/service/env_service.dart';
-import 'package:careme24/service/token_storage.dart';
 import 'package:dio/dio.dart';
 
 class Api {
@@ -89,8 +90,26 @@ class Api {
   static const String add_review_service = '/api/reviews/create_service_review';
   static const String reviewes_service = '/api/reviews/service/';
   static const String reviews = '/api/reviews/';
-  static const String average_rating =
-      'api/reviews/service/';
+  static const String average_rating ='/api/reviews/';
+
+  // medicines
+  static const String medicines = '/api/medicines/medicine';
+  static const String medicines_intake_time = '/api/medicines/intake_time';
+  static const String medicines_intake_time_user = '/api/medicines/intake_time/user/';
+
+  // medical bag
+  static const String medical_bag = '/api/medicines/aid_kit';
+  static const String medical_bag_get_id = '/api/medicines/aid_kit/get/';
+  static const String medical_bag_request = '/api/medicines/aid_kit/request';
+  static const String medical_bag_user = '/api/medicines/aid_kit/user/';
+
+  
+
+
+
+
+
+
 
 //http://v2290783.hosted-by-vdsina.ru/api/users/change_balance?balance=100
 
@@ -1025,7 +1044,7 @@ class Api {
         "message": "Request failed",
         "isSuccess": false,
       };
-      ;
+      
     }
   }
 
@@ -1048,40 +1067,43 @@ class Api {
 
 
 
-static Future<List<ServiceModel2>> getAverageRating(String id) async {
-    List<ServiceModel2> serviceList = [];
+static Future<Map<String, dynamic>> getAverageRating(String id) async {
+    
     try {
       var result = await httpManager.get('$average_rating/$id/average_rating');
-      log('log favg $result');
-      for (var service in result) {
-        serviceList.add(ServiceModel2.fromJson(service));
-      }
-      return serviceList;
+      log('log getAverageRating $result');
+      
+      return result;
     } catch (e) {
-      log('Pressure load error getFavorites: $e');
-      return [];
+      log('Pressure load error getAverageRating: $e');
+      return  {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
     }
   }
 
-  static Future<List<ServiceModel2>> getReviews(String id) async {
-    List<ServiceModel2> serviceList = [];
+  static Future<List<Review>> getReviews(String id) async {
+    List<Review> reviewList = [];
     try {
       var result = await httpManager.get('$reviews/$id');
-      log('log favg $result');
-      for (var service in result) {
-        serviceList.add(ServiceModel2.fromJson(service));
+      log('log getReviews $result');
+      for (var review in result) {
+        reviewList.add(Review.fromJson(review));
       }
-      return serviceList;
+      return reviewList;
     } catch (e) {
-      log('Pressure load error getFavorites: $e');
+      log('Pressure load error getReviews: $e');
       return [];
     }
   }
 
   static Future<Map<String, dynamic>> postReviews(Map<String, dynamic> data) async {
     try {
-      var result = await httpManager.post(reviews, data: data);
-      log('result favp $result');
+      var result = await httpManager.post(reviews, data: FormData.fromMap(data));
+       log('$data');
+      log('result postReviews $result');
       return result;
     } catch (e) {
       log('Pressure load error postFavorites: $e');
@@ -1090,14 +1112,14 @@ static Future<List<ServiceModel2>> getAverageRating(String id) async {
         "message": "Request failed",
         "isSuccess": false,
       };
-      ;
+      
     }
   }
 
   static Future<Map<String, dynamic>> deleteReviews(String id) async {
     try {
       final result = await httpManager.delete('$reviews/$id',);
-      log('Result from deleteFavorite API: $result');
+      log('Result from deleteReviews API: $result');
 
       // Ensure response is properly formatted
       if (result is Map<String, dynamic>) {
@@ -1106,8 +1128,132 @@ static Future<List<ServiceModel2>> getAverageRating(String id) async {
         throw Exception("Invalid response format");
       }
     } catch (e) {
-      log('Error in deleteFavorite API: $e');
+      log('Error in deleteReviews API: $e');
       throw Exception("Failed to delete favorite"+e.toString());
     }
   }
+
+
+  static Future<List<Review>> getMedicines(String id) async {
+    List<Review> reviewList = [];
+    try {
+      var result = await httpManager.get(medicines);
+      log('log getReviews $result');
+      for (var review in result) {
+        reviewList.add(Review.fromJson(review));
+      }
+      return reviewList;
+    } catch (e) {
+      log('Pressure load error getReviews: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postMedicines(Map<String, dynamic> data) async {
+    try {
+      var result = await httpManager.post(reviews, data: FormData.fromMap(data));
+       log('$data');
+      log('result postReviews $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postFavorites: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteMedicines(String id) async {
+    try {
+      final result = await httpManager.delete('$reviews/$id',);
+      log('Result from deleteReviews API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteReviews API: $e');
+      throw Exception("Failed to delete favorite"+e.toString());
+    }
+  }
+
+  static Future<List<AidKitModel>> getAidKit() async {
+    List<AidKitModel> aidKitList = [];
+    try {
+      var result = await httpManager.get(medical_bag);
+      log('log getAidKit $result');
+      for (var review in result) {
+        aidKitList.add(AidKitModel.fromJson(review));
+      }
+      return aidKitList;
+    } catch (e) {
+      log('Pressure load error getAidKit: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postAidKit(FormData data) async {
+    try {
+      var result = await httpManager.post(medical_bag, data: data);
+       log('$data');
+      log('result postAidKit $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postAidKit: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteAidKit(String id) async {
+    try {
+      final result = await httpManager.delete('$medical_bag/$id',);
+      log('Result from deleteAidKit API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteAidKit API: $e');
+      throw Exception("Failed to delete favorite"+e.toString());
+    }
+  }
+
+  static Future<Map<String, dynamic>> putAidKit(FormData data) async {
+
+    try {
+      var result = await httpManager.put(medical_bag, data: data);
+       log('$data');
+      log('result putAidKit $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error putAidKit: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+    
+  }
+
+
+
+
+
+
 }

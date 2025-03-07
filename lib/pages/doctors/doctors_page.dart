@@ -1,12 +1,15 @@
-
 import 'package:careme24/pages/doctors/favorites_cubit.dart';
 import 'package:careme24/pages/doctors/favorites_state.dart';
+import 'package:careme24/pages/med/appointment_to_doctor_screen.dart';
+import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
+import 'package:careme24/pages/services_call/doctor_call_page.dart';
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
 import 'package:careme24/widgets/custom_image_view.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -76,55 +79,94 @@ class _DoctorsPageState extends State<DoctorsPage> {
                           const Divider(height: 24),
                       itemBuilder: (context, index) {
                         final item = state.serviceList[index];
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CircleAvatar(
-                                  radius: 26,
-                                  backgroundImage:
-                                      NetworkImage(item.service.photo),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.service.name,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
+                        return GestureDetector(
+                          onTap: () {
+                            // if (state) {
+                            //   if (widget.where_call == "Запись к врачу" ||
+                            //       widget.where_call == "Помощь онлайн") {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (context) =>
+                            //                 AppointmentToDoctorScreen()));
+                            //   } else {
+                            //     if (widget.reason == '') {
+                            //       ElegantNotification.error(
+                            //               description:
+                            //                   Text('Выберете причину вызова'))
+                            //           .show(context);
+                            //     } else {
+                            //       Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //               builder: (context) =>
+                            //                   DoctorCallScreen(
+                            //                     reason: widget.reason,
+                            //                     serviceModel:
+                            //                         widget.serviceModel,
+                            //                     cardId: widget.cardId,
+                            //                   )));
+                            //     }
+                            //   }
+                            // } else {
+                            //   Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) =>
+                            //               RecordFinalScreen()));
+                            // }
+                          },
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 26,
+                                    backgroundImage:
+                                        NetworkImage(item.service.photo),
                                   ),
-                                ),
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context
-                                          .read<FavoriteCubit>()
-                                          .deletFavorites(item.serviceId);
-                                    },
-                                    child: CustomImageView(
-                                      svgPath: ImageConstant.heart_fav,
-                                      height: 24,
-                                      width: 24,
-                                      color: Colors.red,
-                                      margin: getMargin(
-                                          left: 15, top: 5, bottom: 2),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.service.name,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .read<FavoriteCubit>()
+                                            .deletFavorites(item.serviceId);
+                                      },
+                                      child: CustomImageView(
+                                        svgPath: ImageConstant.heart_fav,
+                                        height: 24,
+                                        width: 24,
+                                        color: Colors.red,
+                                        margin: getMargin(
+                                            left: 15, top: 5, bottom: 2),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     ),

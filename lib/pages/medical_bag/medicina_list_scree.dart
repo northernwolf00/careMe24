@@ -7,14 +7,18 @@ import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
-class MedicineListScreen extends StatelessWidget {
+class MedicineListScreen extends StatefulWidget {
   final String title;
-   final TextEditingController titleController;
-
-
-  MedicineListScreen({required this.title,Key? key}): titleController = TextEditingController(text: title),
+  MedicineListScreen({required this.title,Key? key,}): 
         super(key: key);
 
+  @override
+  State<MedicineListScreen> createState() => _MedicineListScreenState();
+}
+
+class _MedicineListScreenState extends State<MedicineListScreen> {
+
+    // late TextEditingController titleController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +58,7 @@ class MedicineListScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 5),
                         child: TextField(
-                          controller: titleController,
+                          // controller: titleController,
                           decoration: const InputDecoration(
                             isDense: true,
                             hintText: "Введите название",

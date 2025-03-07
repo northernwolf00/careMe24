@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/drawer/drawer_cubit.dart';
 import 'package:careme24/blocs/drawer/drawer_state.dart';
@@ -24,6 +25,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   String sum = '0';
+  String imageUrl = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +75,7 @@ class _WalletPageState extends State<WalletPage> {
         child: BlocBuilder<DrawerCubit, DrawerState>(builder: (context, state) {
           if (state is DrawerStateLoaded) {
             sum = state.userInfo.balance.toString();
+            imageUrl = state.userInfo.personalInfo.avatar;
 
             return Container(
               height: 92,
@@ -85,10 +88,16 @@ class _WalletPageState extends State<WalletPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 26,
-                          backgroundImage:
-                              AssetImage('assets/images/profil.png'),
+                          backgroundImage: 
+                               CachedNetworkImageProvider(imageUrl),
+                              
+                          child: imageUrl == '' || imageUrl.isEmpty
+                              ? Icon(Icons.person,
+                                  size:
+                                      26) 
+                              : null,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 15),
@@ -202,17 +211,21 @@ class AddBalanceDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: CustomGradientButton(
-                    text: state is ChangeBalanceLoading ? 'Загрузка...' : 'Пополнить',
+                    text: state is ChangeBalanceLoading
+                        ? 'Загрузка...'
+                        : 'Пополнить',
                     onPressed: () {
-                            final amount = controller.text.trim();
-                            if (amount.isEmpty || int.tryParse(amount) == null) {
-                              ElegantNotification.error(
-                                description: Text('Введите корректную сумму'),
-                              ).show(context);
-                              return;
-                            }
-                            context.read<ChangeBalanceCubit>().changeBalanceWallet(amount);
-                          },
+                      final amount = controller.text.trim();
+                      if (amount.isEmpty || int.tryParse(amount) == null) {
+                        ElegantNotification.error(
+                          description: Text('Введите корректную сумму'),
+                        ).show(context);
+                        return;
+                      }
+                      context
+                          .read<ChangeBalanceCubit>()
+                          .changeBalanceWallet(amount);
+                    },
                   ),
                 ),
               ],
@@ -223,4 +236,3 @@ class AddBalanceDialog extends StatelessWidget {
     );
   }
 }
-

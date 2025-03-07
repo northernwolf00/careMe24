@@ -4,9 +4,11 @@ import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/auth/cubit.dart';
 import 'package:careme24/router/app_router.dart';
 import 'package:careme24/theme/app_style.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,6 +24,19 @@ class _LoginPageState extends State<LoginPage> {
   bool isChecked = false;
   String countryCode = '+7';
   bool isContinue = true;
+  bool isPhoneNumber = false;
+
+  final phoneMaskFormatter = MaskTextInputFormatter(
+    mask: '### ### ## ##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  void _onInputChanged(String value) {
+    setState(() {
+      isPhoneNumber = RegExp(r'^\d').hasMatch(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,34 +84,63 @@ class _LoginPageState extends State<LoginPage> {
                               fontSize: 17,
                               fontWeight: FontWeight.w700)),
                       Container(
-                        padding: const EdgeInsets.only(bottom: 16.0, top: 8),
-                        child: TextFormField(
-                          controller: _controller,
-                          /* inputFormatters: [
-                            MaskTextInputFormatter(
-                                mask: '### ### ## ##',
-                                filter: {"#": RegExp(r'[0-9]')},
-                                type: MaskAutoCompletionType.lazy),
-                          ], */
-                          decoration: InputDecoration(
-                              hintText: 'Почта или номер телефона',
+                          padding: const EdgeInsets.only(bottom: 16.0, top: 8),
+                          child: TextFormField(
+                            controller: _controller,
+                            keyboardType: TextInputType.text,
+                            inputFormatters:
+                                isPhoneNumber ? [phoneMaskFormatter] : [],
+                            onChanged: _onInputChanged,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(8),
                               hintStyle: TextStyle(
                                   color: Color.fromRGBO(164, 165, 165, 1),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500),
-                              contentPadding: EdgeInsets.all(8)
-                              /*  prefixIcon: CountryCodePicker(
-                              onChanged: (code) => setState(() {
-                                countryCode = code.dialCode!;
-                              }),
-                              flagWidth: 29,
-                              padding: EdgeInsets.zero,
-                              initialSelection: 'RU',
-                              favorite: const ['+39', 'FR'],
-                            ), */
-                              ),
-                        ),
-                      ),
+                              hintText: isPhoneNumber
+                                  ? '000 000 00 00'
+                                  : 'Почта или номер телефона',
+                              prefixIcon: isPhoneNumber
+                                  ? CountryCodePicker(
+                                      onChanged: (code) => setState(() {
+                                        countryCode = code.dialCode!;
+                                      }),
+                                      flagWidth: 29,
+                                      padding: EdgeInsets.zero,
+                                      initialSelection: 'RU',
+                                      favorite: const ['+39', 'FR'],
+                                    )
+                                  : null,
+                            ),
+                          )
+
+                          // TextFormField(
+                          //   controller: _controller,
+                          //   /* inputFormatters: [
+                          //     MaskTextInputFormatter(
+                          //         mask: '### ### ## ##',
+                          //         filter: {"#": RegExp(r'[0-9]')},
+                          //         type: MaskAutoCompletionType.lazy),
+                          //   ], */
+                          //   decoration: InputDecoration(
+                          //       hintText: 'Почта или номер телефона',
+                          // hintStyle: TextStyle(
+                          //     color: Color.fromRGBO(164, 165, 165, 1),
+                          //     fontSize: 16,
+                          //     fontWeight: FontWeight.w500),
+                          // contentPadding: EdgeInsets.all(8)
+                          //       /*  prefixIcon: CountryCodePicker(
+                          //       onChanged: (code) => setState(() {
+                          //         countryCode = code.dialCode!;
+                          //       }),
+                          //       flagWidth: 29,
+                          //       padding: EdgeInsets.zero,
+                          //       initialSelection: 'RU',
+                          //       favorite: const ['+39', 'FR'],
+                          //     ), */
+                          //       ),
+                          // ),
+                          ),
                       Text('Пароль',
                           style: TextStyle(
                               color: Color.fromRGBO(164, 165, 165, 1),
@@ -119,8 +163,14 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.only(top: 62.0),
                           child: GestureDetector(
                             onTap: () async {
+                              String inputText = _controller.text.trim();
+                              String phoneNumber =
+                                  '$countryCode $inputText'.replaceAll(" ", "");
+
                               final response = await AppBloc.authCubit.login(
-                                  _controller.text, _passwordController.text);
+                                  isPhoneNumber ? phoneNumber : inputText,
+                                  _passwordController.text);
+
                               if (!response.isSuccess) {
                                 ElegantNotification.error(
                                         description: Text('Неверные данные'))
@@ -144,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height/6.5),
+                          height: MediaQuery.of(context).size.height / 6.5),
                       Padding(
                         padding: const EdgeInsets.only(top: 20, bottom: 7),
                         child: Row(

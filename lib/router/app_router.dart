@@ -43,7 +43,7 @@ class AppRouter {
   static const String settings = '/settings';
   static const String resetEmailPhone = '/resetEmailPhone';
   static const String monthDaySelector = '/monthDaySelector';
-  static const String reviewList = '/reviewList';
+
 
 
   
@@ -72,7 +72,7 @@ class AppRouter {
     wallet: (context) => const WalletPage(),
     settings: (context) => const SettingsPage(),
     monthDaySelector: (context) =>  MonthDaysSelector(),
-    reviewList: (context) =>  ReviewsScreen(),
+   
 
 
 

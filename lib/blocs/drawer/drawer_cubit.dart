@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:careme24/blocs/drawer/drawer_state.dart';
 import 'package:careme24/repositories/user_repository.dart';
+import 'package:careme24/router/app_router.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DrawerCubit extends Cubit<DrawerState> {
@@ -13,17 +15,21 @@ class DrawerCubit extends Cubit<DrawerState> {
       userInfo: userInfo
     ));
 
-   Future<void> deletAccount()async{
-
-    final delete = await UserRepository.deletAccountRepository();
-
-   } 
-
-
-
   }
 
-  
+   Future<void> deletAccount(BuildContext context) async {
+    emit(DrawerStateDeletingAccount()); // Emit loading state before deleting
+
+    final response = await UserRepository.deletAccountRepository();
+    
+    if (response["status"] == 'success') {
+      emit(DrawerStateDeleteSuccess()); // Emit success state
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRouter.startPage, (route) => false);
+    } else {
+      emit(DrawerStateDeleteFailure(errorMessage: response["message"])); 
+    }
+  }
 
 
 }

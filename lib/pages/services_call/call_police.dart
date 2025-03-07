@@ -504,6 +504,7 @@ class _CallPoliceScreenState extends State<CallPoliceScreen> {
                                         ...List.generate(state.serviceList.length, (index){
                                           final item = state.serviceList[index];
                                           return PoliceCard(
+                                           
                                             medCardId: state.medCardId,
                                             statement: widget.isStatament,
                                             doctor_image:ImageConstant.doctorImage,

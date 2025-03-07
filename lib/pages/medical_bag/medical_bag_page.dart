@@ -1,10 +1,16 @@
+import 'package:careme24/pages/medical_bag/create_aid_kit.dart';
+import 'package:careme24/pages/medical_bag/cubit/aid_kit_cubit.dart';
+import 'package:careme24/pages/medical_bag/cubit/aid_kit_state.dart';
 import 'package:careme24/pages/medical_bag/medicina_list_scree.dart';
+import 'package:careme24/pages/medical_bag/update_aid_kit.dart';
+import 'package:careme24/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MedicalBagPage extends StatefulWidget {
   const MedicalBagPage({super.key});
@@ -14,6 +20,14 @@ class MedicalBagPage extends StatefulWidget {
 }
 
 class _MedicalBagPageState extends State<MedicalBagPage> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the aid kits when the page is loaded
+    context.read<AidKitCubit>().getAidKit();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +52,7 @@ class _MedicalBagPageState extends State<MedicalBagPage> {
             onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MedicineListScreen(title: "")),
+            MaterialPageRoute(builder: (context) => MedicineBagAddScreen()),
           );
             },
             child: Padding(
@@ -56,61 +70,72 @@ class _MedicalBagPageState extends State<MedicalBagPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionTitle(title: 'МОЯ АПТЕЧКА'),
-            const SizedBox(height: 8),
-            MedicineBoxCard(
-              icon: Icons.medical_services,
-              title: 'Аптечка №1',
-              onTap: () {
-                Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MedicineListScreen(title: "Аптечка №1")),
-          );
-                // Handle onTap for Аптечка №1
-              },
-            ),
-            const SizedBox(height: 8),
-            MedicineBoxCard(
-              icon: Icons.inventory,
-              title: 'Аптечка №2',
-              onTap: () {
-                Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MedicineListScreen(title: "Аптечка №2")),
-          );
-                // Handle onTap for Аптечка №2
-              },
-            ),
-            const SizedBox(height: 24),
-            // const SectionTitle(title: 'ЗАПРОСЫ'),
-            // const SizedBox(height: 8),
-            // AddButton(
-            //   title: 'Добавить запрос',
-            //   onTap: () {
-          //       Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "")),
-          // );
-                // Handle "Добавить запрос" button
-            //   },
-            // ),
-            // const SizedBox(height: 24),
-            // const SectionTitle(title: 'ДОПОЛНИТЕЛЬНО'),
-            // const SizedBox(height: 8),
-            // AddButton(
-            //   title: 'Добавить',
-            //   onTap: () {
-          //       Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "title")),
-          // );
-                // Handle "Добавить" button
-            //   },
-            // ),
-          ],
+        child: BlocBuilder<AidKitCubit, AidKitState>(
+          builder: (context, state) {
+            if (state is AidKitLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else
+             if (state is AidKitError) {
+              return Center(child: Text(state.message));
+            } else if (state is AidKitLoaded) {
+              final aidKitList = state.aidKits;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SectionTitle(title: 'МОЯ АПТЕЧКА'),
+                const SizedBox(height: 8),
+                Expanded(
+                    child: ListView.builder(
+                      itemCount: aidKitList.length,
+                      itemBuilder: (context, index) {
+                        final aidKit = aidKitList[index];
+                        return MedicineBoxCard(
+                          icon: aidKit.photo,
+                          title: aidKit.title,
+                          id: aidKit.id,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MedicineListScreen(
+                                      title: aidKit.title)),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              //   MedicineBoxCard(
+              //     icon: Icons.medical_services,
+              //     title: 'Аптечка №1',
+              //     onTap: () {
+              //       Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "Аптечка №1")),
+              // );
+                   
+              //     },
+              //   ),
+              //   const SizedBox(height: 8),
+              //   MedicineBoxCard(
+              //     icon: Icons.inventory,
+              //     title: 'Аптечка №2',
+              //     onTap: () {
+              //       Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "Аптечка №2")),
+              // );
+                   
+              //     },
+              //   ),
+              //   const SizedBox(height: 24),
+                
+              ],
+            );}else {
+              return const Center(child: Text('No data available'));
+            }
+            
+          }
         ),
       ),
     );
@@ -136,14 +161,16 @@ class SectionTitle extends StatelessWidget {
 }
 
 class MedicineBoxCard extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final VoidCallback onTap;
+  final String id;
 
   const MedicineBoxCard({
     Key? key,
     required this.icon,
     required this.title,
+    required this.id,
     required this.onTap,
   }) : super(key: key);
 
@@ -151,6 +178,9 @@ class MedicineBoxCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      onLongPress: () {
+        _showOptions(context);
+      },
       child: Card(
         color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -161,7 +191,11 @@ class MedicineBoxCard extends StatelessWidget {
             height: 72,
             child: Row(
               children: [
-                Icon(icon, color: Colors.blue),
+                CustomImageView(
+                  url: icon,
+                  height: 40,
+                  width: 40,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 5),
                   child: Text(title,
@@ -178,7 +212,56 @@ class MedicineBoxCard extends StatelessWidget {
           )),
     );
   }
+
+
+
+
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          color: Colors.white,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.edit, color: Colors.blue),
+                title: Text('Изменить'),
+                onTap: () {
+                  Navigator.pop(context); // Close bottom sheet
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MedicineBagUpdateScreen(
+                        id: id,
+                        title: title,
+                        image: icon,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.red),
+                title: Text('Удалить'),
+                onTap: () {
+                  Navigator.pop(context); // Close bottom sheet
+                  context.read<AidKitCubit>().deletAidKit(id);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
+
+
+ 
+
 
 class AddButton extends StatelessWidget {
   final String title;
@@ -216,3 +299,30 @@ class AddButton extends StatelessWidget {
     );
   }
 }
+
+
+// const SectionTitle(title: 'ЗАПРОСЫ'),
+            // const SizedBox(height: 8),
+            // AddButton(
+            //   title: 'Добавить запрос',
+            //   onTap: () {
+          //       Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "")),
+          // );
+                // Handle "Добавить запрос" button
+            //   },
+            // ),
+            // const SizedBox(height: 24),
+            // const SectionTitle(title: 'ДОПОЛНИТЕЛЬНО'),
+            // const SizedBox(height: 8),
+            // AddButton(
+            //   title: 'Добавить',
+            //   onTap: () {
+          //       Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => MedicineListScreen(title: "title")),
+          // );
+                // Handle "Добавить" button
+            //   },
+            // ),

@@ -1,9 +1,10 @@
 
 
+import 'package:careme24/models/reviews_model.dart';
+
 abstract class ReviewState  {
   const ReviewState();
 
-  @override
   List<Object> get props => [];
 }
 
@@ -18,6 +19,19 @@ class ReviewSuccess extends ReviewState {
   @override
   List<Object> get props => [message];
 }
+class ReviewLoaded extends ReviewState {
+  final List<Review> reviews;
+  ReviewLoaded(this.reviews);
+}
+
+class ReviewSuccessAverage extends ReviewState {
+  final double average_rating;
+  const ReviewSuccessAverage(this.average_rating);
+
+  @override
+  List<Object> get props => [average_rating];
+}
+
 
 class ReviewFailure extends ReviewState {
   final String error;
