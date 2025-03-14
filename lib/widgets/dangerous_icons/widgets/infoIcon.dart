@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:careme24/models/danger_model.dart';
 import 'package:careme24/pages/dangerous/dang_info_screen.dart';
 import 'package:careme24/theme/app_style.dart';
@@ -45,7 +47,7 @@ class Infoicon extends StatelessWidget {
       case 'Вирусное заражение': //!
         return 'assets/images/1.svg';
       case 'Гололёд':
-        return 'assets/images/2.svg';
+        return 'assets/images/22n.svg';
       case 'Сильный туман'://!
         return 'assets/images/img_fog.svg';
       case 'Снежная лавина'://!
@@ -80,7 +82,8 @@ class Infoicon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool haveData = icon.dangerLevel.isNotEmpty;
-
+    log(icon.incidentType);
+    log(icon.isActive.toString());
     return GestureDetector(
       onTap: (){
         Navigator.push(
@@ -107,6 +110,19 @@ class Infoicon extends StatelessWidget {
                 ),
               ),
             ),
+            icon.isActive == false ? Container(
+              height: 79,
+              width: 79,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient:   DangerousColors.grey,
+              ),
+              child: SvgPicture.asset(
+                getIcon(icon.incidentType),
+                color: Colors.black
+              ),
+            ):
             Container(
               height: 79,
               width: 79,
@@ -129,6 +145,112 @@ class Infoicon extends StatelessWidget {
                 style: AppStyle.txtMontserratF14W600Gray2,
               ),
             ),
+
+      
+//  icon. incidentType  ==  'Гололёд' ?  Column(
+//               children: [
+// Container(
+//               padding: const EdgeInsets.all(12),
+//               decoration: BoxDecoration(
+//                 color: Colors.grey.shade200,
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   const Text('02.01.2023', style: TextStyle(color: Colors.grey)),
+//                   const SizedBox(height: 4),
+//                   const Text(
+//                     'Гололедица ожидается на столичных дорогах ночью',
+//                     style: TextStyle(fontSize: 16),
+//                   ),
+//                   const SizedBox(height: 4),
+//                   TextButton(
+//                     onPressed: () {},
+//                     child: const Text(
+//                       'Узнать больше в новостях',
+//                       style: TextStyle(color: Colors.blue),
+//                     ),
+//                   )
+//                 ],
+//               ),
+//             ),
+//             const SizedBox(height: 20),
+//             const Text('Прогноз', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+//             const SizedBox(height: 10),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: List.generate(5, (index) {
+//                 return Column(
+//                   children: const [
+//                     Text('-25.7°', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+//                     Text('16:00', style: TextStyle(fontSize: 14, color: Colors.grey)),
+//                   ],
+//                 );
+//               }),
+//             ),
+//             const SizedBox(height: 10),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: List.generate(5, (index) {
+//                 return Container(
+//                   padding: const EdgeInsets.all(8),
+//                   decoration: BoxDecoration(
+//                     border: Border.all(color: Colors.grey.shade300),
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                   child: Column(
+//                     children: const [
+//                       Icon(Icons.arrow_upward, color: Colors.blue),
+//                       Text('C 0.99', style: TextStyle(fontSize: 14)),
+//                     ],
+//                   ),
+//                 );
+//               }),
+//             ),
+//             const SizedBox(height: 10),
+//             const Text(
+//               'Скорость ветра м/с              максимум сегодня 0.99 м/с',
+//               style: TextStyle(fontSize: 14, color: Colors.grey),
+//             ),
+//             const SizedBox(height: 20),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: List.generate(3, (index) {
+//                 return Container(
+//                   padding: const EdgeInsets.all(12),
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.circular(10),
+//                     border: Border.all(color: index == 0 ? Colors.blue : Colors.grey.shade300),
+//                     color: index == 0 ? Colors.blue.shade50 : Colors.white,
+//                   ),
+//                   child: const Column(
+//                     children: [
+//                       Text('ПН', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+//                       Text('+25.7 / +30.8', style: TextStyle(fontSize: 14)),
+//                     ],
+//                   ),
+//                 );
+//               }),
+//             ),
+//             const SizedBox(height: 20),
+//             ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: Colors.white,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(10),
+//                   side: const BorderSide(color: Colors.blue),
+//                 ),
+//                 minimumSize: const Size(double.infinity, 50),
+//               ),
+//               onPressed: () {},
+//               child: const Text('Рекомендации', style: TextStyle(fontSize: 18, color: Colors.blue)),
+//             ),
+//               ],
+//             ) : Container()
+            
+          
+        
           ],
         ),
       ),

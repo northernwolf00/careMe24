@@ -32,11 +32,19 @@ class _LoginPageState extends State<LoginPage> {
     type: MaskAutoCompletionType.lazy,
   );
 
-  void _onInputChanged(String value) {
+void _onInputChanged(String value) {
+  bool isNowPhoneNumber = RegExp(r'^\d').hasMatch(value);
+
+  if (isNowPhoneNumber != isPhoneNumber) {
     setState(() {
-      isPhoneNumber = RegExp(r'^\d').hasMatch(value);
+      isPhoneNumber = isNowPhoneNumber;
+      _controller.clear(); 
     });
   }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,32 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )
 
-                          // TextFormField(
-                          //   controller: _controller,
-                          //   /* inputFormatters: [
-                          //     MaskTextInputFormatter(
-                          //         mask: '### ### ## ##',
-                          //         filter: {"#": RegExp(r'[0-9]')},
-                          //         type: MaskAutoCompletionType.lazy),
-                          //   ], */
-                          //   decoration: InputDecoration(
-                          //       hintText: 'Почта или номер телефона',
-                          // hintStyle: TextStyle(
-                          //     color: Color.fromRGBO(164, 165, 165, 1),
-                          //     fontSize: 16,
-                          //     fontWeight: FontWeight.w500),
-                          // contentPadding: EdgeInsets.all(8)
-                          //       /*  prefixIcon: CountryCodePicker(
-                          //       onChanged: (code) => setState(() {
-                          //         countryCode = code.dialCode!;
-                          //       }),
-                          //       flagWidth: 29,
-                          //       padding: EdgeInsets.zero,
-                          //       initialSelection: 'RU',
-                          //       favorite: const ['+39', 'FR'],
-                          //     ), */
-                          //       ),
-                          // ),
+                         
                           ),
                       Text('Пароль',
                           style: TextStyle(

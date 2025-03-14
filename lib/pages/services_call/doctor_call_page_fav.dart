@@ -1,20 +1,19 @@
 import 'package:careme24/blocs/app_bloc.dart';
-import 'package:careme24/models/service_model.dart';
-import 'package:careme24/service/url_service.dart';
+import 'package:careme24/models/favorite_model.dart';
+
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
 import 'package:careme24/widgets/custom_image_view.dart';
-import 'package:careme24/widgets/file_piceker.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DoctorCallScreen extends StatelessWidget {
-  const DoctorCallScreen({
+class DoctorCallScreenFav extends StatelessWidget {
+  const DoctorCallScreenFav({
     super.key,
     required this.reason,
     required this.serviceModel,
@@ -22,7 +21,7 @@ class DoctorCallScreen extends StatelessWidget {
   });
 
   final String reason;
-  final ServiceModel serviceModel;
+  final ServiceModel2 serviceModel;
   final String cardId;
 
   void _launchURL(String url) async {
@@ -80,11 +79,11 @@ class DoctorCallScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           CustomImageView(
-                            url: serviceModel.photo,
+                            url: serviceModel.service.photo,
                             height: 80,
                             width: 67,
                             radius: BorderRadius.only(bottomRight: Radius.circular(30)),
-                            fit: BoxFit.cover
+                            alignment: Alignment.bottomCenter
                           ),
                         ],
                       ),
@@ -94,8 +93,8 @@ class DoctorCallScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(serviceModel.name, style: TextStyle(color: Color.fromRGBO(51, 132, 226, 1), fontSize: 15, fontWeight: FontWeight.w600)),
-                          Text(serviceModel.workPlace, style: TextStyle(color: Color.fromRGBO(142, 150, 155, 1), fontSize: 12, fontWeight: FontWeight.w500),)
+                          Text(serviceModel.service.name, style: TextStyle(color: Color.fromRGBO(51, 132, 226, 1), fontSize: 15, fontWeight: FontWeight.w600)),
+                          Text(serviceModel.service.workPlace, style: TextStyle(color: Color.fromRGBO(142, 150, 155, 1), fontSize: 12, fontWeight: FontWeight.w500),)
                         ],
                       )
                     )
@@ -135,7 +134,7 @@ class DoctorCallScreen extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-              _launchURL(serviceModel.license);
+              _launchURL(serviceModel.service.license);
             },
             child: Container(
               margin: EdgeInsets.only(left: 21, right: 25, top: 23),
@@ -171,14 +170,14 @@ class DoctorCallScreen extends StatelessWidget {
                   'Стаж работ', style: TextStyle(color: Color.fromRGBO(41, 142, 235, 1), fontSize: 18, fontWeight: FontWeight.w500)
                   ),
                 Text(
-                  getYearsWord(serviceModel.experience.toInt()), style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500)
+                  getYearsWord(serviceModel.service.experience.toInt()), style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500)
                   ),
                 ]
               ),
           ),
           GestureDetector(
             onTap: (){
-              _launchURL(serviceModel.diplomas[0]);
+              _launchURL(serviceModel.service.diplomas[0]);
             },
             child: Container(
               margin: EdgeInsets.only(left: 21, right: 25, top: 23),

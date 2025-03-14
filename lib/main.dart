@@ -4,6 +4,7 @@ import 'package:careme24/service/env_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +12,7 @@ void main()async{
   options: DefaultFirebaseOptions.currentPlatform,
 );
   await initializeDateFormatting('ru', null);
+  Intl.defaultLocale = 'ru';
   await EnvService().loadEnv();
   runApp(const App());
 }

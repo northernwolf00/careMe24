@@ -98,7 +98,8 @@ class _MedicalBagPageState extends State<MedicalBagPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MedicineListScreen(
-                                      title: aidKit.title)),
+                                      title: aidKit.title,
+                                      id: aidKit.id)),
                             );
                           },
                         );
@@ -132,7 +133,7 @@ class _MedicalBagPageState extends State<MedicalBagPage> {
                 
               ],
             );}else {
-              return const Center(child: Text('No data available'));
+              return const Center(child: Text('Нет доступных данных'));
             }
             
           }

@@ -34,6 +34,17 @@ class DangerInfoScreen extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(24, 14, 24, 14),
               child: Row(
                 children: [
+
+                model.isActive ==false?  Container(
+                    height: 79,
+                    width: 79,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: DangerousColors.grey
+                    ),
+                    child: SvgPicture.asset(getIcon(model.incidentType), color: Colors.black,)
+                  ):
                   Container(
                     height: 79,
                     width: 79,
@@ -50,6 +61,18 @@ class DangerInfoScreen extends StatelessWidget {
                     children: [
                       Text(model.incidentType,style: AppStyle.txtMontserratBold18,),
                       Text(city, style: TextStyle(color: Color.fromRGBO(51, 132, 226, 1), fontSize: 15, fontWeight: FontWeight.w500)),
+                   model.isActive == false?   Container(
+                        margin: EdgeInsets.only(top: 9),
+                        decoration: BoxDecoration(
+                          gradient: DangerousColors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          model.incidentType,style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 18),),
+                      ) :
+                     
                       Container(
                         margin: EdgeInsets.only(top: 9),
                         decoration: BoxDecoration(
@@ -161,7 +184,7 @@ String getIcon(String value) {
     case 'Вирусное заражение': //!
       return 'assets/images/1.svg';
     case 'Гололёд':
-      return 'assets/images/2.svg';
+      return 'assets/images/22n.svg';
 
     
     
@@ -318,6 +341,14 @@ List getRec (String value){
         Recomendation(imagePath: 'assets/images/58.png', text: 'Воду употребляйте только из проверенных источников;'),
         Recomendation(imagePath: 'assets/images/59.png', text: 'Тщательно мойте перед едой руки и полощите рот 0.5%-ным раствором питьевой соды'),
       ];
+    case "Гололёд":
+      return [
+        Recomendation(imagePath: 'assets/images/37.png', text: 'Подберите нескользящую обувь с подошвой на микропористой основе, отказавшись от высоких каблуков.'),
+        Recomendation(imagePath: 'assets/images/54.png', text: 'Смотрите себе под ноги, старайтесь обходить опасные места. Если ледяную "лужу" обойти невозможно, то передвигайтесь по ней, как лыжник, небольшими скользящими шажками.'),
+        Recomendation(imagePath: 'assets/images/43.png', text: 'Будьте предельно внимательны на проезжей части дороги: не торопитесь, не бегите.'),
+        Recomendation(imagePath: 'assets/images/55.png', text: 'Пожилым людям рекомендуется использовать трость с резиновым наконечником или специальную палку с шипами.'),
+        
+      ];  
     case 'Солнечная радиация':
       return [
         Recomendation(imagePath: 'assets/images/59.png', text: 'Больше находиться в тени'),

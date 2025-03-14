@@ -1,3 +1,5 @@
+import 'package:careme24/models/service_model.dart';
+import 'package:careme24/pages/med/reviews_list_screen.dart';
 import 'package:careme24/pages/payment/payment_defoult_screen.dart';
 import 'package:careme24/theme/theme.dart';
 import 'package:careme24/utils/utils.dart';
@@ -5,12 +7,14 @@ import 'package:careme24/widgets/outline_gradient_button.dart';
 import 'package:careme24/widgets/time_container.dart';
 import 'package:careme24/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/date_container.dart';
 import '../more_time_to_record/record_details_page.dart';
 
 class AppointmentToDoctorScreen extends StatefulWidget {
-  const AppointmentToDoctorScreen({super.key});
+  final ServiceModel serviceModel;
+  const AppointmentToDoctorScreen({ required this.serviceModel,super.key});
 
   @override
   State<AppointmentToDoctorScreen> createState() =>
@@ -31,9 +35,23 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
   bool isRecordSelected() {
     return isSelectedTime == true && (isSelectedIndex != -1) ? true : false;
   }
+  List<Map<String, String>> getDates() {
+    final now = DateTime.now();
+    final formatter = DateFormat('EE', 'ru_RU'); // Weekday in Russian
+    final dayFormatter = DateFormat('d', 'ru_RU'); // Day number
+
+    return List.generate(10, (index) {
+      final date = now.add(Duration(days: index));
+      return {
+        'weekDay': formatter.format(date).toUpperCase(), // Convert to uppercase if needed
+        'day': dayFormatter.format(date),
+      };
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+     final dates = getDates();
     return SafeArea(
         child: Scaffold(
       backgroundColor: ColorConstant.gray100,
@@ -69,10 +87,18 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                   child: Row(
                     children: [
                       CustomImageView(
-                        imagePath: ImageConstant.imgDoctor173137,
+                        url: widget.serviceModel.photo,
+                        height: 173,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        radius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        
                       ),
                       Padding(
-                        padding: getPadding(top: 20, left: 18),
+                        padding: getPadding(top: 14, left: 18),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 140,
                           child: Column(
@@ -80,12 +106,12 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Иванов Алексей",
+                                widget.serviceModel.name,
                                 style: AppStyle.txtMontserratSemiBold18,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                "Участковый врач",
+                                widget.serviceModel.specialization,
                                 style: AppStyle.txtMontserratMedium15Blue600,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -94,7 +120,7 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                                 child: SizedBox(
                                     width: 160,
                                     child: Text(
-                                      "Городская больница № 6 им.Семашко",
+                                      widget.serviceModel.workPlace,
                                       style: AppStyle
                                           .txtMontserratMedium12Gray50001,
                                       overflow: TextOverflow.ellipsis,
@@ -110,20 +136,53 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                                       style: AppStyle
                                           .txtMontserratRegular12Black900,
                                     ),
-                                    Padding(
-                                      padding: getPadding(left: 18),
-                                      child: Text(
-                                        "4.8",
-                                        style: AppStyle
-                                            .txtMontserratMedium15Black900,
-                                      ),
-                                    ),
-                                    CustomImageView(
-                                        svgPath: ImageConstant.imgStarGold,
-                                        height: getSize(12),
-                                        width: getSize(12),
-                                        margin: getMargin(
-                                            left: 3, top: 3, bottom: 3)),
+                                    GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ReviewsScreen(
+                                                              serviceId:
+                                                                  widget.serviceModel.id,
+                                                                  doctor_name:widget.serviceModel.name,
+                                                            )));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                        padding: getPadding(
+                                                            left: 25),
+                                                        child: Text(
+                                                            widget.serviceModel.averageRating.toStringAsFixed(1),
+                                                                
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: AppStyle
+                                                                .txtMontserratMedium15Bluegray800)),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5),
+                                                      child: CustomImageView(
+                                                          svgPath: ImageConstant
+                                                              .imgStarGold,
+                                                          height: getSize(12),
+                                                          width: getSize(12),
+                                                          margin: getMargin(
+                                                              left: 3,
+                                                              top: 3,
+                                                              bottom: 3)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                     Padding(
                                       padding: getPadding(left: 100),
                                       child: CustomImageView(
@@ -155,47 +214,44 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                           style: AppStyle.txtMontserratSemiBold18Black900,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 86,
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                padding: const EdgeInsets.all(8),
-                                itemCount: 10,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (isSelectedIndex == index) {
-                                            isSelectedIndex = -1;
-                                          } else {
-                                            isSelectedIndex = index;
-                                          }
-                                        });
-                                      },
-                                      child: DateContainer(
-                                        background: isSelectedIndex == index
-                                            ? ColorConstant.bluebg
-                                            : Colors.white,
-                                        dayColor: isSelectedIndex == index
-                                            ? AppStyle
-                                                .txtMontserratSemiBold18WhiteA700
-                                            : AppStyle
-                                                .txtMontserratSemiBold18Black900,
-                                        weekDayColor: isSelectedIndex == index
-                                            ? AppStyle.txtMontserratMedium15WhiteA700
-                                            : AppStyle.txtMontserratMedium15Blue600,
-                                      ));
-                                },
-                                separatorBuilder: (BuildContext context, int index) =>
-                                    Padding(padding: getPadding(left: 8, right: 8)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                     Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 86,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(8),
+              itemCount: dates.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isSelectedIndex = isSelectedIndex == index ? -1 : index;
+                    });
+                  },
+                  child: DateContainer(
+                    background: isSelectedIndex == index
+                        ? Colors.blue
+                        : Colors.white,
+                    dayColor: isSelectedIndex == index
+                        ? TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)
+                        : TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                    weekDayColor: isSelectedIndex == index
+                        ? TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500)
+                        : TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w500),
+                    weekDay: dates[index]['weekDay']!,
+                    day: dates[index]['day']!,
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(width: 8),
+            ),
+          ),
+        ),
+      ],
+    ),
                       Padding(
                         padding: getPadding(top: 12, left: 24, bottom: 12),
                         child: Text(
@@ -205,7 +261,7 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                       ),
                       Center(
                           child: TimeContainer(
-                        timeCount: 20,
+                        // timeCount: 20,
                         callback: callBackTime,
                       )),
                       Align(

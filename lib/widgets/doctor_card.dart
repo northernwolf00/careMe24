@@ -112,7 +112,7 @@ class _DoctorCardState extends State<DoctorCard> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AppointmentToDoctorScreen()));
+                          builder: (context) => AppointmentToDoctorScreen(serviceModel: widget.serviceModel,)));
                 } else {
                   if (widget.reason == '') {
                     ElegantNotification.error(

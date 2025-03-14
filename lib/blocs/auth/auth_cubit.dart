@@ -64,7 +64,7 @@ Future<CodeSendResult> login(String data, String password) async {
     return response;
   }
 
-  Future<VerifiedModel> verify(String code)async{
+  Future<VerifiedModel> verify(String code, String fcm_token)async{
     log('$phone');
     final params = {
       if (isEmail)
@@ -72,6 +72,7 @@ Future<CodeSendResult> login(String data, String password) async {
       else
         "phone": phone,
       "otp" : code,
+      "fcm_token": fcm_token,
     };
     final VerifiedModel response = await AuthRepository.verify(params);
     if (response.isSuccess) {

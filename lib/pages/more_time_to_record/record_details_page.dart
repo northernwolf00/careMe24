@@ -2,6 +2,7 @@ import 'package:careme24/pages/payment/payment_defoult_screen.dart';
 import 'package:careme24/utils/utils.dart';
 import 'package:careme24/widgets/time_container.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../theme/app_style.dart';
 import '../../widgets/app_bar/appbar_image.dart';
 import '../../widgets/app_bar/appbar_title.dart';
@@ -12,7 +13,6 @@ import '../../widgets/date_container.dart';
 class RecordDetailsOneScreen extends StatefulWidget {
   const RecordDetailsOneScreen({super.key});
 
-
   @override
   State<RecordDetailsOneScreen> createState() => _RecordDetailsOneScreenState();
 }
@@ -22,19 +22,38 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
   int isSelectedIndex1 = -1;
   int isSelectedIndex2 = -1;
 
-  callBackTime(varTime){
+  callBackTime(varTime) {
     setState(() {
       isSelectedIndexTime = varTime;
     });
   }
 
+  bool isRecordSelected() {
+    return isSelectedIndexTime == true &&
+            (isSelectedIndex1 != -1 || isSelectedIndex2 != -1)
+        ? true
+        : false;
+  }
 
-  bool isRecordSelected(){
-    return isSelectedIndexTime == true && (isSelectedIndex1 != -1 || isSelectedIndex2 != -1) ? true : false;
+  List<Map<String, String>> getDates() {
+    final now = DateTime.now();
+    final formatter = DateFormat('EE', 'ru_RU'); // Weekday in Russian
+    final dayFormatter = DateFormat('d', 'ru_RU'); // Day number
+
+    return List.generate(10, (index) {
+      final date = now.add(Duration(days: index));
+      return {
+        'weekDay': formatter
+            .format(date)
+            .toUpperCase(), // Convert to uppercase if needed
+        'day': dayFormatter.format(date),
+      };
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final dates = getDates();
     return SafeArea(
         child: Scaffold(
             backgroundColor: ColorConstant.whiteA700,
@@ -45,14 +64,12 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                     height: getVerticalSize(16),
                     width: getHorizontalSize(11),
                     svgPath: ImageConstant.imgArrowleft,
-
-                    margin: getMargin(left: 15, right: 15,top: 15, bottom: 15),
+                    margin: getMargin(left: 15, right: 15, top: 15, bottom: 15),
                     onTap: () {
                       Navigator.pop(context);
                     }),
                 centerTitle: true,
                 title: AppbarTitle(text: 'Запись к врачу'),
-
                 styleType: Style.bgFillBlue60001),
             body: SizedBox(
                 width: size.width,
@@ -91,7 +108,8 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                                             return GestureDetector(
                                                 onTap: () {
                                                   setState(() {
-                                                    if (isSelectedIndex1 == index){
+                                                    if (isSelectedIndex1 ==
+                                                        index) {
                                                       isSelectedIndex1 = -1;
                                                     } else {
                                                       isSelectedIndex1 = index;
@@ -100,20 +118,46 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                                                   });
                                                 },
                                                 child: DateContainer(
-                                                  background: isSelectedIndex1 == index
-                                                      ? ColorConstant.bluebg
-                                                      : Colors.white,
-                                                  dayColor: isSelectedIndex1 == index
-                                                      ? AppStyle.txtMontserratSemiBold18WhiteA700
-                                                      : AppStyle.txtMontserratSemiBold18Black900,
-                                                  weekDayColor: isSelectedIndex1 == index
-                                                      ? AppStyle.txtMontserratMedium15WhiteA700
-                                                      : AppStyle.txtMontserratMedium15Blue600,
+                                                  background:
+                                                      isSelectedIndex1 == index
+                                                          ? Colors.blue
+                                                          : Colors.white,
+                                                  dayColor: isSelectedIndex1 ==
+                                                          index
+                                                      ? TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold)
+                                                      : TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                  weekDayColor:
+                                                      isSelectedIndex1 == index
+                                                          ? TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500)
+                                                          : TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                  weekDay: dates[index]
+                                                      ['weekDay']!,
+                                                  day: dates[index]['day']!,
                                                 ));
                                           }))),
                               Padding(
                                   padding: getPadding(left: 2, top: 31),
-                                  child: Text("На следущей неделе",
+                                  child: Text("На следующей неделе",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtH1)),
@@ -125,43 +169,69 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                                       child: GridView.builder(
                                           shrinkWrap: true,
                                           gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              mainAxisExtent:
-                                              getVerticalSize(67),
-                                              crossAxisCount: 4,
-                                              mainAxisSpacing:
-                                              getHorizontalSize(18),
-                                              crossAxisSpacing:
-                                              getHorizontalSize(18)),
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  mainAxisExtent:
+                                                      getVerticalSize(67),
+                                                  crossAxisCount: 4,
+                                                  mainAxisSpacing:
+                                                      getHorizontalSize(18),
+                                                  crossAxisSpacing:
+                                                      getHorizontalSize(18)),
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemCount: 4,
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    if (isSelectedIndex2 == index){
-                                                      isSelectedIndex2 = -1;
-                                                    } else {
-                                                      isSelectedIndex2 = index;
-                                                    }
-                                                    isSelectedIndex1 = -1;
-                                                  });
-                                                },
-                                                child: DateContainer(
-                                                  background: isSelectedIndex2 == index
-                                                      ? ColorConstant.bluebg
-                                                      : Colors.white,
-                                                  dayColor: isSelectedIndex2 == index
-                                                      ? AppStyle.txtMontserratSemiBold18WhiteA700
-                                                      : AppStyle.txtMontserratSemiBold18Black900,
-                                                  weekDayColor: isSelectedIndex2 == index
-                                                      ? AppStyle.txtMontserratMedium15WhiteA700
-                                                      : AppStyle.txtMontserratMedium15Blue600,
-                                                ));
+                                              onTap: () {
+                                                setState(() {
+                                                  if (isSelectedIndex2 ==
+                                                      index) {
+                                                    isSelectedIndex2 = -1;
+                                                  } else {
+                                                    isSelectedIndex2 = index;
+                                                  }
+                                                  isSelectedIndex1 = -1;
+                                                });
+                                              },
+                                              child: DateContainer(
+                                                background:
+                                                    isSelectedIndex2 == index
+                                                        ? Colors.blue
+                                                        : Colors.white,
+                                                dayColor: isSelectedIndex2 ==
+                                                        index
+                                                    ? TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold)
+                                                    : TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                weekDayColor:
+                                                    isSelectedIndex2 == index
+                                                        ? TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500)
+                                                        : TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                weekDay: dates[index + 6]
+                                                    ['weekDay']!,
+                                                day: dates[index + 6]['day']!,
+                                              ),
+                                            );
                                           }))),
                               Padding(
-                                  padding: getPadding(left: 1, top: 36, bottom: 12),
+                                  padding:
+                                      getPadding(left: 1, top: 36, bottom: 12),
                                   child: Text("Время записи",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
@@ -170,24 +240,35 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                                   alignment: Alignment.center,
                                   child: Padding(
                                     padding: getPadding(
-                                      left: 12, top: 12,),
-                                    child: Center(child: TimeContainer(timeCount: 17, callback: callBackTime,)),
+                                      left: 12,
+                                      top: 12,
+                                    ),
+                                    child: Center(
+                                        child: TimeContainer(
+                                      // timeCount: 17,
+                                      callback: callBackTime,
+                                    )),
                                   )),
                             ])))),
             bottomNavigationBar: CustomButton(
                 height: getVerticalSize(56),
                 text: "Записаться",
                 margin: getMargin(left: 24, right: 22, bottom: 20, top: 10),
-                variant: isRecordSelected() ? ButtonVariant.GradientBlue60001IndigoA400 : ButtonVariant.FillGray50001,
-                fontStyle: isRecordSelected() ? ButtonFontStyle.MontserratRomanSemiBold18White: ButtonFontStyle.MontserratRomanSemiBold18Gray300,
+                variant: isRecordSelected()
+                    ? ButtonVariant.GradientBlue60001IndigoA400
+                    : ButtonVariant.FillGray50001,
+                fontStyle: isRecordSelected()
+                    ? ButtonFontStyle.MontserratRomanSemiBold18White
+                    : ButtonFontStyle.MontserratRomanSemiBold18Gray300,
                 onTap: () {
-                    if (isRecordSelected()){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentDefoultScreen()));
-                    }
+                  if (isRecordSelected()) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PaymentDefoultScreen()));
+                  }
                 })));
   }
-
-
 
   onTapArrowleft26(BuildContext context) {
     Navigator.pop(context);

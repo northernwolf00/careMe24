@@ -80,7 +80,7 @@ class InfoMainIcon extends StatelessWidget {
         visibleWindowAtHour = true;
         visibleWeatherAtDay = true;
         break;
-      case "Гололед":
+      case "Гололёд":
         visibleInfoAtDay = true;
         visibleForecast = true;
         visibleWeatherAtHour = true;

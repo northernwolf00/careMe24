@@ -39,10 +39,11 @@ class DangerModel {
   final String country;
   final String city;
   final String comment;
-  final String type;  // Added missing field
+  final String type;
   final double centerLat;
   final double centerLon;
   final double radius;
+  final bool isActive;
 
   DangerModel({
     required this.incidentType,
@@ -50,23 +51,25 @@ class DangerModel {
     required this.country,
     required this.city,
     required this.comment,
-    required this.type,  // Added missing field
+    required this.type,
     required this.centerLat,
     required this.centerLon,
     required this.radius,
+    required this.isActive,
   });
 
   factory DangerModel.fromJson(Map<String, dynamic> json) {
     return DangerModel(
-      incidentType: json['incident_type'] as String,
-      dangerLevel: json['danger_level'] as String,
-      country: json['country'] as String,
-      city: json['city'] as String,
-      comment: json['comment'] as String,
-      type: json['type'] as String,  // Added missing field
-      centerLat: (json['center_lat'] as num).toDouble(),
-      centerLon: (json['center_lon'] as num).toDouble(),
-      radius: (json['radius'] as num).toDouble(),
+      incidentType: json['incident_type'] as String? ?? '',
+      dangerLevel: json['danger_level'] as String? ?? '',
+      country: json['country'] as String? ?? '',
+      city: json['city'] as String? ?? '',
+      comment: json['comment'] as String? ?? '',
+      type: json['type'] as String? ?? '',
+      centerLat: (json['center_lat'] as num?)?.toDouble() ?? 0.0,
+      centerLon: (json['center_lon'] as num?)?.toDouble() ?? 0.0,
+      radius: (json['radius'] as num?)?.toDouble() ?? 0.0,
+      isActive: json['isActive'] as bool? ?? false,
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:careme24/widgets/date_container.dart';
 import 'package:careme24/widgets/outline_gradient_button.dart';
 import 'package:careme24/widgets/time_container.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/app_bar/appbar_image.dart';
 import '../../widgets/app_bar/appbar_title.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
@@ -37,9 +38,24 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
   bool isRecordSelected() {
     return isSelectedTime == true && (isSelectedIndex != -1) ? true : false;
   }
+    List<Map<String, String>> getDates() {
+    final now = DateTime.now();
+    final formatter = DateFormat('EE', 'ru_RU'); // Weekday in Russian
+    final dayFormatter = DateFormat('d', 'ru_RU'); // Day number
+
+    return List.generate(10, (index) {
+      final date = now.add(Duration(days: index));
+      return {
+        'weekDay': formatter.format(date).toUpperCase(), // Convert to uppercase if needed
+        'day': dayFormatter.format(date),
+      };
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
+     final dates = getDates();
     return SafeArea(
         child: Scaffold(
       backgroundColor: ColorConstant.gray100,
@@ -164,47 +180,44 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                         style: AppStyle.txtMontserratSemiBold18Black900,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 86,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.all(8),
-                              itemCount: 10,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (isSelectedIndex == index) {
-                                          isSelectedIndex = -1;
-                                        } else {
-                                          isSelectedIndex = index;
-                                        }
-                                      });
-                                    },
-                                    child: DateContainer(
-                                      background: isSelectedIndex == index
-                                          ? ColorConstant.bluebg
-                                          : Colors.white,
-                                      dayColor: isSelectedIndex == index
-                                          ? AppStyle
-                                              .txtMontserratSemiBold18WhiteA700
-                                          : AppStyle
-                                              .txtMontserratSemiBold18Black900,
-                                      weekDayColor: isSelectedIndex == index
-                                          ? AppStyle.txtMontserratMedium15WhiteA700
-                                          : AppStyle.txtMontserratMedium15Blue600,
-                                    ));
-                              },
-                              separatorBuilder: (BuildContext context, int index) =>
-                                  Padding(padding: getPadding(left: 8, right: 8)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                     Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 86,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(8),
+              itemCount: dates.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isSelectedIndex = isSelectedIndex == index ? -1 : index;
+                    });
+                  },
+                  child: DateContainer(
+                    background: isSelectedIndex == index
+                        ? Colors.blue
+                        : Colors.white,
+                    dayColor: isSelectedIndex == index
+                        ? TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)
+                        : TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                    weekDayColor: isSelectedIndex == index
+                        ? TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500)
+                        : TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w500),
+                    weekDay: dates[index]['weekDay']!,
+                    day: dates[index]['day']!,
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(width: 8),
+            ),
+          ),
+        ),
+      ],
+    ),
                     Padding(
                       padding: getPadding(top: 28, left: 24, bottom: 12),
                       child: Text(
@@ -214,7 +227,7 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                     ),
                     Center(
                         child: TimeContainer(
-                      timeCount: 20,
+                      // timeCount: 20,
                       callback: callBackTime,
                     )),
                     Align(

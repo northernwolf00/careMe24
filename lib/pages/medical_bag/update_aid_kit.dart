@@ -47,6 +47,7 @@ class _MedicineBagAddScreenState extends State<MedicineBagUpdateScreen> {
   }
 
   // Function to create AidKit
+
   Future<void> _updateAidKit() async {
   if (titleController.text.isNotEmpty) {
     try {

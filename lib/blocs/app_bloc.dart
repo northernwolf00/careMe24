@@ -8,6 +8,7 @@ import 'package:careme24/blocs/search/cubit/search_cubit.dart';
 import 'package:careme24/blocs/service/service_cubit.dart';
 import 'package:careme24/pages/doctors/favorites_cubit.dart';
 import 'package:careme24/pages/medical_bag/cubit/aid_kit_cubit.dart';
+import 'package:careme24/pages/medicines/cubit/medicines_cubit.dart';
 import 'package:careme24/pages/wallet/wallet_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,6 +27,7 @@ class AppBloc {
   static final favoritesCubit = FavoriteCubit();
   static final reviewsCubit = ReviewCubit();
   static final aidKitCubit = AidKitCubit();
+  static final medicinaCubit = MedicineCubit();
 
   static final List<BlocProvider> providers = [
     BlocProvider<ApplicationCubit>(create: (context) => applicationCubit),
@@ -41,8 +43,9 @@ class AppBloc {
     BlocProvider<InstitutionCubit>(create: (context) => institutionCubit),
     BlocProvider<ServiceCubit>(create: (context) => serviceCubit),
     BlocProvider<FavoriteCubit>(create: (context) => favoritesCubit),
-     BlocProvider<ReviewCubit>(create: (context) => reviewsCubit),
-     BlocProvider<AidKitCubit>(create: (context) => aidKitCubit),
+    BlocProvider<ReviewCubit>(create: (context) => reviewsCubit),
+    BlocProvider<AidKitCubit>(create: (context) => aidKitCubit),
+    BlocProvider<MedicineCubit>(create: (context) => medicinaCubit),
   ];
 
   static void dispose() {
@@ -61,6 +64,7 @@ class AppBloc {
     favoritesCubit.close();
     reviewsCubit.close();
     aidKitCubit.close();
+    medicinaCubit.close();
   }
 
   ///Singleton factory

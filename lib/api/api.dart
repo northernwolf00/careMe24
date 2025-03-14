@@ -18,6 +18,7 @@ import 'package:careme24/models/status_model.dart';
 import 'package:careme24/models/user_model.dart';
 import 'package:careme24/models/dangerous_models/weather_forecast_model.dart';
 import 'package:careme24/pages/medical_bag/models/aid_kit_model.dart';
+import 'package:careme24/pages/medicines/model/aid_kit_item_mode.dart';
 import 'package:careme24/service/env_service.dart';
 import 'package:dio/dio.dart';
 
@@ -44,6 +45,7 @@ class Api {
   static const String getIcons = '/api/users/get_danger_icons';
   static const String getAllIcons = '/api/users/get_all_danger_icons';
   static const String delet_account = '/api/users/delete_account';
+  static const String sent_fcm_token = '/api/users/send_notification/token';
 
   // contacts
   static const String contactDelete = '/api/contacts';
@@ -1134,26 +1136,26 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
   }
 
 
-  static Future<List<Review>> getMedicines(String id) async {
-    List<Review> reviewList = [];
+  static Future<List<AidKitItem>> getMedicinesById(String id) async {
+    List<AidKitItem> aidKitItemList = [];
     try {
-      var result = await httpManager.get(medicines);
-      log('log getReviews $result');
-      for (var review in result) {
-        reviewList.add(Review.fromJson(review));
+      var result = await httpManager.get('$medical_bag_get_id/$id');
+      log('log getMedicines $result');
+      for (var medicines in result['medicines']) {
+        aidKitItemList.add(AidKitItem.fromJson(medicines));
       }
-      return reviewList;
+      return aidKitItemList;
     } catch (e) {
-      log('Pressure load error getReviews: $e');
+      log('Pressure load error getMedicines: $e');
       return [];
     }
   }
 
-  static Future<Map<String, dynamic>> postMedicines(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> postMedicines(FormData data) async {
     try {
-      var result = await httpManager.post(reviews, data: FormData.fromMap(data));
+      var result = await httpManager.post(medicines, data:data);
        log('$data');
-      log('result postReviews $result');
+      log('result postMedicines $result');
       return result;
     } catch (e) {
       log('Pressure load error postFavorites: $e');
@@ -1168,7 +1170,7 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
 
   static Future<Map<String, dynamic>> deleteMedicines(String id) async {
     try {
-      final result = await httpManager.delete('$reviews/$id',);
+      final result = await httpManager.delete('$medicines/$id',);
       log('Result from deleteReviews API: $result');
 
       // Ensure response is properly formatted
@@ -1181,6 +1183,25 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
       log('Error in deleteReviews API: $e');
       throw Exception("Failed to delete favorite"+e.toString());
     }
+  }
+
+    static Future<Map<String, dynamic>> putMedicines(FormData data) async {
+
+    try {
+      var result = await httpManager.put(medicines, data: data);
+       log('$data');
+      log('result putAidKit $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error putAidKit: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+    
   }
 
   static Future<List<AidKitModel>> getAidKit() async {
@@ -1245,14 +1266,30 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
         "status": "error",
         "message": "Request failed",
         "isSuccess": false,
-      };
-      
+      }; 
     }
-    
   }
 
 
+  static Future<Map<String, dynamic>> postFCMToken(FormData data) async {
+    try {
+      var result = await httpManager.post(sent_fcm_token, data: data);
+       log('$data');
+      log('result postFCMToken $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postFCMToken: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+  }
 
+
+  
 
 
 

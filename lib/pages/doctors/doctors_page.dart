@@ -1,8 +1,8 @@
 import 'package:careme24/pages/doctors/favorites_cubit.dart';
 import 'package:careme24/pages/doctors/favorites_state.dart';
-import 'package:careme24/pages/med/appointment_to_doctor_screen.dart';
-import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
-import 'package:careme24/pages/services_call/doctor_call_page.dart';
+import 'package:careme24/pages/services_call/doctor_call_page_fav.dart';
+import 'package:careme24/pages/services_call/select_reason_screen.dart';
+import 'package:careme24/theme/app_style.dart';
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
@@ -22,6 +22,8 @@ class DoctorsPage extends StatefulWidget {
 }
 
 class _DoctorsPageState extends State<DoctorsPage> {
+  String? selectedReason;
+
   void _callNumber(String phone) async {
     final url = Uri.parse('tel:$phone');
     if (await canLaunchUrl(url)) {
@@ -33,6 +35,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
   void initState() {
     super.initState();
     context.read<FavoriteCubit>().fetchFavorites();
+    selectedReason = null;
   }
 
   @override
@@ -68,109 +71,146 @@ class _DoctorsPageState extends State<DoctorsPage> {
                 onRefresh: () async {
                   context.read<FavoriteCubit>().fetchFavorites();
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Container(
-                    color: Colors.white,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: state.serviceList.length,
-                      separatorBuilder: (context, index) =>
-                          const Divider(height: 24),
-                      itemBuilder: (context, index) {
-                        final item = state.serviceList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            // if (state) {
-                            //   if (widget.where_call == "Запись к врачу" ||
-                            //       widget.where_call == "Помощь онлайн") {
-                            //     Navigator.push(
-                            //         context,
-                            //         MaterialPageRoute(
-                            //             builder: (context) =>
-                            //                 AppointmentToDoctorScreen()));
-                            //   } else {
-                            //     if (widget.reason == '') {
-                            //       ElegantNotification.error(
-                            //               description:
-                            //                   Text('Выберете причину вызова'))
-                            //           .show(context);
-                            //     } else {
-                            //       Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) =>
-                            //                   DoctorCallScreen(
-                            //                     reason: widget.reason,
-                            //                     serviceModel:
-                            //                         widget.serviceModel,
-                            //                     cardId: widget.cardId,
-                            //                   )));
-                            //     }
-                            //   }
-                            // } else {
-                            //   Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //           builder: (context) =>
-                            //               RecordFinalScreen()));
-                            // }
-                          },
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 26,
-                                    backgroundImage:
-                                        NetworkImage(item.service.photo),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        // Pass the reason back when selecting a reason
+                        final reason = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SelectReasonScreen(type: 'med'),
+                          ),
+                        );
+                        // Check if the reason is not null, then update the state
+                        if (reason != null) {
+                          setState(() {
+                            selectedReason = reason;
+                          });
+                        }
+                      },
+                      child: Padding(
+                        padding: getPadding(top: 14),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromRGBO(178, 218, 255, 100),
+                          ),
+                          width: MediaQuery.of(context).size.width - 40,
+                          height: 80,
+                          child: Padding(
+                            padding: getPadding(left: 20, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    selectedReason ?? 'Проблема',
+                                    style: AppStyle.txtMontserratSemiBold19,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.service.name,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
+                                ),
+                                CustomImageView(
+                                  svgPath: ImageConstant.imgArrowdownLightBlue900,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Container(
+                        color: Colors.white,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(16),
+                          itemCount: state.serviceList.length,
+                          separatorBuilder: (context, index) =>
+                              const Divider(height: 24),
+                          itemBuilder: (context, index) {
+                            final item = state.serviceList[index];
+                            return GestureDetector(
+                              onTap: () {
+                                if (selectedReason == null) {
+                                  ElegantNotification.error(
+                                          description:
+                                              Text('Выберете причину вызова'))
+                                      .show(context);
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DoctorCallScreenFav(
+                                                reason: selectedReason ?? '',
+                                                serviceModel:
+                                                    state.serviceList[index],
+                                                cardId: item.serviceId,
+                                              )));
+                                }
+                              },
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 26,
+                                        backgroundImage:
+                                            NetworkImage(item.service.photo),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.service.name,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<FavoriteCubit>()
+                                                .deletFavorites(item.serviceId);
+                                          },
+                                          child: CustomImageView(
+                                            svgPath: ImageConstant.heart_fav,
+                                            height: 24,
+                                            width: 24,
+                                            color: Colors.red,
+                                            margin: getMargin(
+                                                left: 15, top: 5, bottom: 2),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<FavoriteCubit>()
-                                            .deletFavorites(item.serviceId);
-                                      },
-                                      child: CustomImageView(
-                                        svgPath: ImageConstant.heart_fav,
-                                        height: 24,
-                                        width: 24,
-                                        color: Colors.red,
-                                        margin: getMargin(
-                                            left: 15, top: 5, bottom: 2),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        );
-                      },
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               );
             }
@@ -181,3 +221,4 @@ class _DoctorsPageState extends State<DoctorsPage> {
     );
   }
 }
+

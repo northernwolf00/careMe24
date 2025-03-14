@@ -559,14 +559,15 @@ class _CustomDialogState extends State<CustomDialog> {
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
+      // Russian language
     );
 
     if (pickedDate != null) {
-      setState(() {
-        dateController.text =
-            DateFormat('dd.MM.yyyy').format(pickedDate); // Format: DD.MM.YYYY
-      });
-    }
+    setState(() {
+      dateController.text = 
+          Intl.withLocale('ru', () => DateFormat('dd.MM.yyyy').format(pickedDate));
+    });
+  }
   }
 
   @override

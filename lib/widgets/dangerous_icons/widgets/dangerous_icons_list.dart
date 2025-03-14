@@ -65,6 +65,7 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
           },
         ),
         'index': airPollutionIndex,
+        'isActive': true,
       },
       {
         'widget': TemperatureIcon(
@@ -80,6 +81,7 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
           },
         ),
         'index': temperatureIndex,
+        'isActive': true,
       },
       {
         'widget': PressureIcon(
@@ -95,6 +97,7 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
           pressure: widget.pressureAndWind.currentPressure.toInt(),
         ),
         'index': pressureIndex,
+        'isActive': true,
       },
       {
         'widget': WindIcon(
@@ -111,16 +114,38 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
           windDirector: widget.pressureAndWind.currentWindDirection,
         ),
         'index': windIndex,
+        'isActive': true,
       },
-      ...List.generate(infoIconData.length, (index){
-        return {
-          'widget' : Infoicon(icon: infoIconData[index], city: widget.city,),
-          'index' : getValue(infoIconData[index].dangerLevel),
-        };
-      })
-    ];
 
-    iconsData.sort((a, b) => b['index'].compareTo(a['index'])); 
+...infoIconData.map((icon) {
+      return {
+        'widget': Infoicon(icon: icon, city: widget.city),
+        'index': getValue(icon.dangerLevel),
+        'isActive': icon.isActive,
+      };
+    }).toList(),
+  ];
+
+  // Sorting: Active icons first, then by index in descending order
+  iconsData.sort((a, b) {
+  if (a['isActive'] == b['isActive']) {
+    return b['index'].compareTo(a['index']); // Sort by index if isActive is the same
+  }
+  return a['isActive'] ? -1 : 1; // isActive = true comes first
+});
+
+
+
+    //   ...List.generate(infoIconData.length, (index){
+    //     return {
+    //       'widget' : Infoicon(icon: infoIconData[index], city: widget.city,),
+    //       'index' : getValue(infoIconData[index].dangerLevel),
+          
+    //     };
+    //   })
+    // ];
+
+    // iconsData.sort((a, b) => b['index'].compareTo(a['index'])); 
   }
 
   int getValue (String text){

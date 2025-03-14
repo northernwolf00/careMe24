@@ -5,6 +5,8 @@ import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/auth/cubit.dart';
 import 'package:careme24/theme/app_colors.dart';
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -49,6 +51,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
 
   bool hasError = false;
   String currentText = "";
+   String? token = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -56,6 +59,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     errorController = StreamController<ErrorAnimationType>();
     startTimer();
     super.initState();
+    _initializeFirebase();
   }
 
   @override
@@ -64,6 +68,18 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     timer.cancel();
 
     super.dispose();
+  }
+
+   Future<void> _initializeFirebase() async {
+    await Firebase.initializeApp();
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Get the FCM token
+    token = await messaging.getToken();
+    log("FCM Token: $token");
+
+
+    
   }
 
   void doOnTrue() {
@@ -136,7 +152,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       length: 4,
                       onCompleted: (value)async{
                         if (value.length == 4) {
-                          final response = await AppBloc.authCubit.verify(value);
+                          final response = await AppBloc.authCubit.verify(value, token!);
                           if (!response.isSuccess) {
                             ElegantNotification.error(
                               description: Text('Неверный код')

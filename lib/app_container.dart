@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:careme24/blocs/app_bloc.dart';
+import 'package:careme24/firebase_setup.dart';
 import 'package:careme24/pages/home/main_page.dart';
 import 'package:careme24/pages/med/med_home_page.dart';
 import 'package:careme24/pages/services_call/mes_main_page.dart';
@@ -6,6 +10,8 @@ import 'package:careme24/theme/theme.dart';
 import 'package:careme24/utils/utils.dart';
 import 'package:careme24/widgets/custom_bottom_bar.dart';
 import 'package:careme24/widgets/widgets.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -51,6 +57,8 @@ class _AppContainerState extends State<AppContainer> {
   void initState() {
     _bottomBarIndex = widget.text;
     super.initState();
+      _initializeFirebase();
+       FirebaseSetup();
   }
 
   Future<bool> _onWillPop() async {
@@ -61,6 +69,28 @@ class _AppContainerState extends State<AppContainer> {
       return false;
     }
     return true;  
+  }
+
+    Future<void> _initializeFirebase() async {
+    try {
+      await Firebase.initializeApp();
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      // Get the FCM token
+      String? token = await messaging.getToken();
+      log("FCM Token: $token");
+
+      // Send the token to the backend
+      if (token != null) {
+        AppBloc.drawerCubit.sendFCMToken(
+          [token],
+          'Test Title',
+          'This is a test message',
+        );
+      }
+    } catch (e) {
+      log("Firebase Initialization Error: $e");
+    }
   }
 
   @override

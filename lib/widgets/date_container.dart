@@ -1,32 +1,42 @@
-import 'package:careme24/theme/app_decoration.dart';
-import 'package:careme24/utils/size_utils.dart';
+
 import 'package:flutter/material.dart';
 
 
 class DateContainer extends StatelessWidget {
-  late Color background;
-  late TextStyle dayColor;
-  late TextStyle weekDayColor;
+  final Color background;
+  final TextStyle dayColor;
+  final TextStyle weekDayColor;
+  final String weekDay;
+  final String day;
 
-  DateContainer({super.key, 
+  DateContainer({
+    super.key,
     required this.background,
     required this.dayColor,
     required this.weekDayColor,
-});
+    required this.weekDay,
+    required this.day,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 60,
       height: 66,
-      decoration: AppDecoration.smallOutBlackLine.copyWith(
-          borderRadius: BorderRadiusStyle.roundedBorder10, color: background),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: background,
+        border: Border.all(color: Colors.black), // Adjust as needed
+      ),
       child: Column(
-        children: [Padding(
-          padding: getPadding(top: 8, bottom: 8),
-          child: Text("ПН", style: weekDayColor),
-        ),
-        Text("25", style: dayColor,)],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(weekDay, style: weekDayColor),
+          ),
+          Text(day, style: dayColor),
+        ],
       ),
     );
   }
