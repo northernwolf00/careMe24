@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:careme24/app_container.dart';
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/auth/cubit.dart';
 import 'package:careme24/pages/auth/login_page.dart';
@@ -90,9 +91,9 @@ class _VerifyCodeResetPageState extends State<VerifyCodeResetPage> {
       listener: (context, state) {
         if (state is AuthVerifyResetPasswordState) {
 
-          Navigator.pushAndRemoveUntil(
+             Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(builder: (context) => const AppContainer(0)),
       (Route<dynamic> route) => false,  
     );
         }},

@@ -17,6 +17,7 @@ class MesCallScreen extends StatelessWidget {
     super.key,
     required this.reason,
     required this.serviceModel,
+
     required this.medCardId,
   });
 
@@ -80,7 +81,8 @@ class MesCallScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           CustomImageView(
-                            svgPath: 'assets/icons/fire.svg',
+                            url: serviceModel.photo,
+                            // svgPath: 'assets/icons/fire.svg',
                           ),
                         ],
                       ),

@@ -1,11 +1,23 @@
+import 'dart:developer';
+
+import 'package:careme24/pages/medical_bag/medicina_list_scree.dart';
 import 'package:careme24/pages/medical_bag/widgets/custom_gradient_button.dart';
 import 'package:careme24/pages/medical_bag/widgets/custom_text_field_dialog.dart';
+import 'package:careme24/pages/medicines/cubit/in_take_state.dart';
+import 'package:careme24/pages/medicines/cubit/intake_cubit.dart';
+import 'package:careme24/pages/medicines/cubit/medicines_cubit.dart';
+import 'package:careme24/pages/medicines/cubit/medicines_state.dart';
+import 'package:careme24/pages/medicines/model/aid_kit_item_mode.dart';
+import 'package:careme24/pages/medicines/model/owner_id_model.dart';
+import 'package:careme24/pages/medicines/widgets/alarm_widget.dart';
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
@@ -23,6 +35,10 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
   void initState() {
     super.initState();
     generateDaysList();
+    context.read<MedicineCubit>().getMedicines();
+    String day = DateFormat('d').format(dates[0]);
+    selectedIndex = 0;
+    context.read<InTakeTimeCubit>().getInTakeTimeMed(day);
   }
 
   void generateDaysList() {
@@ -41,6 +57,10 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
       });
     }
   }
+
+  String id_aifkit = '';
+
+  List<MedicineItem> medicines = [];
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +112,10 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
                           selectedIndex = index;
                         });
                         updateMonth(index);
+                        String day = DateFormat('d').format(dates[index]);
+                        log(day);
+
+                        context.read<InTakeTimeCubit>().getInTakeTimeMed(day);
                       },
                       child: Container(
                         height: 40,
@@ -141,68 +165,155 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
                             fontFamily: "Montserrat",
                             color: Colors.blue),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset("assets/icons/time.svg"),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(
-                                  '8:30',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      fontFamily: "Montserrat",
-                                      color: Colors.black),
-                                ),
-                              ),
-                            ]),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 0),
-                        itemCount: 3,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      AddMedicineMedicinesDialogEdit(
-                                    medicineName: "Феназепам",
-                                    dosage: "0.3мг/3",
-                                  ),
-                                );
-                              },
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    index == 0 ? 'Феназепам' : "Эргоферон",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        fontFamily: "Montserrat",
-                                        color: Colors.black),
-                                  ),
-                                  Text(
-                                    index == 0 ? '0.3мг/3' : "1 т./2",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                        fontFamily: "Montserrat",
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
+                      BlocBuilder<InTakeTimeCubit, InTakeMedicinesState>(
+                                builder: (context, state) {
+                          if (state is InTakeMedicinesLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (state is InTakeMedicinesLoaded) {
+                            final time = state.aidKits;
+                            return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlarmScreen(id:time[0].id , medicine:medicines, day:  DateFormat('d').format(dates[selectedIndex!]),time: time[0].time );
+                                      },
+                                    );
+                              
+                            },
+                            child:
+                                 Padding(
+                                  padding: const EdgeInsets.only(top: 15),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SvgPicture.asset("assets/icons/time.svg"),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            time[0].time,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                fontFamily: "Montserrat",
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ]),
+                                )
+                          
                           );
-                        },
+                        }else{
+                       return   GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlarmScreen(id:"", medicine:medicines, day:  DateFormat('d').format(dates[selectedIndex!]),time : '0 : 0' );
+                                      },
+                                    );
+                              
+                            },
+                            child:
+                                 Padding(
+                                  padding: const EdgeInsets.only(top: 15),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SvgPicture.asset("assets/icons/time.svg"),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                           '0 : 0',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                fontFamily: "Montserrat",
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ]),
+                                )
+                          
+                          );
+                        }
+                        }
                       ),
+
+                      
+                      BlocBuilder<MedicineCubit, MedicinesState>(
+                          builder: (context, state) {
+                        if (state is MedicinesLoading) { 
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (state is MedicinesError) {
+                          return Center(child: Text(state.message));
+                        } else if (state is MedicinesGetLoaded) {
+                          final medicineList = state.aidKits;
+                          medicines.clear();
+                          medicines.addAll(medicineList);
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(top: 0),
+                            itemCount: medicineList.length,
+                            itemBuilder: (context, index) {
+                              id_aifkit = medicineList[index].aidKitId;
+                              return GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        AddMedicineMedicinesDialogEdit(
+                                            medicineName: medicineList[index]
+                                                .title,
+                                            dosage:
+                                                medicineList[index]
+                                                    .count
+                                                    .toString(),
+                                            id: medicineList[index].id,
+                                            aid_kit_id:
+                                                medicineList[index].aidKitId,
+                                            date: medicineList[index]
+                                                .expirationDate
+                                                .toString()),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        medicineList[index].title,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            fontFamily: "Montserrat",
+                                            color: Colors.black),
+                                      ),
+                                      Text(
+                                        medicineList[index].count.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            fontFamily: "Montserrat",
+                                            color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                              child: Text('Нет доступных данных'));
+                        }
+                      }),
                       Padding(
                         padding: const EdgeInsets.only(
                           top: 10,
@@ -219,7 +330,9 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return AddMedicineMedicinesDialog();
+                                    return AddMedicineDialog(
+                                      id: id_aifkit,
+                                    );
                                   },
                                 );
                               },
@@ -241,99 +354,6 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
                       const SizedBox(
                         height: 5,
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset("assets/icons/time.svg"),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Text(
-                                '12:00',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    fontFamily: "Montserrat",
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ]),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 0),
-                        itemCount: 3,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      AddMedicineMedicinesDialogEdit(
-                                    medicineName: "Феназепам",
-                                    dosage: "0.3мг/3",
-                                  ),
-                                );
-                              },
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    index == 0 ? 'Феназепам' : "Эргоферон",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        fontFamily: "Montserrat",
-                                        color: Colors.black),
-                                  ),
-                                  Text(
-                                    index == 0 ? '0.3мг/3' : "1 т./2",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                        fontFamily: "Montserrat",
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 20),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.add,
-                              size: 24,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AddMedicineMedicinesDialog();
-                                  },
-                                );
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: Text(
-                                  'Добавить',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                      fontFamily: "Montserrat",
-                                      color: Colors.black),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -346,81 +366,20 @@ class _MonthDaysSelectorState extends State<MonthDaysSelector> {
   }
 }
 
-class AddMedicineMedicinesDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      content: SizedBox(
-        height: 260,
-        width: MediaQuery.of(context).size.width - 20,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.close,
-                        size: 34,
-                      )),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Введите лекарства',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        fontFamily: "Montserrat",
-                        color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15),
-              child: CustomTextFieldDialog(
-                hintText: 'Наименование',
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: CustomTextFieldDialog(
-                hintText: 'Дозировка',
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: CustomGradientButton(
-                text: 'Добавить',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class AddMedicineMedicinesDialogEdit extends StatelessWidget {
   final String medicineName;
   final String dosage;
+  final String id;
+  final String aid_kit_id;
+  final String date;
 
-  AddMedicineMedicinesDialogEdit(
-      {required this.medicineName, required this.dosage});
+  AddMedicineMedicinesDialogEdit({
+    required this.medicineName,
+    required this.dosage,
+    required this.id,
+    required this.aid_kit_id,
+    required this.date,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -470,38 +429,208 @@ class AddMedicineMedicinesDialogEdit extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 15),
               child: CustomTextFieldDialog(
-                 controller: nameController,
+                controller: nameController,
                 hintText: 'Наименование',
               ),
-               
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child:CustomTextFieldDialog(
-                  controller: dosageController,
+              child: CustomTextFieldDialog(
+                controller: dosageController,
                 hintText: 'Дозировка',
-              ),
-              
-            
-            ),
-           Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: CustomGradientButton(
-                text: 'Изменить',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 15),
-              child: CustomGradientRedButton(
-                text: 'Удалить',
-                onPressed: () {
+              child: BlocConsumer<MedicineCubit, MedicinesState>(
+                  listener: (context, state) {
+                if (state is MedicinesUpdated) {
+                  ElegantNotification.success(description: Text(state.detail))
+                      .show(context);
                   Navigator.pop(context);
-                },
-              ),
+                } else if (state is MedicinesError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                }
+              }, builder: (context, state) {
+                return CustomGradientButton(
+                  text: 'Изменить',
+                  onPressed: () {
+                    context.read<MedicineCubit>().updateMedicinesGet(
+                        id,
+                        nameController.text,
+                        date,
+                        dosageController.text,
+                        aid_kit_id);
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: BlocConsumer<MedicineCubit, MedicinesState>(
+                  listener: (context, state) {
+                if (state is MedicinesDeleted) {
+                  ElegantNotification.success(description: Text(state.detail))
+                      .show(context);
+                  //
+                } else if (state is MedicinesError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                }
+              }, builder: (context, state) {
+                return CustomGradientRedButton(
+                  text: 'Удалить',
+                  onPressed: () {
+                    context.read<MedicineCubit>().deletMedicinesGet(id);
+                    Navigator.pop(context);
+                  },
+                );
+              }),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AddMedicineDialog extends StatefulWidget {
+  final String id;
+
+  const AddMedicineDialog({required this.id, Key? key}) : super(key: key);
+
+  @override
+  State<AddMedicineDialog> createState() => _AddMedicineDialogState();
+}
+
+class _AddMedicineDialogState extends State<AddMedicineDialog> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController expirationController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    expirationController.dispose();
+    quantityController.dispose();
+    super.dispose();
+  }
+
+  // Function to show date picker
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Default to today
+      firstDate: DateTime(2000), // Start year
+      lastDate: DateTime(2100), // End year
+    );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      setState(() {
+        expirationController.text = formattedDate;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      content: SizedBox(
+        height: 300,
+        width: MediaQuery.of(context).size.width - 20,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.close,
+                        size: 34,
+                      )),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Введите лекарства',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        fontFamily: "Montserrat",
+                        color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: CustomTextFieldDialog(
+                hintText: 'Наименование',
+                controller: nameController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: GestureDetector(
+                onTap: () => _selectDate(context), // Open date picker on tap
+                child: AbsorbPointer(
+                  child: CustomTextFieldDialog(
+                    hintText: 'Срок годности',
+                    controller: expirationController,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: CustomTextFieldDialog(
+                hintText: 'Количество',
+                controller: quantityController,
+              ),
+            ),
+            BlocConsumer<MedicineCubit, MedicinesState>(
+              listener: (context, state) {
+                if (state is MedicinesCreated) {
+                  ElegantNotification.success(description: Text(state.detail))
+                      .show(context);
+                 
+                } else if (state is MedicinesError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return CustomGradientButton(
+                  text:
+                      state is MedicinesLoading ? 'Добавление...' : 'Добавить',
+                  onPressed: () {
+                    context.read<MedicineCubit>().createMedicinesGet(
+                          nameController.text,
+                          expirationController.text,
+                          quantityController.text,
+                          widget.id,
+                        );
+                        Navigator.pop(context);
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),

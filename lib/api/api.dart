@@ -19,6 +19,8 @@ import 'package:careme24/models/user_model.dart';
 import 'package:careme24/models/dangerous_models/weather_forecast_model.dart';
 import 'package:careme24/pages/medical_bag/models/aid_kit_model.dart';
 import 'package:careme24/pages/medicines/model/aid_kit_item_mode.dart';
+import 'package:careme24/pages/medicines/model/intake_model.dart';
+import 'package:careme24/pages/medicines/model/owner_id_model.dart';
 import 'package:careme24/service/env_service.dart';
 import 'package:dio/dio.dart';
 
@@ -148,7 +150,7 @@ class Api {
       log('$result');
       return result;
     } catch (e) {
-      log('Register error: $e');
+      log('Register resetPhoneResponse: $e');
       return {
         "status": "error",
         "message": "Request failed",
@@ -165,7 +167,7 @@ class Api {
       log('$result');
       return result;
     } catch (e) {
-      log('Register error: $e');
+      log('Register resetEmailResponse: $e');
       return {
         "status": "error",
         "message": "Request failed",
@@ -183,7 +185,7 @@ class Api {
       log('$result');
       return VerifiedResetPasswordModel.fromJson(result);
     } catch (e) {
-      log('Verification error: $e');
+      log('Verification error verifiedResetPhoneRes: $e');
       return VerifiedResetPasswordModel(
         status: 'error',
         isSuccess: false,
@@ -200,7 +202,7 @@ class Api {
       log('$result');
       return VerifiedResetPasswordModel.fromJson(result);
     } catch (e) {
-      log('Verification error: $e');
+      log('Verification error verifiedResetEmailRes: $e');
       return VerifiedResetPasswordModel(
         status: 'error',
         isSuccess: false,
@@ -217,7 +219,7 @@ class Api {
       log('$result');
       return CodeSendResetResult.fromJson(result);
     } catch (e) {
-      log('Register error: $e');
+      log('Register error resetPasswordP: $e');
       return CodeSendResetResult(
         status: 'error',
         isSuccess: false,
@@ -234,7 +236,7 @@ class Api {
       log('$result');
       return CodeSendResetResult.fromJson(result);
     } catch (e) {
-      log('Register error: $e');
+      log('Register error resetPasswordE: $e');
       return CodeSendResetResult(
         status: 'error',
         isSuccess: false,
@@ -252,7 +254,7 @@ class Api {
       log('$result');
       return VerifiedResetPasswordModel.fromJson(result);
     } catch (e) {
-      log('Verification error: $e');
+      log('Verification error verifiedResetPasswordP: $e');
       return VerifiedResetPasswordModel(
         status: 'error',
         isSuccess: false,
@@ -270,7 +272,7 @@ class Api {
       log('$result');
       return VerifiedResetPasswordModel.fromJson(result);
     } catch (e) {
-      log('Verification error: $e');
+      log('Verification error verifiedResetPasswordE: $e');
       return VerifiedResetPasswordModel(
         status: 'error',
         isSuccess: false,
@@ -286,7 +288,7 @@ class Api {
       log('$result');
       return VerifiedModel.fromJson(result);
     } catch (e) {
-      log('Verification error: $e');
+      log('Verification error verified: $e');
       return VerifiedModel(
           status: 'error',
           detail: 'error',
@@ -302,7 +304,7 @@ class Api {
       log('ssssssaa ${result['access_token']}');
       return result['access_token'];
     } catch (e) {
-      log('Refresh token error: $e');
+      log('Refresh token error refresh: $e');
       return null;
     }
   }
@@ -314,9 +316,9 @@ class Api {
       for (var contact in result) {
         contacts.add(ContactModel.fromJson(contact));
       }
-      log('$result');
+      log(' loadContactsUnverified :$result');
     } catch (e) {
-      log('Load unverified contacts error: $e');
+      log('Load unverified contacts error loadContactsUnverified: $e');
     }
     return contacts;
   }
@@ -328,9 +330,9 @@ class Api {
       for (var contact in result) {
         contacts.add(ContactModel.fromJson(contact));
       }
-      log('$result');
+      log(' loadContactsInvited: $result');
     } catch (e) {
-      log('Load invited contacts error: $e');
+      log('Load invited contacts error loadContactsInvited: $e');
     }
     return contacts;
   }
@@ -342,9 +344,9 @@ class Api {
       for (var contact in result) {
         contacts.add(ContactModel.fromJson(contact));
       }
-      log('$result');
+      log(' loadContactsAll: $result');
     } catch (e) {
-      log('Load invited contacts error: $e');
+      log('Load invited contacts error loadContactsAll: $e');
     }
     return contacts;
   }
@@ -352,10 +354,10 @@ class Api {
   static Future<StatusModel> deleteContact(String id) async {
     try {
       var result = await httpManager.delete('$contactDelete/$id');
-      log('$result');
+      log(' deleteContact: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Delete contact error: $e');
+      log('Delete contact error deleteContact: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -366,10 +368,10 @@ class Api {
     try {
       var result =
           await httpManager.post('$shareMedCard/$cardId', params: params);
-      log('$result');
+      log('shareCard: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Share card error: $e');
+      log('Share card error shareCard: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -378,10 +380,10 @@ class Api {
       String id, String requestType) async {
     try {
       var result = await httpManager.post('$verifyRequest/$id/$requestType');
-      log('$result');
+      log(' cardVerifyRequest: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Card verify request error: $e');
+      log('Card verify request error cardVerifyRequest: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -389,10 +391,10 @@ class Api {
   static Future<StatusModel> verifyContact(String id) async {
     try {
       var result = await httpManager.patch('$contactVerify/$id/verify');
-      log('$result');
+      log('verifyContact: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Verify contact error: $e');
+      log('Verify contact error verifyContact: $e');
       return StatusModel(
           status: 'error',
           detail: 'error',
@@ -402,27 +404,27 @@ class Api {
 
   static Future<StatusModel> updateContact(
       String id, Map<String, dynamic> data) async {
-    log('$data');
+    log(' updateContact: $data');
     try {
       var result = await httpManager.patch('$contactUpdate/$id',
           data: FormData.fromMap(data));
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Update contact error: $e');
+      log('Update contact error updateContact: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
 
   static Future<StatusModel> addContact(Map<String, dynamic> data) async {
-    log('$data');
+    log('  addContact: $data');
     try {
       var result =
           await httpManager.post(contactAdd, data: FormData.fromMap(data));
-      log('$result');
+      log('  addContact: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Add contact error: $e');
+      log('Add contact error addContact: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -431,10 +433,10 @@ class Api {
   static Future<UserModel> loadMyInfo() async {
     try {
       var result = await httpManager.get(getMyInfo);
-      log('$result');
+      log(' loadMyInfo: $result');
       return UserModel.fromJson(result);
     } catch (e) {
-      log('Load my info error: $e');
+      log('Load my info error loadMyInfo: $e');
       return UserModel(
           id: '0',
           medCardID: '',
@@ -462,7 +464,7 @@ class Api {
       log('$result');
       return result;
     } catch (e) {
-      log('Change balance error: $e');
+      log('Change balance error changeBalance: $e');
       return {
         "status": "error",
         "isSuccess": false,
@@ -474,10 +476,10 @@ class Api {
   static Future<Map<String, dynamic>> deletAccount() async {
     try {
       var result = await httpManager.post(delet_account);
-      log('$result');
+      log('deletAccount:  $result');
       return result;
     } catch (e) {
-      log(' error: $e');
+      log(' error deletAccount: $e');
       return {
         "status": "error",
         "isSuccess": false,
@@ -489,10 +491,10 @@ class Api {
   static Future<MedcardModel> loadMyCard() async {
     try {
       var result = await httpManager.get(getMyCard);
-      log('$result');
+      log( ' loadMyCard: $result');
       return MedcardModel.fromJson(result);
     } catch (e) {
-      log('Load my card error: $e');
+      log('Load my card error loadMyCard: $e');
       return MedcardModel(
           id: '',
           personalInfo: PersonalInfo(
@@ -527,14 +529,14 @@ class Api {
     List<MedcardModel> medCardModels = [];
     try {
       var result = await httpManager.get(getOtherCards);
-      log('$result');
+      log(' loadOtherCards : $result');
       if (result is List) {
         for (var card in result) {
           medCardModels.add(MedcardModel.fromJson(card));
         }
       }
     } catch (e) {
-      log('Load other cards error: $e');
+      log('Load other cards error loadOtherCards: $e');
     }
     return medCardModels;
   }
@@ -543,14 +545,14 @@ class Api {
     List<MedcardModel> medcardsModels = [];
     try {
       var result = await httpManager.get(unverifiedCards);
-      log('$result');
+      log('loadUnverifiedCards: $result');
       if (result is List) {
         for (var card in result) {
           medcardsModels.add(MedcardModel.fromJson(card));
         }
       }
     } catch (e) {
-      log('Load unverified cards error: $e');
+      log('Load unverified cards error loadUnverifiedCards: $e');
     }
     return medcardsModels;
   }
@@ -559,14 +561,14 @@ class Api {
     List<MedcardModel> medcardsModels = [];
     try {
       var result = await httpManager.get(cardRequestsToMe);
-      log('$result');
+      log('loadRequestsToMe: $result');
       if (result is List) {
         for (var card in result) {
           medcardsModels.add(MedcardModel.fromJson(card));
         }
       }
     } catch (e) {
-      log('Load requests to me error: $e');
+      log('Load requests to me error loadRequestsToMe: $e');
     }
     return medcardsModels;
   }
@@ -575,10 +577,10 @@ class Api {
     try {
       var result =
           await httpManager.post("$sendCardRequest/$id/accept_request");
-      log('$result');
+      log('acceptCardRequest: $result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Accept card request error: $e');
+      log('Accept card request error acceptCardRequest: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -588,10 +590,10 @@ class Api {
     try {
       var result =
           await httpManager.post(medcardAdd, data: FormData.fromMap(data));
-      log('$result');
+      log('addMedCard: $result');
       return MedcardIdModel.fromJson(result);
     } catch (e) {
-      log('Add med card error: $e');
+      log('Add med card error addMedCard: $e');
       return MedcardIdModel(id: '');
     }
   }
@@ -600,7 +602,7 @@ class Api {
     List<UserModel> users = [];
     try {
       var result = await httpManager.get(userSearch, params: params);
-      log('${result['users']}');
+      log(' searchUser: ${result['users']}');
 
       if (result['users'] is List) {
         for (var user in result['users']) {
@@ -608,7 +610,7 @@ class Api {
         }
       }
     } catch (e) {
-      log('Search user error: $e');
+      log('Search user error searchUser: $e');
     }
     return users;
   }
@@ -622,7 +624,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Update card personal info error: $e');
+      log('Update card personal info error updateCardPersonalInfo: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -633,7 +635,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Delete card verify request error: $e');
+      log('Delete card verify request error deleteCardVerifyRequest: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -647,7 +649,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Update med insurance error: $e');
+      log('Update med insurance error updateMedInsurance: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -667,7 +669,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Update med insurance error: $e');
+      log('Update med insurance error addMedInfo: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -678,7 +680,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Delete card error: $e');
+      log('Delete card error deleteCard: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -689,7 +691,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Do med card mine error: $e');
+      log('Do med card mine error doMedCardMine: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -702,7 +704,7 @@ class Api {
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Send request error: $e');
+      log('Send request error sendRequest: $e');
       return StatusModel(status: 'error', isSuccess: false, detail: '');
     }
   }
@@ -713,7 +715,7 @@ class Api {
       var result = await httpManager.get(getUserInfo);
       log('$result');
     } catch (e) {
-      log('Load user info error: $e');
+      log('Load user info error loadUserInfo: $e');
     }
   }
 
@@ -728,7 +730,7 @@ class Api {
       log('$result');
       return AirQualityResponse.fromJson(result);
     } catch (e) {
-      log('Air pollution load error: $e');
+      log('Air pollution load error loadAirPollution: $e');
       return AirQualityResponse(haveData: false, list: []);
     }
   }
@@ -742,7 +744,7 @@ class Api {
       log('$result');
       return WeatherForecast.fromJson(result);
     } catch (e) {
-      log('Weather load error: $e');
+      log('Weather load error loadWeather: $e');
       return WeatherForecast(
           haveData: false, currentTemperature: 0, forecast: []);
     }
@@ -757,7 +759,7 @@ class Api {
       log('$result');
       return PressureAndWindData.fromJson(result);
     } catch (e) {
-      log('Pressure load error WindData: $e');
+      log('Pressure load error WindData loadPressure: $e');
       return PressureAndWindData(
           haveData: false,
           currentPressure: 0,
@@ -772,15 +774,21 @@ class Api {
 
   // request
   static Future<RequestStatusModel> createRequest(
-      Map<String, dynamic> data) async {
-    log('$data');
+      FormData data) async {
+    log(' createRequest data : $data');
     try {
-      var result = await httpManager.post('$requests/create',
-          data: FormData.fromMap(data));
+      var result = await httpManager.post('/api/requests/create',
+          data: data);
+
+          log('API Response: $result');
+
+    if (result == null) {
+      throw Exception('API response is null');
+    }
       log('$result');
       return RequestStatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error RequestStatusModel: $e');
+      log('Pressure load error RequestStatusModel createRequest: $e');
       return RequestStatusModel(
           status: 'error', detail: 'error', isSuccess: false, requestId: '');
     }
@@ -789,11 +797,11 @@ class Api {
   static Future<StatusModel> deleteRequest(Map<String, dynamic> params) async {
     log('$params');
     try {
-      var result = await httpManager.delete('$requests/delete', params: params);
+      var result = await httpManager.delete('/api/requests/delete', params: params);
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
-      log('Pressure load error deleteRequest: $e');
+      log('Pressure load error deleteRequest deleteRequest: $e');
       return StatusModel(status: 'error', detail: 'error', isSuccess: false);
     }
   }
@@ -803,7 +811,7 @@ class Api {
     log('$params');
     log('$data');
     try {
-      var result = await httpManager.put('$requests/update',
+      var result = await httpManager.put('/api/requests/update',
           params: params, data: FormData.fromMap(data));
       log('$result');
       return StatusModel.fromJson(result);
@@ -816,8 +824,8 @@ class Api {
   static Future<List<RequestModel>> getContactsRequests() async {
     List<RequestModel> requestsList = [];
     try {
-      var result = await httpManager.get('$requests/get_contacts_requests');
-      log('get req $result');
+      var result = await httpManager.get('/api/requests/get_contacts_requests');
+      log('get getContactsRequests: $result');
       for (var request in result) {
         requestsList.add(RequestModel.fromJson(request));
       }
@@ -828,9 +836,27 @@ class Api {
     }
   }
 
+  static Future<List<ServiceModel>> getServicesChat() async {
+     List<ServiceModel> serviceList = [];
+    try {
+      var result =
+          await httpManager.get('/api/services/chat/list');
+      log('log $result');
+      for (var service in result) {
+        serviceList.add(ServiceModel.fromJson(service));
+      }
+      return serviceList;
+    } catch (e) {
+      log('Pressure load error getServices: $e');
+      return [];
+    }
+  }
+
+ 
+
   static Future<void> seenContactRequest(Map<String, dynamic> params) async {
     try {
-      var result = await httpManager.post('$requests/seen_contact_request',
+      var result = await httpManager.post('/api/requests/seen_contact_request',
           params: params);
       log('get req $result');
     } catch (e) {
@@ -853,7 +879,7 @@ class Api {
       Map<String, dynamic> data) async {
     log('$data');
     try {
-      var result = await httpManager.post('$requests/112/create',
+      var result = await httpManager.post('/api/requests/112/create',
           data: FormData.fromMap(data));
       log('$result');
       return RequestStatusModel.fromJson(result);
@@ -869,7 +895,7 @@ class Api {
     log('$params');
     try {
       var result =
-          await httpManager.delete('$requests/112/delete', params: params);
+          await httpManager.delete('/api/requests/112/delete', params: params);
       log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
@@ -883,7 +909,7 @@ class Api {
     log('$params');
     log('$data');
     try {
-      var result = await httpManager.put('$requests/112/update',
+      var result = await httpManager.put('/api/requests/112/update',
           params: params, data: FormData.fromMap(data));
       log('$result');
       return StatusModel.fromJson(result);
@@ -896,7 +922,7 @@ class Api {
   static Future<List<RequestModel>> getContactsRequests112() async {
     List<RequestModel> requestsList = [];
     try {
-      var result = await httpManager.get('$requests/112/get_contacts_requests');
+      var result = await httpManager.get('/api/requests/112/get_contacts_requests');
       for (var request in result) {
         requestsList.add(RequestModel.fromJson(request));
       }
@@ -964,10 +990,13 @@ class Api {
   static Future<List<InstitutionModel>> getInstitutions(
       Map<String, dynamic> params) async {
     List<InstitutionModel> institutionList = [];
+    log('getInstitutions: $params');
     try {
       var result =
-          await httpManager.get('$requests/get_institutions', params: params);
+          await httpManager.get('/api/requests/get_institutions', params: params);
+          log('getInstitutions: $result');
       for (var service in result) {
+
         institutionList.add(InstitutionModel.fromJson(service));
       }
       return institutionList;
@@ -1140,9 +1169,23 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
     List<AidKitItem> aidKitItemList = [];
     try {
       var result = await httpManager.get('$medical_bag_get_id/$id');
-      log('log getMedicines $result');
+      log('log getMedicinesById $result');
       for (var medicines in result['medicines']) {
         aidKitItemList.add(AidKitItem.fromJson(medicines));
+      }
+      return aidKitItemList;
+    } catch (e) {
+      log('Pressure load error getMedicinesById: $e');
+      return [];
+    }
+  }
+   static Future<List<MedicineItem>> getMedicines() async {
+    List<MedicineItem> aidKitItemList = [];
+    try {
+      var result = await httpManager.get(medicines);
+      log('log getMedicines $result');
+      for (var medicines in result) {
+        aidKitItemList.add(MedicineItem.fromJson(medicines));
       }
       return aidKitItemList;
     } catch (e) {
@@ -1285,6 +1328,170 @@ static Future<Map<String, dynamic>> getAverageRating(String id) async {
         "isSuccess": false,
       };
       
+    }
+  }
+
+
+
+static Future<List<AidKitModel>> getIntakeTimeUser(String day) async {
+    List<AidKitModel> aidIntakeTime = [];
+    try {
+      var result = await httpManager.get(medicines_intake_time, params: day);
+      log('log getIntakeTimeUser $result');
+      for (var review in result) {
+        aidIntakeTime.add(AidKitModel.fromJson(review));
+      }
+      return aidIntakeTime;
+    } catch (e) {
+      log('Pressure load error getIntakeTimeUser: $e');
+      return [];
+    }
+  }
+
+   static Future<List<MedicineIntakeTime>> getIntakeTime(String day) async {
+    List<MedicineIntakeTime> aidIntakeTime = [];
+    try {
+      var result = await httpManager.get(medicines_intake_time, params: {'day': day});
+      log('log getIntakeTime $result');
+      for (var review in result) {
+        aidIntakeTime.add(MedicineIntakeTime.fromJson(review));
+      }
+      return aidIntakeTime;
+    } catch (e) {
+      log('Pressure load error getIntakeTime: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postIntakeTime(FormData data) async {
+    try {
+      var result = await httpManager.post(medicines_intake_time, data: data);
+       log('$data');
+      log('result postIntakeTime $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postIntakeTime: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteIntakeTime(String id) async {
+    try {
+      final result = await httpManager.delete('$medicines_intake_time/$id',);
+      log('Result from deleteIntakeTime API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteIntakeTime API: $e');
+      throw Exception("Failed to delete deleteIntakeTime"+e.toString());
+    }
+  }
+
+  static Future<Map<String, dynamic>> putIntakeTime(FormData data) async {
+    try {
+      var result = await httpManager.put(medicines_intake_time, data: data);
+       log('$data');
+      log('result putIntakeTime $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error putIntakeTime: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      }; 
+    }
+  }
+
+
+
+  static Future<List<AidKitModel>> getAidKitUser(String user_id) async {
+    List<AidKitModel> aidIntakeTime = [];
+    try {
+      var result = await httpManager.get('$medical_bag_user/$user_id');
+      log('log getAidKitUser $result');
+      for (var review in result) {
+        aidIntakeTime.add(AidKitModel.fromJson(review));
+      }
+      return aidIntakeTime;
+    } catch (e) {
+      log('Pressure load error getAidKitUser: $e');
+      return [];
+    }
+  }
+
+   static Future<List<AidKitModel>> getAidKitRequest(String day) async {
+    List<AidKitModel> aidIntakeTime = [];
+    try {
+      var result = await httpManager.get(medicines_intake_time, params: day);
+      log('log getAidKitRequest $result');
+      for (var review in result) {
+        aidIntakeTime.add(AidKitModel.fromJson(review));
+      }
+      return aidIntakeTime;
+    } catch (e) {
+      log('Pressure load error getAidKitRequest: $e');
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> postAidKitRequest(FormData data) async {
+    try {
+      var result = await httpManager.post(medicines_intake_time, data: data);
+       log('$data');
+      log('result postAidKitRequest $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error postAidKitRequest: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      };
+      
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteAidKitRequest(String id) async {
+    try {
+      final result = await httpManager.delete('$medicines_intake_time/$id',);
+      log('Result from deleteAidKitRequest API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteAidKitRequest API: $e');
+      throw Exception("Failed to delete deleteAidKitRequest"+e.toString());
+    }
+  }
+
+  static Future<Map<String, dynamic>> putAidKitRequest(FormData data) async {
+    try {
+      var result = await httpManager.put(medicines_intake_time, data: data);
+       log('$data');
+      log('result putAidKitRequest $result');
+      return result;
+    } catch (e) {
+      log('Pressure load error putAidKitRequest: $e');
+      return {
+        "status": "error",
+        "message": "Request failed",
+        "isSuccess": false,
+      }; 
     }
   }
 

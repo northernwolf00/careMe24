@@ -1,3 +1,5 @@
+import 'package:careme24/models/service_model.dart';
+import 'package:careme24/pages/med/reviews_list_screen.dart';
 import 'package:careme24/pages/more_time_to_record/record_details_page.dart';
 import 'package:careme24/pages/payment/payment_defoult_screen.dart';
 import 'package:careme24/theme/app_decoration.dart';
@@ -17,7 +19,8 @@ import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_button.dart';
 
 class AppointmentToPoliceScreen extends StatefulWidget {
-  const AppointmentToPoliceScreen({super.key});
+  final ServiceModel serviceModel;
+  const AppointmentToPoliceScreen({ required this.serviceModel,super.key});
 
   @override
   State<AppointmentToPoliceScreen> createState() =>
@@ -103,7 +106,8 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                               alignment: Alignment.center,
                               children: [
                                 CustomImageView(
-                                  svgPath: ImageConstant.policehat,
+                                  url: widget.serviceModel.photo,
+                                  // svgPath: ImageConstant.policehat,
                                 ),
                               ])),
                       Padding(
@@ -118,12 +122,12 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Шипупла Валерия",
+                                   widget.serviceModel.name,
                                     style: AppStyle.txtMontserratSemiBold18,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    "Юристы, Составление документов",
+                                    widget.serviceModel.specialization,
                                     style:
                                         AppStyle.txtMontserratMedium15Blue600,
                                     overflow: TextOverflow.ellipsis,
@@ -137,20 +141,58 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                                     style:
                                         AppStyle.txtMontserratRegular12Black900,
                                   ),
-                                  Padding(
-                                    padding: getPadding(left: 18),
-                                    child: Text(
-                                      "4.8",
-                                      style: AppStyle
-                                          .txtMontserratMedium15Black900,
-                                    ),
-                                  ),
-                                  CustomImageView(
-                                      svgPath: ImageConstant.imgStarGold,
-                                      height: getSize(12),
-                                      width: getSize(12),
-                                      margin: getMargin(
-                                          left: 3, top: 3, bottom: 3)),
+                                 GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ReviewsScreen(
+                                                              serviceId:
+                                                                 widget.serviceModel.id,
+                                                              doctor_name: 
+                                                                   widget.serviceModel.name,
+                                                            )));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Padding(
+                                                        padding: getPadding(
+                                                            left: 25),
+                                                        child: Text(
+                                                           widget.serviceModel
+                                                                .averageRating
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: AppStyle
+                                                                .txtMontserratMedium15Bluegray800)),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5),
+                                                      child: CustomImageView(
+                                                          svgPath: ImageConstant
+                                                              .imgStarGold,
+                                                          height: getSize(12),
+                                                          width: getSize(12),
+                                                          margin: getMargin(
+                                                              left: 3,
+                                                              top: 3,
+                                                              bottom: 3)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                   Padding(
                                     padding: getPadding(left: 100),
                                     child: CustomImageView(

@@ -1,13 +1,17 @@
 import 'package:careme24/api/api.dart';
 import 'package:careme24/pages/medicines/model/aid_kit_item_mode.dart';
+import 'package:careme24/pages/medicines/model/owner_id_model.dart';
 import 'package:dio/dio.dart';
 
 class MedicinesRepository {
 
 
 
-    static Future<List<AidKitItem>> getMedicinesRepository(String id) async {
+    static Future<List<AidKitItem>> getMedicinesByIdRepository(String id) async {
   return await Api.getMedicinesById(id);
+}
+    static Future<List<MedicineItem>> getMedicinesRepository() async {
+  return await Api.getMedicines();
 }
 
 static Future<Map<String, dynamic>> updateMedicinesRepository(FormData data) async {

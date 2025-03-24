@@ -5,8 +5,10 @@ import '../widgets/custom_button.dart';
 class ForWhom extends StatefulWidget {
   late String name;
 
+
 ForWhom({super.key, 
-   required this.name
+   required this.name,
+
 });
 
 
@@ -28,11 +30,14 @@ class _ForWhomState extends State<ForWhom> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => WhomPage(callback: callBackName,)));
-      },
-      child: widget.name == "Мне" ? CustomButton(
+    return 
+    // GestureDetector(
+    //   onTap: (){
+    //     widget.callBack();
+    //     //Navigator.push(context, MaterialPageRoute(builder: (context) => WhomPage(callback: callBackName,)));
+    //   },
+    //   child:
+       widget.name == "Мне" ? CustomButton(
           width: getHorizontalSize(200),
           text: widget.name,
           margin: getMargin(top: 1),
@@ -53,7 +58,7 @@ class _ForWhomState extends State<ForWhom> {
           variant: ButtonVariant
               .GradientBlue500LightblueA200,
           fontStyle:
-          ButtonFontStyle.MontserratSemiBold18),
-    );
+          ButtonFontStyle.MontserratSemiBold18);
+    // );
   }
 }

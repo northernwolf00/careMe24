@@ -307,7 +307,7 @@ class _SelectMesScreenState extends State<SelectMesScreen> {
                             onTap: ()async{
                               Navigator.push(
                                 context, MaterialPageRoute(
-                                  builder: (context) => SelectReasonScreen(type: 'med')
+                                  builder: (context) => SelectReasonScreen(type: 'mes')
                                 )
                               ).then((reason){
                                 setState(() {

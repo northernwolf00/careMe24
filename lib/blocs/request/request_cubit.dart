@@ -35,19 +35,34 @@ class RequestCubit extends Cubit<RequestState> {
 
   Future<RequestStatusModel> createRequest(String detail, dynamic type, bool important, String? institutionId) async {
     if (enable) {
-      Map<String, dynamic> data = {
-        "detail": detail,
-        "important": important,
-        "type": type,
-        "lat": lat,   
-        "lon": lon,
-        "card_id": medCardId,
-        "notice_contacts" : await PrefService.isNotifContact(), 
-        "creation_date_user": DateTime.now(),
-        "institution_id" : institutionId
-      };
 
-      final response = await RequestsRespository.createRequest(data);
+      // Map<String, dynamic> data = {
+      //   "detail": detail,
+      //   "important": important,
+      //   "type": type,
+      //   "lat": lat,   
+      //   "lon": lon,
+      //   "card_id": medCardId,
+      //   "notice_contacts" : await PrefService.isNotifContact(), 
+      //   "creation_date_user": DateTime.now(),
+      //   "institution_id" : institutionId
+      // };
+  Map<String, dynamic> data = {
+  "important": true,
+  "institution_id": institutionId, 
+  "card_id": medCardId, 
+  "lon": lon, 
+  "detail": detail, 
+  "payment_information": null, 
+  "notice_contacts": await PrefService.isNotifContact(),
+  "type": type, 
+  "video": null, 
+  "creation_date_user": DateTime.now().toIso8601String(),
+  "lat": lat,
+};
+log('data: $data');
+var formData = FormData.fromMap(data);
+      final response = await RequestsRespository.createRequest(formData);
       return response;
     }
 

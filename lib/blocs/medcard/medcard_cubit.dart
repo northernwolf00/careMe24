@@ -69,6 +69,8 @@ class MedCardCubit extends Cubit<MedCardState> {
         otherCards = await DatabaseHelper.instance.fetchAllMedcards();
       } else {
 
+
+
         myCard = await MedcardRepository.fetchMyCard();
         otherCards = await MedcardRepository.fetchOtherCards();
         unverifiedCards = await MedcardRepository.fetchUnverifiedCards();

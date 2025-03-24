@@ -25,8 +25,9 @@
 
 
 
+
     <application
-        android:label="careme24"
+        android:label="CareMe24"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,6 +1,8 @@
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/models/institution_model.dart';
+import 'package:careme24/models/medcard/medcard_model.dart';
 import 'package:careme24/models/request_status_model.dart';
+import 'package:careme24/pages/calls/dialog_select_contact_med.dart';
 import 'package:careme24/pages/calls/main_call_page.dart';
 import 'package:careme24/pages/calls/select_instituts.dart';
 import 'package:careme24/service/pref_service.dart';
@@ -45,6 +47,7 @@ class _RescueCallButtonState extends State<RescueCallButton> {
   void setValue()async{
     isNotifContact = await PrefService.isNotifContact();
   }
+   MedcardModel? _selectedContact;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,30 @@ class _RescueCallButtonState extends State<RescueCallButton> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ForWhom(name: 'Мне',),
+                  GestureDetector(
+                                  onTap: () async {
+                                    final selectedContact =
+                                        await showDialog<MedcardModel>(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ContactSelectDialogMed();
+                                      },
+                                    );
+
+                                    if (selectedContact != null) {
+                                      setState(() {
+                                        _selectedContact = selectedContact;
+                                      });
+                                    }
+                                  },
+                                  child: ForWhom(
+                                    name: _selectedContact
+                                            ?.personalInfo.full_name ??
+                                        'Мне',
+                                  ),
+                                ),
+               
                   const PaySwitcher(),
                 ]
               )
@@ -137,7 +163,7 @@ class _RescueCallButtonState extends State<RescueCallButton> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => MainCallPage(text: 'Вызов MЧС', requestId: resopnse.requestId,show: isNotifContact, type: 'mch',)));
                     }else{
                       ElegantNotification.error(
-                        description: Text('Неудалось вызвать полицию')
+                        description: Text('Неудалось вызвать MЧС')
                       ).show(context);
                       setState(() {
                         on = false;

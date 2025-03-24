@@ -504,19 +504,32 @@ class _CallPoliceScreenState extends State<CallPoliceScreen> {
                                         ...List.generate(state.serviceList.length, (index){
                                           final item = state.serviceList[index];
                                           return PoliceCard(
-                                           
+                                            id: item.id,
                                             medCardId: state.medCardId,
                                             statement: widget.isStatament,
-                                            doctor_image:ImageConstant.doctorImage,
+                                            doctor_image: item.photo,
                                             doctor_name: item.name,
                                             doctor_qualification: item.type,
-                                            cost: "1500 ₽",
-                                            meters: "1200 м",
-                                            minute: "9 мин",
-                                            estimation: "4.8",
+                                            cost: "${item.price} ₽",
+                                            meters: "",
+                                            minute: "",
+                                            estimation: item.averageRating,
                                             where_call: widget.appbartitle,
                                             reason: selectedReason ?? '',
+                                            isFavorite: item.isFavourite,
                                             serviceModel: item,
+                                            onFavoritePressed: () {
+                                                if (item.isFavourite == false) {
+                                                 context
+                                                      .read<ServiceCubit>()
+                                                      .postFavorites(item.id);
+                                                } else {
+                                                   context
+                                                      .read<ServiceCubit>()
+                                                      .deletFavorites(item.id);
+                                                  
+                                                }
+                                              },
                                           );
                                         }
                                       )

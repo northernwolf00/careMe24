@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:careme24/blocs/app_bloc.dart';
+import 'package:careme24/models/service_model.dart';
 import 'package:careme24/utils/image_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
@@ -15,11 +16,13 @@ class CreateStatementScreen extends StatefulWidget {
     super.key,
     required this.reason,
     required this.serviceId,
+    required this.serviceModel,
     required this.cardId
   });
 
   final String reason;
   final String serviceId;
+  final ServiceModel serviceModel;
   final String cardId;
   @override
   State<CreateStatementScreen> createState() => _CreateStatementScreenState();

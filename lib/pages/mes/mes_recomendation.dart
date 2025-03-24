@@ -49,7 +49,7 @@ class _MESRecomendationState extends State<MESRecomendation> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ForWhom(name: 'Степанов Илья',),
+                                ForWhom(name: 'Мне',),
                                 const PaySwitcher(),
                               ])),
                       GestureDetector(

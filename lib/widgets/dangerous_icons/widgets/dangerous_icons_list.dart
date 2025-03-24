@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:careme24/models/danger_model.dart';
 import 'package:careme24/models/dangerous_models/air_pollution_model.dart';
 import 'package:careme24/models/dangerous_models/pressure_wind_model.dart';
@@ -43,6 +45,9 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
   void initState() {
     super.initState();
     infoIconData = widget.icons;
+
+    
+    
 
     int airPollutionIndex = widget.airQuality.list.isNotEmpty ? widget.airQuality.list[0].aqi : 0;
     int temperatureIndex = getTempIndex(widget.weatherForecast.currentTemperature.toInt());

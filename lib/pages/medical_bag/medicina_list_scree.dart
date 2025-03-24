@@ -7,6 +7,7 @@ import 'package:careme24/utils/size_utils.dart';
 import 'package:careme24/widgets/app_bar/appbar_image.dart';
 import 'package:careme24/widgets/app_bar/appbar_title.dart';
 import 'package:careme24/widgets/app_bar/custom_app_bar.dart';
+import 'package:careme24/widgets/custom_image_view.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +16,11 @@ import 'package:intl/intl.dart';
 class MedicineListScreen extends StatefulWidget {
   final String title;
   final String id;
+  final String photo;
   MedicineListScreen({
     required this.title,
     required this.id,
+    required this.photo,
     Key? key,
   }) : super(key: key);
 
@@ -29,7 +32,7 @@ class _MedicineListScreenState extends State<MedicineListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<MedicineCubit>().getMedicines(widget.id);
+    context.read<MedicineCubit>().getMedicinesById(widget.id);
   }
 
   @override
@@ -66,7 +69,11 @@ class _MedicineListScreenState extends State<MedicineListScreen> {
                     height: 45,
                     child: Row(
                       children: [
-                        const Icon(Icons.medical_services, color: Colors.blue),
+                        CustomImageView(
+                  url: widget.photo,
+                  height: 40,
+                  width: 40,
+                ),
                         Expanded(
                           child: Padding(
                               padding: const EdgeInsets.only(left: 5),
@@ -153,6 +160,18 @@ class _MedicineListScreenState extends State<MedicineListScreen> {
                                             fontFamily: "Montserrat",
                                             color: Colors.black),
                                       ),
+                                      Row(
+                                        children: [
+                                        Text(
+                                        medicineList[index].count,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14,
+                                          fontFamily: "Montserrat",
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
                                       Text(
                                         medicineList[index].expirationDate != null
                                             ? DateFormat('yyyy-MM-dd').format(
@@ -166,6 +185,8 @@ class _MedicineListScreenState extends State<MedicineListScreen> {
                                           color: Colors.black,
                                         ),
                                       ),
+                                      ])
+                                      
                                     ],
                                   ),
                                 ),
@@ -324,6 +345,7 @@ class _AddMedicineDialogState extends State<AddMedicineDialog> {
                 controller: quantityController,
               ),
             ),
+            SizedBox(height: 10),
             BlocConsumer<MedicineCubit, MedicinesState>(
               listener: (context, state) {
                 if (state is MedicinesCreated) {

@@ -178,16 +178,12 @@ String getIcon(String value) {
       return 'assets/images/img_flood.svg';
     case 'Цунами'://!
       return 'assets/images/img_tsunami.svg';
-    
     case 'Химическое заражение'://!
       return 'assets/images/1.svg';
     case 'Вирусное заражение': //!
       return 'assets/images/1.svg';
     case 'Гололёд':
       return 'assets/images/22n.svg';
-
-    
-    
     case 'Сильный туман'://!
       return 'assets/images/img_fog.svg';
     case 'Снежная лавина'://!
@@ -198,7 +194,6 @@ String getIcon(String value) {
       return 'assets/images/img_volcano.svg';
     case 'Крупный град'://!
       return 'assets/images/2.svg';
-    
     default:
       return 'assets/images/default_icon.svg';
   }

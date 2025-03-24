@@ -17,6 +17,7 @@ class ServiceCubit extends Cubit<ServiceState> {
     final response = await RequestsRespository.getServices(params);
     final myCard = await MedcardRepository.fetchMyCard();
     log('${response.length}');
+     final responseChat = await RequestsRespository.getServicesChat();
 
     emit(ServiceLoaded(serviceList: response, medCardId: myCard.id));
   }

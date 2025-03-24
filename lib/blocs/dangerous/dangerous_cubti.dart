@@ -101,8 +101,10 @@ class DangerousCubit extends Cubit<DangerousState> {
 
   Future<void> fetchData() async {
 
-    // final icons = await Api.getDangerIcons({'lat': lat, 'lon': lon});
-     final icons = await Api.getAllDangerIcons();
+    final icons = await Api.getDangerIcons({'lat': lat, 'lon': lon});
+     List response = [];
+  //  response = await RequestsRespository.getContactRequests();
+    //  final icons = await Api.getAllDangerIcons();
 
 
     try {
@@ -125,7 +127,7 @@ class DangerousCubit extends Cubit<DangerousState> {
         'hourly': 'pressure_msl,wind_speed_10m,wind_direction_10m',
         'forecast_days': 7,
       });
-      List response = [];
+     
       List response112 = [];
 
       bool notifMe = await PrefService.isNotifMe();

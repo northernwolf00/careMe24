@@ -1,204 +1,224 @@
-// import 'package:alarm/alarm.dart';
-// import 'package:alarm/model/alarm_settings.dart';
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+import 'dart:developer';
+import 'dart:io';
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
+import 'package:careme24/pages/medicines/cubit/intake_cubit.dart';
+import 'package:careme24/pages/medicines/model/owner_id_model.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:alarm/alarm.dart';
-// import 'package:intl/intl.dart';
+class AlarmScreen extends StatefulWidget {
+  final List<MedicineItem> medicine;
+  final String day;
+  final String time;
+  final String id;
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Alarm.init();
-//   runApp(const MyApp());
-// }
+  const AlarmScreen(
+      {Key? key, required this.medicine, required this.day, required this.time, required this.id})
+      : super(key: key);
+  @override
+  _AlarmScreenState createState() => _AlarmScreenState();
+}
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
+class _AlarmScreenState extends State<AlarmScreen> {
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  String selectTime = '';
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Alarm Demo',
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('Alarm Demo')),
-//         body: const AlarmPage(),
-//       ),
-//     );
-//   }
-// }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Listen for alarm events
+  //   Alarm.ringStream.stream.listen((alarmId) {
+  //     _showAlarmDialog();
+  //   });
+  // }
 
-// class AlarmPage extends StatelessWidget {
-//   const AlarmPage({super.key});
+  void _pickTime(BuildContext context) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
 
-//   Future<void> _setAlarm(BuildContext context) async {
-//     final now = DateTime.now();
-//     DateTime scheduledTime = DateTime(now.year, now.month, now.day, 8, 30);
-//     if (scheduledTime.isBefore(now)) {
-//       scheduledTime = scheduledTime.add(const Duration(days: 1));
-//     }
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+        final now = DateTime.now();
+        final selectedDateTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          _selectedTime.hour,
+          _selectedTime.minute,
+        );
+        if (widget.time != '0 : 0') {
+          context.read<InTakeTimeCubit>().updateMedicines(
+            widget.id,
+              widget.day,
+              DateFormat('HH:mm').format(selectedDateTime),
+              widget.medicine[0].aidKit.medicines[0].id);
+                ElegantNotification.success(description: Text("Время приема обновлено"))
+                      .show(context);
+               Navigator.pop(context);
+        } else {
+          context.read<InTakeTimeCubit>().createMedicines(
+              widget.day,
+              DateFormat('HH:mm').format(selectedDateTime),
+              widget.medicine[0].aidKit.medicines[0].id);
+               ElegantNotification.success(description: Text("Время приема создано"))
+                      .show(context);
+               Navigator.pop(context);
+        }
+      });
+      _scheduleAlarm();
+    }
+  }
 
-//     final int alarmId = DateTime.now().millisecondsSinceEpoch; // Unique ID
+  void _scheduleAlarm() {
+    final now = DateTime.now();
+    final selectedDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      _selectedTime.hour,
+      _selectedTime.minute,
+    );
+    
+    final alarmSettings = AlarmSettings(
+      id: 42,
+      dateTime: selectedDateTime,
+      assetAudioPath: 'assets/alarm_sound.mp3',
+      loopAudio: true,
+      vibrate: true,
+      warningNotificationOnKill: Platform.isIOS,
+      androidFullScreenIntent: true,
+      notificationSettings: const NotificationSettings(
+        title: 'Прием лекарств',
+        body: 'Время принять лекарство',
+        stopButton: 'СТОП',
+        icon: 'notification_icon',
+      ),
+    );
 
-//     final alarmSettings = AlarmSettings(
-//       id: alarmId,
-//       dateTime: scheduledTime,
-//       assetAudioPath: 'assets/alarm_sound.mp3',
-//       loopAudio: true,
-//       vibrate: true,
-//       fadeDuration: 3.0,
-//       notificationTitle: 'Medicine Alarm',
-//       notificationBody: 'Time to take your medicine',
-//       enableNotificationOnKill: true,
-//     );
+    Alarm.set(alarmSettings: alarmSettings);
+    // Navigator.pop(context);
+  log( 'Alarm scheduled');
+  }
 
-//     await Alarm.set(
-//       alarmSettings: alarmSettings,
-      
-//       onRing: () {
-//         if (context.mounted) {
-//           showMedicineAlarmDialog(
-//             context,
-//             time: DateFormat('HH:mm').format(scheduledTime),
-//             medicines: 'Феназепам, эргоферон',
-//             onStop: () => Alarm.stop(alarmId),
-//             onSnooze30: () => _snoozeAlarm(context, alarmSettings, 30),
-//             onSnooze60: () => _snoozeAlarm(context, alarmSettings, 60),
-//             onCancel: () => Alarm.stop(alarmId),
-//           );
-//         }
-//       },
-//     );
-//   }
+  void _stopAlarm() {
+    Alarm.stop(42);
+    Navigator.pop(context);
+  }
 
-//   Future<void> _snoozeAlarm(BuildContext context, AlarmSettings settings, int minutes) async {
-//     final newTime = DateTime.now().add(Duration(minutes: minutes));
-//     final int newAlarmId = DateTime.now().millisecondsSinceEpoch;
+  void _snoozeAlarm(Duration duration) {
+    Alarm.stop(42);
+    _scheduleAlarm();
+    Navigator.pop(context);
+  }
 
-//     final snoozeSettings = settings.copyWith(
-//       id: newAlarmId,
-//       dateTime: newTime,
-//     );
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      content: SizedBox(
+        height: 480,
+        width: MediaQuery.of(context).size.width - 20,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => _pickTime(context),
+                child: Text(
+               widget.time == '0 : 0' ? '0:0' : widget.time,
+                  style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 1,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              ...List.generate(
+                1,
+                (index) {
+                  return Text(widget.medicine.map((e) => e.title).join(', '),
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black));
+                },
+              ),
 
-//     await Alarm.set(
-//       alarmSettings: snoozeSettings,
-//       onRing: () {
-//         if (context.mounted) {
-//           showMedicineAlarmDialog(
-//             context,
-//             time: DateFormat('HH:mm').format(newTime),
-//             medicines: 'Феназепам, эргоферон',
-//             onStop: () => Alarm.stop(newAlarmId),
-//             onSnooze30: () => _snoozeAlarm(context, snoozeSettings, 30),
-//             onSnooze60: () => _snoozeAlarm(context, snoozeSettings, 60),
-//             onCancel: () => Alarm.stop(newAlarmId),
-//           );
-//         }
-//       },
-//     );
-//   }
+              SizedBox(height: 20),
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: GestureDetector(
-//         onTap: () => _setAlarm(context),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Icon(Icons.access_time),
-//             const SizedBox(width: 10),
-//             const Text(
-//               '8:30',
-//               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// void showMedicineAlarmDialog(
-//   BuildContext context, {
-//   required String time,
-//   required String medicines,
-//   required VoidCallback onStop,
-//   required VoidCallback onSnooze30,
-//   required VoidCallback onSnooze60,
-//   required VoidCallback onCancel,
-// }) {
-//   showDialog(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-//         content: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Text(time, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//             const SizedBox(height: 8),
-//             Text(medicines, style: TextStyle(fontSize: 16, color: Colors.grey[800]), textAlign: TextAlign.center),
-//             const SizedBox(height: 16),
-
-//             GestureDetector(
-//               onTap: () {
-//                 Navigator.pop(context);
-//                 onStop();
-//               },
-//               child: Container(
-//                 width: 80,
-//                 height: 80,
-//                 decoration: const BoxDecoration(
-//                   shape: BoxShape.circle,
-//                   gradient: LinearGradient(colors: [Color(0xFFFF3A44), Color(0xFFFF8086)]),
-//                 ),
-//                 child: const Center(
-//                   child: Text('СТОП', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             const Divider(height: 1),
-
-//             InkWell(
-//               onTap: () {
-//                 Navigator.pop(context);
-//                 onSnooze30();
-//               },
-//               child: const Padding(
-//                 padding: EdgeInsets.symmetric(vertical: 8.0),
-//                 child: Text('Отложить на 30 минут', style: TextStyle(color: Colors.blue, fontSize: 16)),
-//               ),
-//             ),
-//             const Divider(height: 1),
-
-//             InkWell(
-//               onTap: () {
-//                 Navigator.pop(context);
-//                 onSnooze60();
-//               },
-//               child: const Padding(
-//                 padding: EdgeInsets.symmetric(vertical: 8.0),
-//                 child: Text('Отложить на час', style: TextStyle(color: Colors.blue, fontSize: 16)),
-//               ),
-//             ),
-//             const Divider(height: 1),
-
-//             InkWell(
-//               onTap: () {
-//                 Navigator.pop(context);
-//                 onCancel();
-//               },
-//               child: const Padding(
-//                 padding: EdgeInsets.symmetric(vertical: 8.0),
-//                 child: Text('Отменить прием', style: TextStyle(color: Colors.blue, fontSize: 16)),
-//               ),
-//             ),
-//           ],
-//         ),
-//       );
-//     },
-//   );
-// }
+              ElevatedButton(
+                onPressed: _stopAlarm,
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(50),
+                  backgroundColor: Colors.redAccent,
+                ),
+                child: Center(
+                  child: Text('СТОП',
+                      style: TextStyle(fontSize: 14, color: Colors.white)),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                height: 1,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () => _snoozeAlarm(Duration(minutes: 30)),
+                child: Text('Отложить на 30 минут',
+                    style: TextStyle(fontSize: 18, color: Colors.blueAccent)),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 1,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () => _snoozeAlarm(Duration(minutes: 60)),
+                child: Text('Отложить на час',
+                    style: TextStyle(fontSize: 18, color: Colors.blueAccent)),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 1,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              // ElevatedButton(
+              //   onPressed: _scheduleAlarm,
+              //   child: Text('СТОП',
+              //       style: TextStyle(fontSize: 18, color: Colors.white)),
+              //   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              // ),
+              TextButton(
+                onPressed: () {
+                  _stopAlarm();
+                  context.read<InTakeTimeCubit>().deletMedicines(widget.id, widget.day);
+                   ElegantNotification.success(description: Text('Время приема удалено'))
+                      .show(context);
+                  },
+                child: Text('Отменить прием',
+                    style: TextStyle(fontSize: 18, color: Colors.red)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

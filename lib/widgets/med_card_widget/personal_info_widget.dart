@@ -85,7 +85,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                     TextFormField(
                       controller: widget.nameController,
                       cursorColor: Colors.black,
-                      inputFormatters: [maskFormatter],
+                      // inputFormatters: [maskFormatter],
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,

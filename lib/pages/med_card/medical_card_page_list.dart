@@ -132,6 +132,7 @@ import 'package:careme24/widgets/search.dart';
                           ),
                           const SizedBox(
                             height: 10,
+                            
                           ),
                           if(state.otherCards.isNotEmpty)
                           SizedBox(

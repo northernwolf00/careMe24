@@ -112,7 +112,9 @@ class _DoctorCardState extends State<DoctorCard> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AppointmentToDoctorScreen(serviceModel: widget.serviceModel,)));
+                          builder: (context) => AppointmentToDoctorScreen(
+                                serviceModel: widget.serviceModel,
+                              )));
                 } else {
                   if (widget.reason == '') {
                     ElegantNotification.error(
@@ -250,22 +252,31 @@ class _DoctorCardState extends State<DoctorCard> {
                                       padding: getPadding(top: 12),
                                       child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceBetween,
+                                        
                                           children: [
-                                            Text(widget.meters,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.left,
-                                                style: AppStyle
-                                                    .txtMontserratMedium15Bluegray800),
-                                            Padding(
-                                                padding: getPadding(left: 26),
-                                                child: Text(widget.minute,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: AppStyle
-                                                        .txtMontserratMedium15Bluegray800)),
-                                            GestureDetector(
+                                            SizedBox(
+                                              width:100
+                                            ),
+
+                                            // Text(widget.meters,
+                                            //     overflow: TextOverflow.ellipsis,
+                                            //     textAlign: TextAlign.left,
+                                            //     style: AppStyle
+                                            //         .txtMontserratMedium15Bluegray800),
+                                            // Padding(
+                                            //     padding: getPadding(left: 26),
+                                            //     child: Text(widget.minute,
+                                            //         overflow:
+                                            //             TextOverflow.ellipsis,
+                                            //         textAlign: TextAlign.left,
+                                            //         style: AppStyle
+                                            //             .txtMontserratMedium15Bluegray800)),
+
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                GestureDetector(
                                               onTap: () {
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
@@ -273,20 +284,24 @@ class _DoctorCardState extends State<DoctorCard> {
                                                             ReviewsScreen(
                                                               serviceId:
                                                                   widget.id,
-                                                                  doctor_name:widget.doctor_name,
+                                                              doctor_name: widget
+                                                                  .doctor_name,
                                                             )));
                                               },
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(5.0),
                                                 child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
                                                   children: [
                                                     Padding(
                                                         padding: getPadding(
                                                             left: 25),
                                                         child: Text(
-                                                            widget.averageRating.toStringAsFixed(1),
-                                                                
+                                                            widget.averageRating
+                                                                .toStringAsFixed(
+                                                                    1),
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
@@ -327,6 +342,10 @@ class _DoctorCardState extends State<DoctorCard> {
                                                       top: 5,
                                                       bottom: 2),
                                                 )),
+                                              ]
+
+                                            ),
+                                            
                                           ])),
                                 ),
                                 Visibility(
@@ -340,10 +359,10 @@ class _DoctorCardState extends State<DoctorCard> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.end,
                                           children: [
                                             Text(
-                                              "Свободные даты",
+                                              " ",
                                               style: AppStyle
                                                   .txtMontserratMedium12Black900,
                                             ),
@@ -352,7 +371,7 @@ class _DoctorCardState extends State<DoctorCard> {
                                               child: SizedBox(
                                                 width: 128,
                                                 child: Text(
-                                                  "1 3 7 12 14 15 16 17 18",
+                                                  " ",
                                                   style: AppStyle
                                                       .txtMontserratSemiBold15Blue600,
                                                   overflow:
@@ -370,7 +389,8 @@ class _DoctorCardState extends State<DoctorCard> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           ReviewsScreen(
-                                                            doctor_name:widget.doctor_name,
+                                                            doctor_name: widget
+                                                                .doctor_name,
                                                             serviceId:
                                                                 widget.id,
                                                           )));
@@ -387,7 +407,8 @@ class _DoctorCardState extends State<DoctorCard> {
                                               child: Row(
                                                 children: [
                                                   Text(
-                                                      widget.averageRating.toStringAsFixed(1),
+                                                      widget.averageRating
+                                                          .toStringAsFixed(1),
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       textAlign: TextAlign.left,

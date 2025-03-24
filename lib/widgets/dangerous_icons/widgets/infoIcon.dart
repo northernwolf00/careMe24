@@ -81,8 +81,9 @@ class Infoicon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int index = 0;
     final bool haveData = icon.dangerLevel.isNotEmpty;
-    log(icon.incidentType);
+    log((index+1).toString() +" :"+ icon.incidentType);
     log(icon.isActive.toString());
     return GestureDetector(
       onTap: (){

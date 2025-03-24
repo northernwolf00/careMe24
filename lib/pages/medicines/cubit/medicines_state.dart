@@ -1,5 +1,6 @@
 // AidKit State
 import 'package:careme24/pages/medicines/model/aid_kit_item_mode.dart';
+import 'package:careme24/pages/medicines/model/owner_id_model.dart';
 
 abstract class MedicinesState {
 
@@ -18,6 +19,16 @@ class MedicinesLoaded extends MedicinesState {
   @override
   List<Object?> get props => [aidKits];
 }
+
+class MedicinesGetLoaded extends MedicinesState {
+  final List<MedicineItem> aidKits;
+
+  MedicinesGetLoaded(this.aidKits);
+
+  @override
+  List<Object?> get props => [aidKits];
+}
+
 
 class MedicinesUpdating extends MedicinesState {}
 

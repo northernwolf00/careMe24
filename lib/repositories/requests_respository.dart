@@ -4,9 +4,10 @@ import 'package:careme24/models/request_model.dart';
 import 'package:careme24/models/request_status_model.dart';
 import 'package:careme24/models/service_model.dart';
 import 'package:careme24/models/status_model.dart';
+import 'package:dio/dio.dart';
 
 class RequestsRespository {
-  static Future<RequestStatusModel> createRequest(Map<String, dynamic> data){
+  static Future<RequestStatusModel> createRequest(FormData data){
     final respone = Api.createRequest(data);
     return respone; 
   }
@@ -58,6 +59,10 @@ class RequestsRespository {
 
   static Future<List<ServiceModel>> getServices(Map<String, dynamic> data){
     final respone = Api.getServices(data);
+    return respone; 
+  }
+   static Future<List<ServiceModel>> getServicesChat(){
+    final respone = Api.getServicesChat();
     return respone; 
   }
   static Future<List<InstitutionModel>> getInstitutions(Map<String, dynamic> params){

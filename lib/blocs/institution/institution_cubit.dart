@@ -6,9 +6,7 @@ class InstitutionCubit extends Cubit<InstitutionState> {
   InstitutionCubit() : super(InstitutionLoading());
 
   Future<void> fetchData(String type)async{
-    Map<String, dynamic> params = {
-      "institution_type" : type
-    };
+     final params = {"institution_type": type};
     emit(InstitutionLoading());
     final response = await RequestsRespository.getInstitutions(params);
 

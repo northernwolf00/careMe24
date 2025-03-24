@@ -524,7 +524,8 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                                               (index) {
                                             final item =
                                                 state.serviceList[index];
-                                            return DoctorCard(
+                                            return 
+                                            DoctorCard(
                                               id: item.id,
                                               cardId: state.medCardId,
                                               verified: state
@@ -536,9 +537,9 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                                               doctor_name: item.name,
                                               doctor_qualification: item.type,
                                               cost: "${item.price} ₽",
-                                              meters: "1200 м",
-                                              minute: "9 мин",
-                                              estimation: "4.8",
+                                              meters: "",
+                                              minute: "",
+                                              estimation: item.averageRating.toString(),
                                               where_call: widget.appbartitle,
                                               isFavorite: item.isFavourite,
                                               averageRating: item.averageRating,

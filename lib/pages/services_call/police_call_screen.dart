@@ -81,7 +81,8 @@ class PoliceCallScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           CustomImageView(
-                            svgPath: ImageConstant.policehat,
+                            url: serviceModel.photo,
+                            // svgPath: ImageConstant.policehat,
                           ),
                         ],
                       ),
@@ -92,7 +93,7 @@ class PoliceCallScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            serviceModel.type,
+                            serviceModel.name,
                             style: TextStyle(
                               color: Color.fromRGBO(51, 132, 226, 1),
                               fontSize: 15,

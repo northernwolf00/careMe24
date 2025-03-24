@@ -57,7 +57,7 @@ class _SelfHelpScreenState extends State<SelfHelpScreen> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ForWhom(name: 'Степанов Илья',),
+                                ForWhom(name: 'Мне',),
                                 const PaySwitcher(),
                               ])),
                       GestureDetector(

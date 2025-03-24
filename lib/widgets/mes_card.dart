@@ -73,9 +73,9 @@ class MESCard extends StatelessWidget {
             ElegantNotification.error(description: Text('Выберете причину вызова')).show(context);
           }else{
             if (statement) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStatementScreen(reason: reason, serviceId: serviceModel.id, cardId: medCardId,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStatementScreen(reason: reason,serviceModel: serviceModel, serviceId: serviceModel.id, cardId: medCardId,)));
             }else{
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MesCallScreen(reason: reason,serviceModel: serviceModel, medCardId: medCardId,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MesCallScreen(reason: reason, serviceModel: serviceModel, medCardId: medCardId,)));
             }
           }
         }else{
@@ -106,7 +106,8 @@ class MESCard extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             CustomImageView(
-                              svgPath: ImageConstant.fireSmallIcon,
+                              url: mes_image,
+                              // svgPath: ImageConstant.fireSmallIcon,
                             ),
                           ])),
                   Padding(
@@ -246,13 +247,13 @@ class MESCard extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("Свободные даты",
+                                      Text("dd",
                                         style: AppStyle.txtMontserratMedium12Black900,),
                                       Padding(
                                         padding: getPadding(top: 2),
                                         child: SizedBox(
                                           width: 128,
-                                          child: Text("1 3 7 12 14 15 16 17 18",
+                                          child: Text("dd ",
                                             style: AppStyle.txtMontserratSemiBold15Blue600,
                                             overflow: TextOverflow.ellipsis,),
                                         ),

@@ -1,5 +1,6 @@
 import 'package:careme24/constants.dart';
 import 'package:careme24/models/service_model.dart';
+import 'package:careme24/pages/med/reviews_list_screen.dart';
 import 'package:careme24/pages/police/appointment_to_police_page.dart';
 import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
 import 'package:careme24/pages/services_call/create_statement_screen.dart';
@@ -14,19 +15,23 @@ import '../theme/app_style.dart';
 import '../widgets/custom_image_view.dart';
 
 class PoliceCard extends StatelessWidget {
+  final String id;
   late String doctor_image;
   late String doctor_name;
   late String doctor_qualification;
   late String cost;
   late String meters;
   late String minute;
-  late String estimation;
+  late double estimation;
   late String where_call;
   final ServiceModel serviceModel;
   final String reason;
   final bool work;
   final bool statement;
   final String medCardId;
+  final bool isFavorite;
+  final VoidCallback onFavoritePressed;
+
 
   bool bottomInfo = false;
   bool leftColumnMeters = false;
@@ -47,7 +52,11 @@ class PoliceCard extends StatelessWidget {
     required this.reason,
     this.work = true,
     this.statement = false,
-    required this.medCardId
+    required this.medCardId,
+    required this.isFavorite,
+  required this.onFavoritePressed,
+  required this.id
+
   });
 
   void form_card() {
@@ -75,13 +84,13 @@ class PoliceCard extends StatelessWidget {
       onTap:(){
         if (work) {
           if (where_call == "Юрист онлайн") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentToPoliceScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentToPoliceScreen(serviceModel: serviceModel,)));
         } else{
           if (reason == '') {
             ElegantNotification.error(description: Text('Выберете причину вызова')).show(context);
           }else{
             if (statement) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStatementScreen(reason: reason, serviceId: serviceModel.id, cardId: medCardId,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStatementScreen(reason: reason,serviceModel: serviceModel,  serviceId: serviceModel.id, cardId: medCardId,)));
             }else{
               Navigator.push(context, MaterialPageRoute(builder: (context) => PoliceCallScreen(reason: reason,serviceModel: serviceModel, medCardId: medCardId,)));
             }
@@ -113,8 +122,11 @@ class PoliceCard extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       CustomImageView(
-                        svgPath: ImageConstant.policehat,
-                      ),
+                            url: doctor_image,
+                            //height: getVerticalSize(109),
+                            fit: BoxFit.cover,
+                            height: 130,
+                            width: 80),
                     ])),
                   Padding(
                     padding: getPadding(top: 8, left: 8),
@@ -175,21 +187,59 @@ class PoliceCard extends StatelessWidget {
                                           Visibility(
                                             visible: leftColumnEstimation,
                                             child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
-                                                Text(estimation,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: AppStyle
-                                                        .txtMontserratMedium15Bluegray800),
-                                                CustomImageView(
-                                                    svgPath: ImageConstant
-                                                        .imgStarGold,
-                                                    height: getSize(12),
-                                                    width: getSize(12),
-                                                    margin: getMargin(
-                                                        left: 3,
-                                                        top: 3,
-                                                        bottom: 3)),
+                                                GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ReviewsScreen(
+                                                              serviceId:
+                                                                 id,
+                                                              doctor_name: 
+                                                                  doctor_name,
+                                                            )));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Padding(
+                                                        padding: getPadding(
+                                                            left: 25),
+                                                        child: Text(
+                                                            estimation
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: AppStyle
+                                                                .txtMontserratMedium15Bluegray800)),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5),
+                                                      child: CustomImageView(
+                                                          svgPath: ImageConstant
+                                                              .imgStarGold,
+                                                          height: getSize(12),
+                                                          width: getSize(12),
+                                                          margin: getMargin(
+                                                              left: 3,
+                                                              top: 3,
+                                                              bottom: 3)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                               ],
                                             ),
                                           ),
@@ -202,39 +252,85 @@ class PoliceCard extends StatelessWidget {
                             child: Padding(
                                 padding: getPadding(top: 12),
                                 child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(meters,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle
-                                              .txtMontserratMedium15Bluegray800),
-                                      Padding(
-                                          padding: getPadding(left: 26),
-                                          child: Text(minute,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtMontserratMedium15Bluegray800)),
-                                      Padding(
-                                          padding: getPadding(left: 25),
-                                          child: Text(estimation,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtMontserratMedium15Bluegray800)),
-                                      CustomImageView(
-                                          svgPath: ImageConstant.imgStarGold,
-                                          height: getSize(12),
-                                          width: getSize(12),
-                                          margin: getMargin(
-                                              left: 3, top: 3, bottom: 3)),
-                                      CustomImageView(
+                                      SizedBox(width: 100,),
+                                      // Text(meters,
+                                      //     overflow: TextOverflow.ellipsis,
+                                      //     textAlign: TextAlign.left,
+                                      //     style: AppStyle
+                                      //         .txtMontserratMedium15Bluegray800),
+                                      // Padding(
+                                      //     padding: getPadding(left: 26),
+                                      //     child: Text(minute,
+                                      //         overflow: TextOverflow.ellipsis,
+                                      //         textAlign: TextAlign.left,
+                                      //         style: AppStyle
+                                      //             .txtMontserratMedium15Bluegray800)),
+
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ReviewsScreen(
+                                                              serviceId:
+                                                                  id,
+                                                              doctor_name: 
+                                                                  doctor_name,
+                                                            )));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Padding(
+                                                        padding: getPadding(
+                                                            left: 25),
+                                                        child: Text(
+                                                            estimation
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: AppStyle
+                                                                .txtMontserratMedium15Bluegray800)),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5),
+                                                      child: CustomImageView(
+                                                          svgPath: ImageConstant
+                                                              .imgStarGold,
+                                                          height: getSize(12),
+                                                          width: getSize(12),
+                                                          margin: getMargin(
+                                                              left: 3,
+                                                              top: 3,
+                                                              bottom: 3)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                             CustomImageView(
                                           svgPath: ImageConstant.imgArrowright,
                                           height: getVerticalSize(11),
                                           width: getHorizontalSize(6),
                                           margin: getMargin(
                                               left: 30, top: 5, bottom: 2))
+                                        ])            
+                                      
+                                     
                                     ])),
                           ),
                           Visibility(
@@ -247,13 +343,13 @@ class PoliceCard extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("Свободные даты",
+                                      Text(" ",
                                         style: AppStyle.txtMontserratMedium12Black900,),
                                       Padding(
                                         padding: getPadding(top: 2),
                                         child: SizedBox(
                                           width: 128,
-                                          child: Text("1 3 7 12 14 15 16 17 18",
+                                          child: Text(" ",
                                             style: AppStyle.txtMontserratSemiBold15Blue600,
                                             overflow: TextOverflow.ellipsis,),
                                         ),

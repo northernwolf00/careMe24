@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/firebase_setup.dart';
+import 'package:careme24/main.dart';
 import 'package:careme24/pages/home/main_page.dart';
 import 'package:careme24/pages/med/med_home_page.dart';
 import 'package:careme24/pages/services_call/mes_main_page.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AppContainer extends StatefulWidget {
   final int text;
@@ -58,8 +60,46 @@ class _AppContainerState extends State<AppContainer> {
     _bottomBarIndex = widget.text;
     super.initState();
       _initializeFirebase();
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+       showNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Notification Clicked: ${message.notification?.body}");
+    });
        FirebaseSetup();
   }
+
+ void showNotification(RemoteMessage message) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    'high_importance_channel', // Channel ID
+    'High Importance Notifications', // Channel Name
+    channelDescription: 'This channel is used for important notifications.',
+    importance: Importance.high,
+    priority: Priority.high,
+    sound: RawResourceAndroidNotificationSound(
+        'alarm_sound'), // Custom MP3 for Android
+    playSound: true,
+  );
+
+  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails(
+    sound: 'alarm_sound.wav', // Custom MP3/WAV for iOS (must be in "Resources")
+  );
+
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message.notification?.title ?? "No Title",
+    message.notification?.body ?? "No Body",
+    platformChannelSpecifics,
+  );
+}
 
   Future<bool> _onWillPop() async {
     if (_bottomBarIndex != 0) {
@@ -70,6 +110,7 @@ class _AppContainerState extends State<AppContainer> {
     }
     return true;  
   }
+
 
     Future<void> _initializeFirebase() async {
     try {
@@ -84,7 +125,7 @@ class _AppContainerState extends State<AppContainer> {
       if (token != null) {
         AppBloc.drawerCubit.sendFCMToken(
           [token],
-          'Test Title',
+          'Test test',
           'This is a test message',
         );
       }

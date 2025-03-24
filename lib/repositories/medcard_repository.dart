@@ -11,6 +11,8 @@ class MedcardRepository {
     return response;
   }
 
+  
+
   static Future<List<MedcardModel>> fetchOtherCards()async{
     final response = await Api.loadOtherCards();
     return response;

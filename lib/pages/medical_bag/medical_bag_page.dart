@@ -99,7 +99,8 @@ class _MedicalBagPageState extends State<MedicalBagPage> {
                               MaterialPageRoute(
                                   builder: (context) => MedicineListScreen(
                                       title: aidKit.title,
-                                      id: aidKit.id)),
+                                      id: aidKit.id,
+                                      photo: aidKit.photo)),
                             );
                           },
                         );

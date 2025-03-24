@@ -62,11 +62,9 @@ class HttpManager {
   Future<dynamic> post(String url, {String? customBaseUrl, dynamic data, dynamic params}) async {
     try {
       String previousBaseUrl = _dio.options.baseUrl;   
-
       if (customBaseUrl != null) {
         setBaseUrl(customBaseUrl);
       }
-
       final response = await _dio.post(url, data: data, queryParameters: params);
 
       setBaseUrl(previousBaseUrl);

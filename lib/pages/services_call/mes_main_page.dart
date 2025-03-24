@@ -21,7 +21,7 @@ class MESMainPage extends StatelessWidget {
             backgroundColor: ColorConstant.whiteA700,
              appBar: AppBar(
               centerTitle: true,
-              title: AppbarTitle(text: "МЧС"),
+              title: AppbarTitle(text: "МЧС ii"),
               backgroundColor: const Color.fromRGBO(41, 142, 235, 1),
             ),
             drawer: Drawer(
