@@ -1,3 +1,4 @@
+import 'package:careme24/pages/record_final_screen/record_final_screen.dart';
 import 'package:careme24/pages/services_call/call_police.dart';
 import 'package:careme24/pages/police/police_recomendation.dart';
 import 'package:careme24/pages/services_call/create_statement_screen.dart';
@@ -22,6 +23,7 @@ class WhatDoPoliceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        
         if (action_text == "Рекомендации") {
           Navigator.push(
               context,

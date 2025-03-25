@@ -1,3 +1,4 @@
+import 'package:careme24/blocs/service/model_chat.dart';
 import 'package:careme24/models/service_model.dart';
 
 abstract class ServiceState{}
@@ -23,6 +24,16 @@ class ServiceFavoriteLoadedDelet extends ServiceState {
   @override
   List<Object> get props => [favoriteProductIds];
 }
+
+class ServiceChatGet extends ServiceState {
+  final List<ServiceResponse> chatMessage;
+
+   ServiceChatGet(this.chatMessage);
+
+  @override
+  List<Object> get props => [chatMessage];
+}
+
 
 class ServiceLoaded extends ServiceState{
   final List<ServiceModel> serviceList;

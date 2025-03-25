@@ -1,3 +1,4 @@
+import 'package:careme24/pages/medical_bag/cubit/aid_kit_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/medcard/medcard_cubit.dart';
@@ -21,6 +22,8 @@ class _SendRequestAidKidState extends State<SendRequestAidKid> {
   void initState() {
     super.initState();
     AppBloc.medCardCubit.fetchData();
+      
+
     _searchController.addListener(_filterContacts);
   }
 
@@ -121,25 +124,31 @@ class _SendRequestAidKidState extends State<SendRequestAidKid> {
                     itemCount: _filteredContacts.length,
                     itemBuilder: (context, index) {
                       MedcardModel contact = _filteredContacts[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              contact.personalInfo.avatar.isNotEmpty
-                                  ? NetworkImage(contact.personalInfo.avatar)
-                                  : null,
-                          child: contact.personalInfo.avatar.isEmpty
-                              ? Icon(Icons.person)
-                              : null,
-                        ),
-                        title: Text(
-                          contact.personalInfo.full_name,
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        subtitle: Text(contact.personalInfo.phone.toString()),
-                        trailing: Icon(Icons.chevron_right),
-                        onTap: () {
-                          Navigator.pop(context, contact);
+                      return GestureDetector(
+                        onTap: (){
+                          
                         },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                contact.personalInfo.avatar.isNotEmpty
+                                    ? NetworkImage(contact.personalInfo.avatar)
+                                    : null,
+                            child: contact.personalInfo.avatar.isEmpty
+                                ? Icon(Icons.person)
+                                : null,
+                          ),
+                          title: Text(
+                            contact.personalInfo.full_name,
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          subtitle: Text(contact.personalInfo.phone.toString()),
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () {
+                             context.read<AidKitCubit>().getAidKitUser(contact.id);
+                            // Navigator.pop(context, contact);
+                          },
+                        ),
                       );
                     },
                   )

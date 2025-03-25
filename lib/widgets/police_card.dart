@@ -82,8 +82,12 @@ class PoliceCard extends StatelessWidget {
     form_card();
     return GestureDetector(
       onTap:(){
+        if (where_call == "Юрист онлайн") {
+ Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen()));
+        }
+         
         if (work) {
-          if (where_call == "Юрист онлайн") {
+          if (where_call == "Заявление") {
           Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentToPoliceScreen(serviceModel: serviceModel,)));
         } else{
           if (reason == '') {
@@ -96,9 +100,8 @@ class PoliceCard extends StatelessWidget {
             }
           }
         }
-        }else{
-          Navigator.push(context, MaterialPageRoute(builder: (context) => RecordFinalScreen()));
         }
+        
       },
       child: Card(
         margin: getMargin(bottom: 12),

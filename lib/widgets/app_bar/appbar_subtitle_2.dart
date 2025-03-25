@@ -19,12 +19,15 @@ class AppbarSubtitle2 extends StatelessWidget {
       },
       child: Padding(
         padding: margin ?? EdgeInsets.zero,
-        child: Text(
-          text,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.left,
-          style: AppStyle.txtMontserratSemiBold12WhiteA700.copyWith(
-            color: ColorConstant.whiteA700,
+        child: SizedBox(
+          width: 70,
+          child: Text(
+            text,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            style: AppStyle.txtMontserratSemiBold12WhiteA700.copyWith(
+              color: ColorConstant.whiteA700,
+            ),
           ),
         ),
       ),

@@ -24,6 +24,7 @@ class MESCard extends StatelessWidget {
   final bool work;
   final bool statement;
   final String medCardId;
+  final String call_scree;
 
 
   bool bottomInfo = false;
@@ -43,6 +44,7 @@ class MESCard extends StatelessWidget {
     required this.where_call,
     required this.reason,
     required this.serviceModel,
+    required this.call_scree,
     this.work = true,
     this.statement = false,
     required this.medCardId
@@ -68,7 +70,11 @@ class MESCard extends StatelessWidget {
     form_card();
     return GestureDetector(
       onTap:(){
+         if (call_scree == "Помощь онлайн") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen()));
+        }
         if (work) {
+          
           if (reason == '') {
             ElegantNotification.error(description: Text('Выберете причину вызова')).show(context);
           }else{
@@ -78,9 +84,8 @@ class MESCard extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context) => MesCallScreen(reason: reason, serviceModel: serviceModel, medCardId: medCardId,)));
             }
           }
-        }else{
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen()));
         }
+       
       },
       child: Card(
         margin: getMargin(bottom: 12),
@@ -247,13 +252,13 @@ class MESCard extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("dd",
+                                      Text("",
                                         style: AppStyle.txtMontserratMedium12Black900,),
                                       Padding(
                                         padding: getPadding(top: 2),
                                         child: SizedBox(
                                           width: 128,
-                                          child: Text("dd ",
+                                          child: Text(" ",
                                             style: AppStyle.txtMontserratSemiBold15Blue600,
                                             overflow: TextOverflow.ellipsis,),
                                         ),

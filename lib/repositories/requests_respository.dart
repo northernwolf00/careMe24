@@ -1,4 +1,5 @@
 import 'package:careme24/api/api.dart';
+import 'package:careme24/blocs/service/model_chat.dart';
 import 'package:careme24/models/institution_model.dart';
 import 'package:careme24/models/request_model.dart';
 import 'package:careme24/models/request_status_model.dart';
@@ -61,10 +62,16 @@ class RequestsRespository {
     final respone = Api.getServices(data);
     return respone; 
   }
-   static Future<List<ServiceModel>> getServicesChat(){
+   static Future<List<ServiceResponse>> getServicesChat(){
     final respone = Api.getServicesChat();
     return respone; 
   }
+
+  static Future<Map<String, dynamic>> postChatMessage(FormData data){
+    final respone = Api.postChatService(data);
+    return respone; 
+  }
+
   static Future<List<InstitutionModel>> getInstitutions(Map<String, dynamic> params){
     final respone = Api.getInstitutions(params);
     return respone; 

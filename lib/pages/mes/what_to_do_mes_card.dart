@@ -24,6 +24,7 @@ class WhatDoMESCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        
         if (action_text == "Рекомендации") {
           Navigator.push(
               context,

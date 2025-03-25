@@ -4,6 +4,7 @@ import 'package:careme24/blocs/service/service_state.dart';
 import 'package:careme24/models/service_model.dart';
 import 'package:careme24/repositories/favorites_response.dart';
 import 'package:careme24/repositories/requests_respository.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repositories/medcard_repository.dart';
@@ -17,10 +18,37 @@ class ServiceCubit extends Cubit<ServiceState> {
     final response = await RequestsRespository.getServices(params);
     final myCard = await MedcardRepository.fetchMyCard();
     log('${response.length}');
-     final responseChat = await RequestsRespository.getServicesChat();
+    // final responseChat = await RequestsRespository.getServicesChat();
 
     emit(ServiceLoaded(serviceList: response, medCardId: myCard.id));
   }
+
+  Future<void> fetchDataChat() async {
+    final response = await RequestsRespository.getServicesChat();
+    emit(ServiceChatGet(response));
+  }
+
+ Future<void> sendMessage(String chatId, String message, String? filePath) async {
+  if (message.isEmpty && filePath == null) return;
+
+  FormData formData = FormData.fromMap({
+    'chat_id': chatId,
+    'message': message,
+    'message_type': filePath != null ? 'file' : 'text',
+    if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
+  });
+
+  try {
+    final response = await RequestsRespository.postChatMessage(formData);
+
+    if (response['status'] == 'success') {
+      fetchDataChat();  // Refetch messages
+    }
+  } catch (e) {
+    print("Error sending message: $e");
+  }
+}
+
 
   Future<void> postFavorites(String id) async {
     // emit(FavoriteLoading());

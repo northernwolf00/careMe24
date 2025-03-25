@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
+
 
 import 'package:careme24/pages/medical_bag/cubit/aid_kit_repository.dart';
 import 'package:careme24/pages/medical_bag/cubit/aid_kit_state.dart';
@@ -17,6 +19,53 @@ class AidKitCubit extends Cubit<AidKitState> {
       if (response.isNotEmpty) {
         emit(AidKitLoaded(response));
       }
+    } catch (e) {
+      emit(AidKitError(e.toString()));
+    }
+  }
+
+  Future<void> getAidKitRequests() async {
+    emit(AidKitLoading());
+    try {
+      final response = await AidKitRepository.getAidKitRequestRepository();
+
+      if (response.isNotEmpty) {
+        emit(AidKitRequestLoaded(response));
+      }
+    } catch (e) {
+      emit(AidKitError(e.toString()));
+    }
+  }
+
+  Future<void> getAidKitUser(String user_id) async {
+    emit(AidKitLoading());
+    try {
+      final response = await AidKitRepository.getAidKitUserIdRepository(user_id);
+
+      if (response.isNotEmpty) {
+
+        response.forEach((element) {
+          postRequestAidKit(element.id);
+          log(element.id);
+        });
+
+        emit(AidKitLoaded(response));
+      }
+    } catch (e) {
+      emit(AidKitError(e.toString()));
+    }
+  }
+
+  Future<void> postRequestAidKit(String aid_kit_id) async {
+    emit(AidKitCreating());
+    try {
+    
+      final response = await AidKitRepository.postRequestAidKitRepository(aid_kit_id);
+      if (response['status'] == 'success') {
+        getAidKit();
+        emit(AidKitCreated(response['status'], response['detail']));
+      }
+      emit(AidKitCreated(response['status'], response['detail']));
     } catch (e) {
       emit(AidKitError(e.toString()));
     }

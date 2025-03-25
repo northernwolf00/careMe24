@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:careme24/blocs/app_bloc.dart';
 import 'package:careme24/blocs/dangerous/dangerous_cubti.dart';
 import 'package:careme24/blocs/dangerous/dangerous_state.dart';
@@ -33,11 +35,22 @@ String addres = '';
 
 class _HomeScreenState extends State<MainPage> {
   bool showContactNotif = true;
+   late Timer _timer;
 
   @override
   void initState() {
     AppBloc.dangerousCubit.getLocation();
     super.initState();
+     _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      AppBloc.dangerousCubit.fetchData();
+    });
+  }
+
+   @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed
+    _timer.cancel();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {

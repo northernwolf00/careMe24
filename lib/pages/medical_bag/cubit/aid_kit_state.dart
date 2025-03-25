@@ -19,6 +19,15 @@ class AidKitLoaded extends AidKitState {
   List<Object?> get props => [aidKits];
 }
 
+class AidKitRequestLoaded extends AidKitState {
+  final List<AidKitModel> aidKits;
+
+  AidKitRequestLoaded(this.aidKits);
+
+  @override
+  List<Object?> get props => [aidKits];
+}
+
 class AidKitUpdating extends AidKitState {}
 
 class AidKitUpdated extends AidKitState {

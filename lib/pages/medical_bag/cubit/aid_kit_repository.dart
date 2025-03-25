@@ -10,8 +10,20 @@ class AidKitRepository {
   return await Api.getAidKit();
 }
 
+   static Future<List<AidKitModel>> getAidKitRequestRepository() async {
+  return await Api.getAidKitRequest();
+}
+   static Future<List<AidKitModel>> getAidKitUserIdRepository(String id) async {
+  return await Api.getAidKitUser(id);
+}
+
+
 static Future<Map<String, dynamic>> updateAidKitRepository(FormData data) async {
     final result = await Api.putAidKit(data);
+    return result; 
+  }
+  static Future<Map<String, dynamic>> postRequestAidKitRepository(String data) async {
+    final result = await Api.postAidKitRequest(data);
     return result; 
   }
 

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:careme24/api/http_manager.dart';
+import 'package:careme24/blocs/service/model_chat.dart';
 import 'package:careme24/models/auth/code_send_result.dart';
 import 'package:careme24/models/auth/verified_model.dart';
 import 'package:careme24/models/contacts/contacts_model.dart';
@@ -836,20 +837,39 @@ class Api {
     }
   }
 
-  static Future<List<ServiceModel>> getServicesChat() async {
-     List<ServiceModel> serviceList = [];
+  static Future<List<ServiceResponse>> getServicesChat() async {
+     List<ServiceResponse> serviceList = [];
     try {
       var result =
           await httpManager.get('/api/services/chat/list');
-      log('log $result');
+      log('getServicesChat \n :  \n  $result');
       for (var service in result) {
-        serviceList.add(ServiceModel.fromJson(service));
+        serviceList.add(ServiceResponse.fromJson(service));
       }
       return serviceList;
     } catch (e) {
       log('Pressure load error getServices: $e');
       return [];
     }
+  }
+
+  static Future<Map<String, dynamic>> postChatService( FormData data) async {
+     try {
+      final result = await httpManager.post('/api/services/chat/send',
+          data: data);
+      log('Result from deleteAidKitRequest API: $result');
+
+      // Ensure response is properly formatted
+      if (result is Map<String, dynamic>) {
+        return result;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } catch (e) {
+      log('Error in deleteAidKitRequest API: $e');
+      throw Exception("Failed to delete deleteAidKitRequest"+e.toString());
+    }
+ 
   }
 
  
@@ -1430,10 +1450,10 @@ static Future<List<AidKitModel>> getIntakeTimeUser(String day) async {
     }
   }
 
-   static Future<List<AidKitModel>> getAidKitRequest(String day) async {
+   static Future<List<AidKitModel>> getAidKitRequest() async {
     List<AidKitModel> aidIntakeTime = [];
     try {
-      var result = await httpManager.get(medicines_intake_time, params: day);
+      var result = await httpManager.get('/api/medicines/aid_kit/request', );
       log('log getAidKitRequest $result');
       for (var review in result) {
         aidIntakeTime.add(AidKitModel.fromJson(review));
@@ -1445,9 +1465,9 @@ static Future<List<AidKitModel>> getIntakeTimeUser(String day) async {
     }
   }
 
-  static Future<Map<String, dynamic>> postAidKitRequest(FormData data) async {
+  static Future<Map<String, dynamic>> postAidKitRequest(String data) async {
     try {
-      var result = await httpManager.post(medicines_intake_time, data: data);
+      var result = await httpManager.post("/api/medicines/aid_kit/request/", params: data);
        log('$data');
       log('result postAidKitRequest $result');
       return result;

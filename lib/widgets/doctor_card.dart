@@ -107,8 +107,16 @@ class _DoctorCardState extends State<DoctorCard> {
         child: GestureDetector(
             onTap: () {
               if (widget.work) {
-                if (widget.where_call == "Запись к врачу" ||
-                    widget.where_call == "Помощь онлайн") {
+              
+                  if (widget.where_call == "Помощь онлайн") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RecordFinalScreen()));
+                  }
+               
+
+                if (widget.where_call == "Запись к врачу") {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -131,11 +139,7 @@ class _DoctorCardState extends State<DoctorCard> {
                                 )));
                   }
                 }
-              } else {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RecordFinalScreen()));
+                //
               }
             },
             child: Card(
@@ -253,11 +257,8 @@ class _DoctorCardState extends State<DoctorCard> {
                                       child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
-                                        
                                           children: [
-                                            SizedBox(
-                                              width:100
-                                            ),
+                                            SizedBox(width: 100),
 
                                             // Text(widget.meters,
                                             //     overflow: TextOverflow.ellipsis,
@@ -274,78 +275,89 @@ class _DoctorCardState extends State<DoctorCard> {
                                             //             .txtMontserratMedium15Bluegray800)),
 
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ReviewsScreen(
-                                                              serviceId:
-                                                                  widget.id,
-                                                              doctor_name: widget
-                                                                  .doctor_name,
-                                                            )));
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Padding(
-                                                        padding: getPadding(
-                                                            left: 25),
-                                                        child: Text(
-                                                            widget.averageRating
-                                                                .toStringAsFixed(
-                                                                    1),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            style: AppStyle
-                                                                .txtMontserratMedium15Bluegray800)),
-                                                    Padding(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ReviewsScreen(
+                                                                    serviceId:
+                                                                        widget
+                                                                            .id,
+                                                                    doctor_name:
+                                                                        widget
+                                                                            .doctor_name,
+                                                                  )));
+                                                    },
+                                                    child: Padding(
                                                       padding:
-                                                          const EdgeInsets.only(
-                                                              left: 5),
-                                                      child: CustomImageView(
-                                                          svgPath: ImageConstant
-                                                              .imgStarGold,
-                                                          height: getSize(12),
-                                                          width: getSize(12),
-                                                          margin: getMargin(
-                                                              left: 3,
-                                                              top: 3,
-                                                              bottom: 3)),
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Padding(
+                                                              padding: getPadding(
+                                                                  left: 25),
+                                                              child: Text(
+                                                                  widget
+                                                                      .averageRating
+                                                                      .toStringAsFixed(
+                                                                          1),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left,
+                                                                  style: AppStyle
+                                                                      .txtMontserratMedium15Bluegray800)),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 5),
+                                                            child: CustomImageView(
+                                                                svgPath:
+                                                                    ImageConstant
+                                                                        .imgStarGold,
+                                                                height:
+                                                                    getSize(12),
+                                                                width:
+                                                                    getSize(12),
+                                                                margin:
+                                                                    getMargin(
+                                                                        left: 3,
+                                                                        top: 3,
+                                                                        bottom:
+                                                                            3)),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            GestureDetector(
-                                                onTap: widget.onFavoritePressed,
-                                                child: CustomImageView(
-                                                  svgPath:
-                                                      ImageConstant.heart_fav,
-                                                  height: 24,
-                                                  width: 24,
-                                                  color: widget.isFavorite
-                                                      ? Colors.red
-                                                      : Colors.grey,
-                                                  margin: getMargin(
-                                                      left: 15,
-                                                      top: 5,
-                                                      bottom: 2),
-                                                )),
-                                              ]
-
-                                            ),
-                                            
+                                                  ),
+                                                  GestureDetector(
+                                                      onTap: widget
+                                                          .onFavoritePressed,
+                                                      child: CustomImageView(
+                                                        svgPath: ImageConstant
+                                                            .heart_fav,
+                                                        height: 24,
+                                                        width: 24,
+                                                        color: widget.isFavorite
+                                                            ? Colors.red
+                                                            : Colors.grey,
+                                                        margin: getMargin(
+                                                            left: 15,
+                                                            top: 5,
+                                                            bottom: 2),
+                                                      )),
+                                                ]),
                                           ])),
                                 ),
                                 Visibility(
