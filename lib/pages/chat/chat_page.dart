@@ -1,19 +1,26 @@
+import 'dart:developer';
+
 import 'package:careme24/blocs/service/service_cubit.dart';
 import 'package:careme24/blocs/service/service_state.dart';
 import 'package:careme24/pages/chat/chat_close_page.dart';
+import 'package:careme24/service/token_storage.dart';
 import 'package:careme24/utils/utils.dart';
 import 'package:careme24/widgets/chatcorresponde_item_widget.dart';
 import 'package:careme24/widgets/custom_bottom_bar.dart';
 import 'package:careme24/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 int _isSelected = -1;
 
 bool _isEmpty = false;
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String id;
+  final String institution_type;
+  const ChatScreen({required this.id, required this.institution_type, super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -22,11 +29,27 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  @override
+   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<ServiceCubit>().fetchDataChat();
+    getChatData();
+  }
+
+  getChatData() async {
+    String? token = await TokenManager.getToken(); // Replace with actual token
+     final wsUrl = Uri.parse(
+        'ws://v2290783.hosted-by-vdsina.ru/api/services/chat/${widget.id}?token=$token');
+    final channel = WebSocketChannel.connect(wsUrl);
+
+    channel.stream.listen((message) {
+      log("Received message: \$message"); // Log received data
+      channel.sink.add('received!');
+    }, onError: (error) {
+      log("WebSocket Error: \$error");
+    }, onDone: () {
+      log("WebSocket connection closed");
+    });
   }
 
   @override
@@ -57,6 +80,9 @@ class _ChatScreenState extends State<ChatScreen> {
             body: BlocBuilder<ServiceCubit, ServiceState>(
                 builder: (context, state) {
               if (state is ServiceChatGet) {
+
+                final messages = state.chatMessage; 
+
                 return SizedBox(
                     width: double.maxFinite,
                     /* padding: getPadding(left: 88, top: 112, right: 88),*/
@@ -118,15 +144,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         builder: (context) =>
                                                             ChatClosedScreen(
                                                               index: index,
-                                                              message: state
-                                                                  .chatMessage[
-                                                                      index]
-                                                                  .messages,
+                                                              // message: state
+                                                              //     .chatMessage[
+                                                              //         index]
+                                                              //     .messages,
                                                               id: state
                                                                   .chatMessage[
                                                                       index]
-                                                                  .id
-                                                            ,
+                                                                  .id,
                                                               photo: state
                                                                   .chatMessage[
                                                                       index]
@@ -169,6 +194,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     .chatMessage[index]
                                                     .service
                                                     .specialization,
+                                                last_message:state.chatMessage[index].lastMessage    
                                               ));
                                         }))
                               ]));

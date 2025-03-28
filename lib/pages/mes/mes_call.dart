@@ -612,6 +612,7 @@ class _CallMESScreenState extends State<CallMESScreen> {
                                                 return DoctorCard(
                                                   id: item.id,
                                                   cardId: state.medCardId,
+                                                  spspecialization: item.specialization,
                                                   verified: state
                                                       .serviceList[index]
                                                       .verified,

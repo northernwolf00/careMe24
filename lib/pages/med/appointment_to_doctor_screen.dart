@@ -293,7 +293,7 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    RecordDetailsOneScreen()));
+                                                    RecordDetailsOneScreen(id: widget.serviceModel.id, summa: widget.serviceModel.price.toInt(),)));
                                       },
                                       height: getVerticalSize(47),
                                       text: "Больше",
@@ -316,7 +316,7 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PaymentDefoultScreen()));
+                          builder: (context) => PaymentDefoultScreen(id: widget.serviceModel.id, summa:widget.serviceModel.price.toInt(),)));
                 }
               },
               child: Container(
@@ -348,7 +348,7 @@ class _AppointmentToDoctorScreenState extends State<AppointmentToDoctorScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "1450₽",
+                          widget.serviceModel.price.toString(),
                           style: AppStyle.txtMontserratSemiBold18WhiteA700,
                         ),
                         Text(

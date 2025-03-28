@@ -3,6 +3,7 @@ import 'package:careme24/models/medcard/medcard_id_model.dart';
 import 'package:careme24/models/medcard/medcard_model.dart';
 import 'package:careme24/models/status_model.dart';
 import 'package:careme24/models/user_model.dart';
+import 'package:dio/dio.dart';
 
 class MedcardRepository {
   
@@ -40,6 +41,10 @@ class MedcardRepository {
 
   static Future<StatusModel> updatePersonalInfo(Map<String, dynamic> data, String id)async{
     final StatusModel response = await Api.updateCardPersonalInfo(data, id);
+    return response;
+  }
+  static Future<StatusModel> updatePersonalInfoPhoto(FormData data, String id)async{
+    final StatusModel response = await Api.updateCardPersonalInfoPhoto(data, id);
     return response;
   }
 

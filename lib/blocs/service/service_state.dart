@@ -35,6 +35,19 @@ class ServiceChatGet extends ServiceState {
 }
 
 
+class ServiceUsersGet extends ServiceState {
+  final List<ServiceResponse> chatMessage;
+
+   ServiceUsersGet(this.chatMessage);
+
+  @override
+  List<Object> get props => [chatMessage];
+}
+
+
+
+
+
 class ServiceLoaded extends ServiceState{
   final List<ServiceModel> serviceList;
   final String medCardId;

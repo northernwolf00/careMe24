@@ -121,7 +121,7 @@ class PoliceCallScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        '1102м',
+                        '',
                         style: TextStyle(
                           color: Color.fromRGBO(44, 62, 79, 1),
                           fontSize: 16,
@@ -130,7 +130,7 @@ class PoliceCallScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        '40 мин',
+                        '',
                         style: TextStyle(
                           color: Color.fromRGBO(44, 62, 79, 1),
                           fontSize: 16,

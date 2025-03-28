@@ -1,3 +1,4 @@
+import 'package:careme24/blocs/service/model_chat.dart';
 import 'package:careme24/theme/app_style.dart';
 import 'package:careme24/theme/color_constant.dart';
 import 'package:careme24/utils/size_utils.dart';
@@ -11,6 +12,7 @@ class ChatcorrespondeItemWidget extends StatefulWidget {
   String name;
   int lastMessage;
   String specialization;
+  LastMessage? last_message;
   // late bool isSelectedVisibler;
   ChatcorrespondeItemWidget({
     super.key,
@@ -18,6 +20,7 @@ class ChatcorrespondeItemWidget extends StatefulWidget {
     required this.name,
     required this.lastMessage,
     required this.specialization,
+    required this.last_message,
     // required this.isSelectedVisibler,
   });
 
@@ -137,22 +140,22 @@ class _ChatcorrespondeItemWidgetState extends State<ChatcorrespondeItemWidget> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width / 6,
-                              child: Text(
-                                '',
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtMontserratMedium10,
-                              )),
+                          // SizedBox(
+                          //     width: MediaQuery.of(context).size.width / 6,
+                          //     child: Text(
+                          //       '',
+                          //       overflow: TextOverflow.ellipsis,
+                          //       textAlign: TextAlign.left,
+                          //       style: AppStyle.txtMontserratMedium10,
+                          //     )),
                           Padding(
                             padding: getPadding(
                               left: 5,
                             ),
                             child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 4,
+                                width: MediaQuery.of(context).size.width / 1.8,
                                 child: Text(
-                                  "",
+                                'Последнее сообщение: ${widget.last_message?.text ?? ""}',
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
                                   style: AppStyle.txtMontserratRegular10,

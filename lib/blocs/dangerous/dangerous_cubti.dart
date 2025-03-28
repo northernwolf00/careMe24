@@ -55,7 +55,7 @@ class DangerousCubit extends Cubit<DangerousState> {
     if (status.isGranted) {
       if (lat == 0) {
         Position location = await Geolocator.getCurrentPosition();
-        log('${location.latitude} ${location.longitude}');
+        log("latitude "'${location.latitude}" longitude "+ ${location.longitude}');
         lat = location.latitude;
         lon = location.longitude;
 

@@ -10,7 +10,9 @@ import 'package:careme24/pages/doctors/favorites_cubit.dart';
 import 'package:careme24/pages/medical_bag/cubit/aid_kit_cubit.dart';
 import 'package:careme24/pages/medicines/cubit/intake_cubit.dart';
 import 'package:careme24/pages/medicines/cubit/medicines_cubit.dart';
+import 'package:careme24/pages/notifications/notifi_cubit.dart';
 import 'package:careme24/pages/wallet/wallet_cubit.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBloc {
@@ -30,6 +32,7 @@ class AppBloc {
   static final aidKitCubit = AidKitCubit();
   static final medicinaCubit = MedicineCubit();
   static final inTakeTimeCubit = InTakeTimeCubit();
+  static final notificationCubit = NotificationsCubit();
 
   static final List<BlocProvider> providers = [
     BlocProvider<ApplicationCubit>(create: (context) => applicationCubit),
@@ -49,6 +52,7 @@ class AppBloc {
     BlocProvider<AidKitCubit>(create: (context) => aidKitCubit),
     BlocProvider<MedicineCubit>(create: (context) => medicinaCubit),
     BlocProvider<InTakeTimeCubit>(create: (context) => inTakeTimeCubit),
+    BlocProvider<NotificationsCubit>(create: (context) => notificationCubit),
   ];
 
   static void dispose() {
@@ -69,6 +73,7 @@ class AppBloc {
     aidKitCubit.close();
     medicinaCubit.close();
     inTakeTimeCubit.close();
+    notificationCubit.close();
   }
 
   ///Singleton factory

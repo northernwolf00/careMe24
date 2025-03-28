@@ -70,9 +70,16 @@ class _MedicalCardPageState extends State<MedicalCardPage> {
   List<ResponseModel> certificates = [];
 
   void setValue() {
+
+    String formatPhoneNumber(String phoneNumber) {
+  return phoneNumber.startsWith("7") ? phoneNumber.substring(1) : phoneNumber;
+}
+
+numberController.text = formatPhoneNumber(widget.medcardModel.personalInfo.phone.toString());
+
     imagePath = widget.medcardModel.personalInfo.avatar;
     nameController.text = widget.medcardModel.personalInfo.full_name;
-    numberController.text = widget.medcardModel.personalInfo.phone.toString();
+    // numberController.text = widget.medcardModel.personalInfo.phone.toString();
     countryAndAddresController.text = widget.medcardModel.personalInfo.address;
     dataController.text = widget.medcardModel.personalInfo.dob;
 
@@ -136,6 +143,7 @@ class _MedicalCardPageState extends State<MedicalCardPage> {
               Column(
                 children: [
                   AvatarPicker(
+                    
                     imagePath: imagePath,
                     onChange: (image) {
                       log('$image');
@@ -210,15 +218,41 @@ class _MedicalCardPageState extends State<MedicalCardPage> {
                         photos = files;
                       },
                       onTap: () async {
-                        List<MultipartFile> photoFiles = [];
-                        for (var file in photos!) {
-                          photoFiles
-                              .add(await MultipartFile.fromFile(file.path));
-                        }
-
-                        String phoneNumber =
+                                   String phoneNumber =
                             '$countryCode ${numberController.text}'
                                 .replaceAll(" ", "");
+                        final data2 = {
+                          "avatar": avatar != null
+                              ? await MultipartFile.fromFile(avatar!.path)
+                              : null,
+                          "full_name": nameController.text,
+                          "phone": phoneNumber,
+                          "dob": dataController.text,
+                          "address": countryAndAddresController.text,
+                          "serial": int.parse(passportSerialController.text),
+                          "number": int.parse(passportNumberController.text),
+                          "place": passportPlaceController.text,
+                          "date": passportDataController.text,
+                          // "photos": photoFiles,
+                        };
+                         final response = await AppBloc.medCardCubit
+                            .updatePersonalInfo(data2, widget.medcardModel.id);
+
+                              if (response.isSuccess) {
+                          ElegantNotification.success(
+                                  description: Text('Медкарта обновлена'))
+                              .show(context);
+                          AppBloc.medCardCubit.fetchData();
+                        }  
+                        List<File> photoFiles = [];
+                        for (var file in photos!) {
+                          photoFiles.add(
+                              File(file.path)); // Ensure it's a File object
+                        }
+
+                        // String phoneNumber =
+                        //     '$countryCode ${numberController.text}'
+                        //         .replaceAll(" ", "");
 
                         final data = {
                           "avatar": avatar != null
@@ -234,10 +268,25 @@ class _MedicalCardPageState extends State<MedicalCardPage> {
                           "date": passportDataController.text,
                           "photos": photoFiles,
                         };
+
                         log(widget.medcardModel.id);
-                        final response = await AppBloc.medCardCubit
+                        if (photoFiles.isNotEmpty) {
+                           final response2 = await AppBloc.medCardCubit
+                            .updatePersonalInfoPhoto(
+                                widget.medcardModel.id,
+                                int.parse(passportNumberController.text),
+                                int.parse(passportSerialController.text),
+                                " ",
+                                " ",
+                                passportDataController.text,
+                                photoFiles);
+                        }
+                       
+                        final response2 = await AppBloc.medCardCubit
                             .updatePersonalInfo(data, widget.medcardModel.id);
-                        if (response.isSuccess) {
+
+                    
+                        if (response2.isSuccess) {
                           ElegantNotification.success(
                                   description: Text('Медкарта обновлена'))
                               .show(context);
@@ -563,11 +612,11 @@ class _CustomDialogState extends State<CustomDialog> {
     );
 
     if (pickedDate != null) {
-    setState(() {
-      dateController.text = 
-          Intl.withLocale('ru', () => DateFormat('dd.MM.yyyy').format(pickedDate));
-    });
-  }
+      setState(() {
+        dateController.text = Intl.withLocale(
+            'ru', () => DateFormat('dd.MM.yyyy').format(pickedDate));
+      });
+    }
   }
 
   @override

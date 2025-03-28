@@ -67,6 +67,11 @@ class RequestsRespository {
     return respone; 
   }
 
+    static Future<List<ServiceResponse>> getServicesChatUsers(String id){
+    final respone = Api.getServicesChatUsers(id);
+    return respone; 
+  }
+
   static Future<Map<String, dynamic>> postChatMessage(FormData data){
     final respone = Api.postChatService(data);
     return respone; 

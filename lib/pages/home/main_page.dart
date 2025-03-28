@@ -41,7 +41,7 @@ class _HomeScreenState extends State<MainPage> {
   void initState() {
     AppBloc.dangerousCubit.getLocation();
     super.initState();
-     _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+     _timer = Timer.periodic(Duration(seconds: 30), (timer) {
       AppBloc.dangerousCubit.fetchData();
     });
   }
@@ -53,6 +53,7 @@ class _HomeScreenState extends State<MainPage> {
     super.dispose();
   }
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<MainPage> {
           const SizedBox(width: 20),
           GestureDetector(
             onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NotificationsScreen()));
+              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => NotificationsScreen()));
             },
             child: Image.asset('assets/images/notification.png')),
         ]),

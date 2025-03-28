@@ -11,7 +11,9 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/date_container.dart';
 
 class RecordDetailsOneScreen extends StatefulWidget {
-  const RecordDetailsOneScreen({super.key});
+  final String id;
+  final int summa;
+  const RecordDetailsOneScreen({ required this.id, required this.summa,super.key});
 
   @override
   State<RecordDetailsOneScreen> createState() => _RecordDetailsOneScreenState();
@@ -265,7 +267,7 @@ class _RecordDetailsOneScreenState extends State<RecordDetailsOneScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PaymentDefoultScreen()));
+                            builder: (context) => PaymentDefoultScreen( id: widget.id, summa: widget.summa,)));
                   }
                 })));
   }

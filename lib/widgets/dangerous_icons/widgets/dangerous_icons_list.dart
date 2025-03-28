@@ -54,6 +54,106 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
     int pressureIndex = getPressureIndex(widget.pressureAndWind.currentPressure.toInt());
     int windIndex = getSpeedIndex(widget.pressureAndWind.currentWindSpeed);
 
+    final dataIcons = {
+  "icons": [
+    {
+      "incident_type": "Электромагнитное излучение",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Радиактивный фон",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Торнадо смерч",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Солнечная радиация",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Пожар",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Террористическая опасность",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Воздушная тревога",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Землятрясение",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Наводнение",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Цунами",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Химическое заражение",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Вирусное заражение",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Гололёд",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Сильный туман",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Снежная лавина",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Камнепад",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Извержение вулкана",
+      "danger_level": " ",
+    },
+    {
+      "incident_type": "Крупный град",
+      "danger_level": " ",
+    },
+  ]
+};
+
+
+  //  final defaultIcons = (dataIcons["icons"] as List).map((e) => DangerModel.fromJson(e)).toList();
+
+  // // Merge API icons with default icons (add missing ones)
+  // final existingTypes = widget.icons.map((e) => e.incidentType).toSet();
+  // for (final defaultIcon in defaultIcons) {
+  //   if (!existingTypes.contains(defaultIcon.incidentType)) {
+  //     infoIconData.add(DangerModel(
+  //       incidentType: defaultIcon.incidentType,
+  //       dangerLevel: defaultIcon.dangerLevel,
+  //       country: '',
+  //       city: '',
+  //       comment: '',
+  //       type: 'circle',
+  //       centerLat: 0.0,
+  //       centerLon: 0.0,
+  //       radius: 0.0,
+  //       isActive: false,
+  //     ));
+  //   }
+  // }
+
+
     iconsData = [
       
       {
@@ -122,14 +222,17 @@ class _DangerousIconsListState extends State<DangerousIconsList> {
         'isActive': true,
       },
 
-...infoIconData.map((icon) {
-      return {
-        'widget': Infoicon(icon: icon, city: widget.city),
-        'index': getValue(icon.dangerLevel),
-        'isActive': icon.isActive,
-      };
-    }).toList(),
-  ];
+
+ ...List.generate(infoIconData.length, (index){
+        return {
+          'widget' : Infoicon(icon: infoIconData[index], city: widget.city,),
+          'index' : getValue(infoIconData[index].dangerLevel),
+           'isActive': infoIconData[index].isActive,
+        };
+      })
+    ];
+
+    // iconsData.sort((a, b) => b['index'].compareTo(a['index'])); 
 
   // Sorting: Active icons first, then by index in descending order
   iconsData.sort((a, b) {

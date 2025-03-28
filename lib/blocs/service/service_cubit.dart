@@ -28,6 +28,11 @@ class ServiceCubit extends Cubit<ServiceState> {
     emit(ServiceChatGet(response));
   }
 
+  Future<void> fetchDataUserChat(String id) async {
+    final response = await RequestsRespository.getServicesChatUsers(id);
+    emit(ServiceUsersGet(response));
+  }
+
  Future<void> sendMessage(String chatId, String message, String? filePath) async {
   if (message.isEmpty && filePath == null) return;
 

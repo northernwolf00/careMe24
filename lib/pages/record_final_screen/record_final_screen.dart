@@ -11,7 +11,9 @@ import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_image_view.dart';
 
 class RecordFinalScreen extends StatelessWidget {
-  const RecordFinalScreen({super.key});
+  final String id;
+  final String institution_type;
+  const RecordFinalScreen({ required this.id, required this.institution_type ,super.key});
 
 
 
@@ -63,7 +65,7 @@ class RecordFinalScreen extends StatelessWidget {
                         (){ Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChatScreen()));},
+                                builder: (context) => ChatScreen(id: id, institution_type: institution_type)));},
                         child: Container(
                         margin: getMargin(top: 56),
                         width: MediaQuery.of(context).size.width - 40,

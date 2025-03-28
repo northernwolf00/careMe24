@@ -108,8 +108,8 @@ class DoctorCallScreen extends StatelessWidget {
                   padding: EdgeInsets.only(left: 14, top: 15),
                   child: Row(
                     children: [
-                      Text('1102м', style: TextStyle(color: Color.fromRGBO(44, 62, 79, 1), fontSize: 16, fontWeight: FontWeight.w500),),
-                      Text('40 мин', style: TextStyle(color: Color.fromRGBO(44, 62, 79, 1), fontSize: 16, fontWeight: FontWeight.w500),)
+                      Text('', style: TextStyle(color: Color.fromRGBO(44, 62, 79, 1), fontSize: 16, fontWeight: FontWeight.w500),),
+                      Text('', style: TextStyle(color: Color.fromRGBO(44, 62, 79, 1), fontSize: 16, fontWeight: FontWeight.w500),)
                     ],
                   ),
                 ),

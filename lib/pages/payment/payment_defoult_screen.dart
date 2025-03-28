@@ -16,7 +16,9 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import '../../theme/app_decoration.dart';
 
 class PaymentDefoultScreen extends StatefulWidget {
-  const PaymentDefoultScreen({super.key});
+  final String id;
+  final int summa;
+  const PaymentDefoultScreen({ required this.id, required this.summa,super.key});
 
   @override
   State<PaymentDefoultScreen> createState() => _PaymentDefoultScreenState();
@@ -93,7 +95,7 @@ class _PaymentDefoultScreenState extends State<PaymentDefoultScreen> {
                                                 .txtMontserratSemiBold10Gray50001)),
                                     Padding(
                                         padding: getPadding(top: 3),
-                                        child: Text("1 450 ₽",
+                                        child: Text(widget.summa.toString(),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle
@@ -328,13 +330,13 @@ class _PaymentDefoultScreenState extends State<PaymentDefoultScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            RecordFinalScreen()));
+                                            RecordFinalScreen(id: widget.id, institution_type:"")));
                               } else if (AfterPay.whereCall == "Минуты") {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CallWaitingWindowScreen()));
+                                             CallWaitingWindowScreen(id:widget.id,)));
                               }
                             } else if ((cardnumbervalueController.text.length ==
                                     19) &

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:careme24/blocs/medcard/medcard_state.dart';
 import 'package:careme24/models/medcard/medcard_id_model.dart';
 import 'package:careme24/models/medcard/medcard_model.dart';
@@ -7,6 +8,7 @@ import 'package:careme24/models/user_model.dart';
 import 'package:careme24/repositories/medcard_repository.dart';
 import 'package:careme24/service/database_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MedCardCubit extends Cubit<MedCardState> {
@@ -112,6 +114,33 @@ class MedCardCubit extends Cubit<MedCardState> {
     return response;
   }
 
+
+  Future<StatusModel> updatePersonalInfoPhoto(   String id,
+   int serial,
+   int number,
+   String placeOfIssue,
+   String residence,
+   String date,
+   List<File> photos,)async{
+ FormData formData = FormData.fromMap({
+      "serial": serial,
+      "number": number,
+      "place_of_issue": placeOfIssue,
+      "residence": residence,
+      "date": date,
+    });
+
+    // Attach photos
+    for (var file in photos) {
+      formData.files.add(MapEntry(
+        "photos",
+        await MultipartFile.fromFile(file.path),
+      ));
+    }
+
+    final response = await MedcardRepository.updatePersonalInfoPhoto(formData, id);
+    return response;
+  }
   Future<StatusModel> updateMedInsurance(Map<String, dynamic> data, String id)async{
     final response = await MedcardRepository.updateMedInsurance(data, id);
     return response;

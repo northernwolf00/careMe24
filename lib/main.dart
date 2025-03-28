@@ -92,5 +92,8 @@ void main() async {
   Intl.defaultLocale = 'ru';
   await EnvService().loadEnv();
   FlutterNativeSplash.remove();
+
+
+  
   runApp(const App());
 }

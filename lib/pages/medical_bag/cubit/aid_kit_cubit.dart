@@ -43,12 +43,11 @@ class AidKitCubit extends Cubit<AidKitState> {
       final response = await AidKitRepository.getAidKitUserIdRepository(user_id);
 
       if (response.isNotEmpty) {
-
         response.forEach((element) {
           postRequestAidKit(element.id);
           log(element.id);
         });
-
+        
         emit(AidKitLoaded(response));
       }
     } catch (e) {

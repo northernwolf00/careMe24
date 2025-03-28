@@ -75,7 +75,7 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                 Navigator.pop(context);
               }),
           centerTitle: true,
-          title: AppbarTitle(text: "Юрист онлайн"),
+          title: AppbarTitle(text: "Заявление"),
           styleType: Style.bgFillBlue60001),
       body: Stack(
 
@@ -301,7 +301,7 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  RecordDetailsOneScreen()));
+                                                  RecordDetailsOneScreen(id:widget.serviceModel.id, summa:widget.serviceModel.price.toInt()) ));
                                     },
                                     height: getVerticalSize(47),
                                     text: "Больше",
@@ -324,7 +324,7 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PaymentDefoultScreen()));
+                          builder: (context) => PaymentDefoultScreen(id: widget.serviceModel.id, summa: widget.serviceModel.price.toInt(),)));
                 }
               },
               child: Container(
@@ -356,7 +356,7 @@ class _AppointmentToPoliceScreenState extends State<AppointmentToPoliceScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "1450₽",
+                          widget.serviceModel.price.toString(),
                           style: AppStyle.txtMontserratSemiBold18WhiteA700,
                         ),
                         Text(

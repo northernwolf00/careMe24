@@ -19,6 +19,7 @@ import '../widgets/custom_image_view.dart';
 class DoctorCard extends StatefulWidget {
   final String id;
   final String cardId;
+  final  String spspecialization;
   final String reason;
   final ServiceModel serviceModel;
   late String doctor_image;
@@ -39,6 +40,7 @@ class DoctorCard extends StatefulWidget {
       {super.key,
       required this.id,
       required this.cardId,
+      required this.spspecialization,
       required this.reason,
       required this.serviceModel,
       required this.doctor_image,
@@ -112,7 +114,7 @@ class _DoctorCardState extends State<DoctorCard> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => RecordFinalScreen()));
+                            builder: (context) => RecordFinalScreen(id: widget.id, institution_type:"med")));
                   }
                
 
@@ -150,7 +152,7 @@ class _DoctorCardState extends State<DoctorCard> {
               elevation: 4,
               clipBehavior: Clip.hardEdge,
               child: Container(
-                  height: 130,
+                  height: 132,
                   width: MediaQuery.of(context).size.width - 40,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadiusStyle.roundedBorder10),
@@ -170,7 +172,7 @@ class _DoctorCardState extends State<DoctorCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  height: 60,
+                                  height: 70,
                                   width:
                                       MediaQuery.of(context).size.width / 1.6,
                                   child: Row(
@@ -196,6 +198,18 @@ class _DoctorCardState extends State<DoctorCard> {
                                                     textAlign: TextAlign.left,
                                                     style: AppStyle
                                                         .txtMontserratSemiBold15Blue600),
+                                              ),
+                                               SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3,
+                                                child: Text(widget.spspecialization,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.left,
+                                                    style: AppStyle
+                                                        .txtMontserratSemiBold15Gray50001),
                                               ),
                                               Padding(
                                                   padding: getPadding(top: 4),
@@ -253,12 +267,12 @@ class _DoctorCardState extends State<DoctorCard> {
                                 Visibility(
                                   visible: bottomInfo,
                                   child: Padding(
-                                      padding: getPadding(top: 12),
+                                      padding: getPadding(top: 10),
                                       child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            SizedBox(width: 100),
+                                            SizedBox(width: 90),
 
                                             // Text(widget.meters,
                                             //     overflow: TextOverflow.ellipsis,

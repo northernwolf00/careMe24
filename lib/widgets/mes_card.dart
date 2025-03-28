@@ -71,7 +71,7 @@ class MESCard extends StatelessWidget {
     return GestureDetector(
       onTap:(){
          if (call_scree == "Помощь онлайн") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen(id : medCardId, institution_type:"mch")));
         }
         if (work) {
           

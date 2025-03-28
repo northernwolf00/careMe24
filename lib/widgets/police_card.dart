@@ -83,7 +83,7 @@ class PoliceCard extends StatelessWidget {
     return GestureDetector(
       onTap:(){
         if (where_call == "Юрист онлайн") {
- Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen()));
+ Navigator.push(context, MaterialPageRoute(builder: (context) =>RecordFinalScreen(id: id, institution_type:"pol")));
         }
          
         if (work) {

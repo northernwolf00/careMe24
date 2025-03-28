@@ -527,6 +527,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                                             return 
                                             DoctorCard(
                                               id: item.id,
+                                              spspecialization:item.specialization,
                                               cardId: state.medCardId,
                                               verified: state
                                                   .serviceList[index].verified,

@@ -630,10 +630,25 @@ class Api {
     }
   }
 
+    static Future<StatusModel> updateCardPersonalInfoPhoto(
+      FormData data, String id) async {
+        final formData = data.toString();
+    log('updateCardPersonalInfoPhoto data : $formData');
+    try {
+      var result = await httpManager.patch('/api/cards/$id/passport',
+          data: data);
+      log('$result');
+      return StatusModel.fromJson(result);
+    } catch (e) {
+      log('Update card personal info error updateCardPersonalInfoPhoto: $e');
+      return StatusModel(status: 'error', isSuccess: false, detail: '');
+    }
+  }
+
   static Future<StatusModel> deleteCardVerifyRequest(String id) async {
     try {
       var result = await httpManager.delete('$deleteVerifyRequest/$id/');
-      log('$result');
+      // log('$result');
       return StatusModel.fromJson(result);
     } catch (e) {
       log('Delete card verify request error deleteCardVerifyRequest: $e');
@@ -848,7 +863,25 @@ class Api {
       }
       return serviceList;
     } catch (e) {
-      log('Pressure load error getServices: $e');
+      log('Pressure load error getServicesChat: $e');
+      return [];
+    }
+  }
+
+
+  static Future<List<ServiceResponse>> getServicesChatUsers(String userId) async {
+     List<ServiceResponse> serviceList = [];
+    try {
+      var result =
+          await httpManager.get('/api/services/chat/$userId');
+
+      log('getServicesUsersChat \n :  $result');
+      for (var service in result) {
+        serviceList.add(ServiceResponse.fromJson(service));
+      }
+      return serviceList;
+    } catch (e) {
+      log('Pressure load error getServicesChatUsers: $e');
       return [];
     }
   }
@@ -986,6 +1019,27 @@ class Api {
     } catch (e) {
       log('Danger icons load error: $e');
       return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> getNotficationIcons(
+      Map<String, dynamic> params) async {
+    // List<DangerModel> dangerIcons = [];
+    try {
+      var result = await httpManager.get('/api/users/notifications', params: params);
+      log('getNotficationIcons $result');
+
+      // if (result != null && result['icons'] is List) {
+      //   for (var icon in result['icons']) {
+      //     dangerIcons.add(DangerModel.fromJson(icon));
+      //   }
+      // }
+      return result;
+    } catch (e) {
+      log('Danger icons load error: $e');
+      return {
+
+      };
     }
   }
 

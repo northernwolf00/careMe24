@@ -82,6 +82,7 @@ class _AvatarPickerState extends State<AvatarPicker> {
             ? ClipRRect(
               borderRadius: BorderRadius.circular(99),
               child: CachedNetworkImage(
+                fit: BoxFit.cover,
                 imageUrl: widget.imagePath
               )
             )

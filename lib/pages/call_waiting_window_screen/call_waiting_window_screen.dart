@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 
 
 class CallWaitingWindowScreen extends StatelessWidget {
-  const CallWaitingWindowScreen({super.key});
+  final String id;
+  const CallWaitingWindowScreen({ required this.id,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +105,7 @@ class CallWaitingWindowScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ChatScreen()));
+                                  builder: (context) => ChatScreen(id:id, institution_type: "",)));
                           }
                           },
                         child: Container(
